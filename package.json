@@ -1,0 +1,19 @@
+{
+  "name": "project-18-brisc-v-explorer",
+  "version": "1.0.0",
+  "description": "Design Space Exploration for BRISC-V",
+  "main": "js/main.js",
+  "scripts": {
+    "test": "console.log(\"test\")"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ec500-software-engineering/project-18-brisc-v-explorer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ec500-software-engineering/project-18-brisc-v-explorer/issues"
+  },
+  "homepage": "https://github.com/ec500-software-engineering/project-18-brisc-v-explorer#readme"
+}

@@ -1,0 +1,13 @@
+To convert the draw.io xml diagrams into a format suitable for displaying:
+
+1. Export the xml draw.io file as an svg.
+    - Use a transparent backgrount
+    - Select "Selection Only" and "Crop"
+
+2. Add an id tag to top of svg
+3. Add ids to dynamic text boxes. Any dynamic text must be in its own text box.
+4. Make sure the SVG has a widht, height and viewbox tag.
+5. Set the height tag to 340px (this is the height of the block diagram area)
+6. use javascript document.write('<svg ...> ... </svg>'); to add image in the
+   html. Place <script src="your img script"></script> in the location to add
+   the image.

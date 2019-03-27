@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>BRISC-V Explorer</title>
+
+    <link href="style.css" rel="stylesheet">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+    <!-- JS -->
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="node_modules/file-saver/dist/FileSaver.js"></script>
+    <script src="node_modules/jzip/jzip.js"></script>
+    <script src="js/generate.js"></script>
+    <!-- Verilog code as JS strings -->
+    <script src="js/template2js.js"></script>
+    <script src="js/single_cycle_base2js.js"></script>
+    <script src="js/5_stage_pipeline_stall_base2js.js"></script>
+    <script src="js/5_stage_pipeline_stall_bypass2js.js"></script>
+    <script src="js/7_stage_pipeline_stall_bypass2js.js"></script>
+    
+
+  </head>
+  <body>
+
+    <!-- Page Content -->
+    <div id="main" class="container-fluid">
+
+      <div id="menu_row" class="row px-md-3 justify-content-center">
+        <div id="menu_row_col" class="col-sm-1 col-md-1 col-lg-12 p-1">
+					<!-- Navbar -->
+					<nav id="main_menu" class="navbar navbar-expand">
+						<div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+							<ul class="navbar-nav mr-auto">
+								<li class="nav-item active">
+									<a class="nav-link main-menu-link" href="http://ascslab.org/research/briscv/index.html">BRISC-V Home</a>
+								</li>
+							</ul>
+						</div>
+						<!--<div class="mx-auto order-0">-->
+						<div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+							<a class="navbar-brand mx-auto nav-link main-menu-link" href="./index.html">BRISC-V Explorer</a>
+						</div>
+						<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+							<ul class="navbar-nav ml-auto">
+								<li class="nav-item active">
+									<a class="nav-link main-menu-link" href="http://ascslab.org/research/briscv/release.html">Manual &amp Examples</a>
+								</li>
+							</ul>
+						</div>
+					</nav>
+        </div>
+      </div>
+
+      <div id="top_row" class="row px-md-3 justify-content-md-center justify-content-lg-start">
+        <div class="d-flex col-md-12 col-lg-6 p-2 justify-content-center justify-content-lg-start">
+            <img id="emulator_logo" class="img-responsive" src="assets/img//explorer_logo2.svg" alt="BRISC-V Explorer logo">
+        </div>
+
+        <div class="d-flex col-md-12 col-lg-6 p-2 justify-content-center justify-content-lg-end">
+            <img id="ascs_lab_logo" class="img-responsive" src="assets/img//ascs_lab_logo.png" alt="Logo">
+        </div>
+      </div>
+
+      <div id="middle_row" class="row px-md-3 justify-content-center">
+
+        <!-- CORE DESIGNER -->
+        <div id="core_designer" class=" col-md-12 col-lg-6 p-2">
+          <div id="core_designer_dark" class="p-1 bg-secondary rounded">
+            <div id="core_designer_light" class="p-1 bg-light rounded">
+              <div id="core_designer_row" class="row">
+              <!-- NAV MENU -->
+              <div id="nav_menu_div" class="col-3 col-lg-4 border-right">
+                <nav class=" nav nav-pills nav-justified" role="tablist">
+                  <a class="nav-link active" data-toggle="pill" href="#directions">Directions</a>
+                  <a class="nav-link" data-toggle="pill" href="#core_selection">System Configuration</a>
+                  <a class="nav-link" data-toggle="pill" href="#processor_parameters">Processor Parameters</a>
+                  <a class="nav-link" data-toggle="pill" href="#cache_parameters">Cache Parameters</a>
+                  <a class="nav-link" data-toggle="pill" href="#memory_organization">Memory Organization</a>
+                  <a class="nav-link" data-toggle="pill" onclick="saveProject()" href="#do_not_switch_tabs">Generate</a>
+								</nav>
+              </div>
+
+              <!-- TAB PANES -->
+              <div id="tab_div" class="tab-content col-9 col-lg-8">
+                <!-- Directions Tab -->
+                <div id="directions" class="container tab-pane active">
+                  <h2><center>Directions:</center></h2>
+                  <p>Select your BRISC-V Core type, enter the desired parameters and click the "Generate" button to download a zip file with the generated system and selected program.
+                  </p>
+                  <p>Simulation or Synthesis should be started from the downloaded project directory to ensure the relative paths to included memory files are valid. You may have to change the relative paths in the top level module parameters if you start simulation or synthesis in a different location.
+                  </p>
+                </div>
+
+                <!-- Core Selection Tab -->
+                <div id="core_selection" class="container tab-pane fade">
+                  <h2><center>System Configuration:</center></h2>
+                  <form>
+                    <div class="form-group">
+                      <label for="project_name">Project Name:</label>
+                      <input type="text" class="form-control" value="Default_Project"
+                             id="project_name" onchange="clean_project_name()">
+                    </div>
+                    <div class="form-group">
+                      <label for="sel1">Choose a core:</label>
+                      <select class="form-control" id="sel1" onload="selecCoreType(this)" onchange="selectCoreType(this)">
+                        <option value="Single Cycle">Single Cycle</option>
+                        <option value="5 Stage Stalled Pipeline">5 Stage Stalled Pipeline</option>
+                        <option value="5 Stage Bypassed Pipeline">5 Stage Bypassed Pipeline</option>
+                        <option value="7 Stage Bypassed Pipeline">7 Stage Bypassed Pipeline</option>
+                        <option value="Out Of Order Pipeline">Out Of Order Pipeline</option>
+                      </select>
+
+                    </div>
+                    <div class="form-group">
+                      <label for="num_cores">Number of Cores:</label>
+                      <input type="text" class="form-control" value="1"
+                             id="num_cores" disabled>
+                    </div>
+                    <!-- Make Radio Buttons for Topology: Bus-Based, 2D mesh, torus... -->
+                    <div class="form-group">
+                      <label for="noc_topology">NoC Topology:</label>
+                      <input type="text" class="form-control" value="N/A"
+                             id="noc_tolology" disabled>
+                    </div>
+                    <div class="form-group">
+                      <label for="router_config">NoC Router Configuration:</label>
+                      <input type="text" class="form-control" value="N/A"
+                             id="router_config" disabled>
+                    </div>
+                    <div class="form-group">
+                      <label for="router_algorithm">NoC Routing Algorithm:</label>
+                      <input type="text" class="form-control" value="N/A"
+                             id="router_algorithm" disabled>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Processor Parameter Tab -->
+                <div id="processor_parameters" class="container tab-pane fade">
+                  <form action="">
+                    <h2>Processor Parameters:</h2>
+                      <div class="form-group">
+                        <label for="address_bits">Address Bit Width:</label>
+                        <input type="text" class="form-control" value="12" id="address_bits">
+                      </div>
+                      <div class="form-group">
+                        <label for="data_width">Data Bit Width:</label>
+                        <input type="text" class="form-control" value="32" id="data_width">
+                      </div>
+                      <div class="form-group">
+                        <label for="instruction_queue_length">Instruction Queue Length:</label>
+                        <input type="text" class="form-control" value="N/A"
+                               id="instruction_queue_length" disabled>
+                      </div>
+
+                    <!--Note: instruction memory size equals 2^(Address Bit Width)<br>-->
+                      <div class="form-group">
+                        <label for="program">Default Program:</label>
+                        <input type="file" id="program" name="files[]" />
+                        <!--<input type="text" class="form-control" value="../software/binaries/mandelbrot.vmh" id="program">-->
+                      </div>
+                  </form>
+                </div>
+
+                <!-- Cache Parameter Tab -->
+                <div id="cache_parameters" class="container tab-pane fade">
+                  <h2>Cache Parameters:</h2>
+                  <form action="/action_page.php">
+                    <div class="form-group">
+                      <label for="num_indexesL1">Number of Indexes (L1):</label>
+                      <input type="text" class="form-control" value="64" id="num_indexesL1"
+                             disabled>
+                    </div>
+                    <div class="form-group">
+                      <label for="associativityL1">Associativity (L1):</label>
+                      <input type="text" class="form-control" value="2" id="associativityL1"
+                             disabled>
+                    </div>
+                    <div class="form-group">
+                      <label for="num_indexesL2">Number of Indexes (L2):</label>
+                      <input type="text" class="form-control" value="64" id="num_indexesL2"
+                             disabled >
+                    </div>
+                    <div class="form-group">
+                      <label for="associativityL2">Associativity (L2):</label>
+                      <input type="text" class="form-control" value="2" id="associativityL2"
+                             disabled >
+                    </div>
+
+                    <div class="form-group">
+                      <label for="line_size">Line Size (L1 &amp L2):</label>
+                      <input type="text" class="form-control" value="8" id="line_size"
+                             disabled >
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Memory Organization Tab -->
+                <div id="memory_organization" class="container tab-pane fade">
+                  <h2>Memory Organization:</h2>
+                  <form action="/action_page.php">
+                    <div class="form-group">
+                      <label for="num_cache_levels">Number of Cache Levels:</label>
+                      <input type="text" class="form-control" value="2"
+                             id="num_cache_levels" disabled>
+                    </div>
+                    <!-- Make inclusion radio buttion -->
+                    <div class="form-group">
+                      <label for="inclusion">Inclusive/Exclusive:</label>
+                      <input type="text" class="form-control" value="N/A"
+                             id="inclusion" disabled>
+                    </div>
+                    <div class="form-group">
+                      <label for="mem_size">Main Memory Size (Words):</label>
+                      <input type="text" class="form-control" value="8192"
+                             id="mem_size" disabled>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- System Configuration Tab -->
+                <div id="system_configuration" class="container tab-pane fade">
+                  <h2>System Configuration:</h2>
+                  <form action="/action_page.php">
+                    <div class="form-group">
+                      <label for="num_cores">Number of Cores:</label>
+                      <input type="text" class="form-control" value="1"
+                             id="num_cores" disabled>
+                    </div>
+                    <div class="form-group">
+                      <label for="noc_topology">NoC Topology:</label>
+                      <input type="text" class="form-control" value="FIXME"
+                             id="noc_tolology" disabled>
+                    </div>
+                    <div class="form-group">
+                      <label for="router_config">NoC Router Configuration:</label>
+                      <input type="text" class="form-control" value="FIXME"
+                             id="router_config" disabled>
+                    </div>
+                    <div class="form-group">
+                      <label for="router_algorithm">NoC Routing Algorithm:</label>
+                      <input type="text" class="form-control" value="Dropdown"
+                             id="router_algorithm" disabled>
+                    </div>
+                  </form>
+                </div>
+
+
+                <!-- Generate Button -->
+                <div id="generate" class="container tab-pane fade">
+                  <h2>Generating Project</h2>
+                  Your project is downloading as a zip file.
+                </div>
+
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- BLOCK DIAGRAM -->
+        <div id="block_diagram" class="col-md-12 col-lg-6 p-2">
+          <div id="block_diagram_dark" class="p-1 bg-secondary rounded">
+            <div id="block_diagram_light" class="p-1 bg-light rounded">
+              <div id="block_diagram_row" class="row ">
+                <div id="current_diagram" class="col-lg-12 ">
+                  <h2><center>Block Diagram:</center></h2>
+                  <!--
+                    SVGs must be included inline to be editable dynamically
+                    with javascript. The SVGs are hard coded in these JS files.
+                    Running the JS script adds the SVG to the current location.
+                  -->
+                  <script src="js/include_single_cycle_svg.js"></script>
+                  <script src="js/include_five_stage_pipeline_svg.js"></script>
+                  <script src="js/include_seven_stage_pipeline_svg.js"></script>
+                  <script src="js/include_out_of_order_svg.js"></script>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="bottom_row" class="row px-md-3 justify-content-center">
+        <div id="output" class="col-sm-1 col-md-1 col-lg-12 p-2">
+          <div id="output_light" class="p-1 bg-secondary rounded">
+            <div id="output_light" class="p-1 bg-light rounded">
+              <h2><center>Output:</center></h2>
+              <div id="output_row" class="row justify-content-center">
+                <textarea rows="2" id="output_textarea" class=""> Click the Generate button in Core Selection to output a configuration.
+                </textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div id="footer_row" class="row px-md-3 justify-content-center">
+        <div id="footer_row_col" class="col-sm-1 col-md-1 col-lg-12 p-1">
+          <div id="footer" class="p-1 border-top border-bottom">
+            <div class="smallgraytext" align="center">
+              BRISC-V  &copy; 2018
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </body>
+
+</html>

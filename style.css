@@ -1,0 +1,267 @@
+body {
+    padding-top: 0px !important;
+    height: 100%;
+    min-width: 575px;
+}
+
+#main div h1 {
+    margin-top: 10px!important;
+}
+
+
+/*****************************************************************************/
+/* The Rows                                                                  */
+/*****************************************************************************/
+
+#top_row {
+    margin: auto;
+    max-width: 1080px;
+}
+
+#menu_row {
+    margin: auto;
+    max-width: 1080px;
+}
+
+#middle_row {
+    margin: auto;
+    max-width: 1080px;
+}
+
+#bottom_row {
+    margin: auto;
+    max-width: 1080px;
+
+}
+
+#footer_row {
+    margin: auto;
+    max-width: 1080px;
+    min-width: 540px;
+}
+
+/*****************************************************************************/
+/* Top Row                                                                   */
+/*****************************************************************************/
+#ascs_lab_logo {
+  height: 75px;
+  /*margin: auto;
+  display: block;*/
+}
+
+#emulator_logo {
+  height: 75px;
+  /*margin: auto;
+  display: block;*/
+}
+
+/*****************************************************************************/
+/* Menu Row                                                                  */
+/*****************************************************************************/
+#menu_row_col{
+    min-width: 540px;
+}
+
+#submenu{
+
+}
+/*****************************************************************************/
+/* middle row                                                                */
+/*****************************************************************************/
+#core_designer{
+  margin: auto;
+  min-width: 465px;
+  max-width: 540px;
+}
+
+#core_designer_dark{
+  /*max-width: 540px;*/
+}
+
+#core_designer_light{
+}
+
+#core_designer_row{
+  max-width: 540px;
+  height: 430px;
+}
+
+#block_diagram{
+  margin: auto;
+  min-width: 465px;
+  max-width: 540px;
+}
+
+#block_diagram_dark{
+  /*max-width: 540px;*/
+}
+
+#block_diagram_light{
+}
+
+#block_diagram_row{
+  /*max-width: 540px;*/
+  height: 430px;
+}
+
+/*****************************************************************************/
+/* Core Designer                                                             */
+/*****************************************************************************/
+
+#nav_menu_div{
+  /*min-width: 140px;*/
+  height: 430px;
+}
+
+#tab_div{
+  height: 430px;
+  position: relative;
+}
+
+/*****************************************************************************/
+/* Tabs                                                                      */
+/*****************************************************************************/
+
+#directions{
+  overflow-y:auto;
+  overflow-x:hidden;
+  max-height: 100%;
+}
+
+#core_selection{
+  overflow-y:auto;
+  overflow-x:hidden;
+  max-height: 100%;
+}
+
+#processor_parameters{
+  overflow-y:auto;
+  overflow-x:hidden;
+  max-height: 100%;
+}
+
+#cache_parameters{
+  overflow-y:auto;
+  overflow-x:hidden;
+  max-height: 100%;
+}
+
+#memory_organization{
+  overflow-y:auto;
+  overflow-x:hidden;
+  max-height: 100%;
+}
+
+/* Merged with core_selection
+#system_configuration{
+  overflow-y:auto;
+  overflow-x:hidden;
+  max-height: 100%;
+}
+*/
+/*****************************************************************************/
+/* Block Diagram                                                             */
+/*****************************************************************************/
+
+#diagram_single_cycle_svg{
+/*style="max-width:90%;max-height:88%;display:block;margin:auto;"*/
+max-width: 90%;
+max-height: 100%;
+display: block;
+margin: auto;
+}
+#diagram_five_stage_pipeline_svg{
+/*style="max-width:90%;max-height:88%;display:none;margin:auto;"*/
+max-width: 90%;
+max-height: 100%;
+display: none;
+margin:auto;
+}
+#diagram_seven_stage_pipeline_svg{
+/*style="max-width:90%;max-height:88%;display:none;margin:auto;"*/
+max-width: 90%;
+max-height: 100%;
+display: none;
+margin:auto;
+}
+#diagram_ooo_pipeline_svg{
+/*style="max-width:90%;max-height:88%;display:none;margin:auto;"*/
+max-width: 90%;
+max-height: 100%;
+display: none;
+margin:auto;
+}
+/*****************************************************************************/
+/* Bottom Row                                                                */
+/*****************************************************************************/
+
+#output{
+  max-width: 1080px;
+  min-width: 540px;
+
+}
+
+#output_dark{
+  /*min-width: 560px;*/
+}
+#output_light{
+
+}
+
+#output_row{
+  /*min-width: 560px;*/
+}
+
+#output_textarea{
+width: 90%;
+}
+
+/*****************************************************************************/
+/* Footer Row                                                                */
+/*****************************************************************************/
+
+#footer_row_col{
+  min-width: 540px;
+}
+
+#footer{
+
+}
+
+/*****************************************************************************/
+/* Navbar                                                                    */
+/*****************************************************************************/
+#main_menu{
+    height: 25px;
+    width: 100%;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #ccc;
+    margin-top: 5px;
+}
+
+.main-menu-link {
+    color: #bc0000 !important;
+    font-weight: bold !important;
+    font-size: 80% !important;
+}
+
+/*****************************************************************************/
+/* small gery text                                                           */
+/*****************************************************************************/
+.smallgraytext {
+  font: 0.7em Tahoma, sans-serif;
+  font-size: 11px;
+  font-weight:bold;
+  color:#999999;
+}
+.smallgraytext a{
+  font: 0.7em Tahoma, sans-serif;
+  font-size: 11px;
+  font-weight:bold;
+  color:#999999;
+  text-decoration:none;
+}
+.smallgraytext a:hover{
+  text-decoration:underline;
+}
