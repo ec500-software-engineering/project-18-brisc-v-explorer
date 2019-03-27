@@ -43,6 +43,14 @@ BRISC-V is a one page web application with a backend component handling the Veri
 - Decide on communication between backend server and frontend
 
 ### Sprint 3
-TODO: Add goals here
+
+- Implement git repository functions on backend (might use [GitPython](https://github.com/gitpython-developers/GitPython) for this)
+  - fetching metadata
+  - issues
+  - latest versions
+  - clone and pull
+ - Design module configuration logic
+ - Implement communication logic between front end and backend
+
 ### Sprint 4
 TODO: Add goals here
