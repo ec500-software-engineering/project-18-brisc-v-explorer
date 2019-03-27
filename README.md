@@ -26,6 +26,13 @@ BRISC-V is a one page web application with a backend component handling the Veri
 
 ![brisc-v architecture ](assets/img/briscv_explorer_arch.png "System Architecture")
 
+## Technology Stack
+
+- __npm:__ package manager for node.js runtime
+- __flask:__ threaded server library for python
+- __GitPython:__ interact with repositories programmatically
+- __golden layout:__ multi-window management for javascript  
+
 ## Sprint Goals
 
 ### Sprint 1
