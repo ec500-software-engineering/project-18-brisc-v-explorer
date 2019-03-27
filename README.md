@@ -24,7 +24,7 @@ The theme for these stories is __researchers__ and __students__
 ## System Architecture
 BRISC-V is a one page web application with a backend component handling the Verilog source generation.
 
-![brisc-v architecture ](docs/imgs/briscv_explorer_arch.png "System Architecture")
+![brisc-v architecture ](assets/img/briscv_explorer_arch.png "System Architecture")
 
 ## Sprint Goals
 
