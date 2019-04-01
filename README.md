@@ -24,14 +24,14 @@ The theme for these stories is __researchers__ and __students__
 ## System Architecture
 BRISC-V is a one page web application with a backend component handling the Verilog source generation.
 
-![brisc-v architecture ](assets/img/briscv_explorer_arch.png "System Architecture")
+![brisc-v architecture ](assets/images/briscv_explorer_arch.png "System Architecture")
 
 ## Technology Stack
 
 - __npm:__ package manager for node.js runtime
 - __flask:__ threaded server library for python
 - __GitPython:__ interact with repositories programmatically
-- __golden layout:__ multi-window management for javascript  
+- ~~__golden layout:__ multi-window management for javascript~~
 
 ## Sprint Goals
 
@@ -44,13 +44,15 @@ BRISC-V is a one page web application with a backend component handling the Veri
 
 ### Sprint 2
 
-- Define needed window panes
-- Decide on a golden layout scheme
-- Create javascript functions to capture configuration parameters
-- Decide on communication between backend server and frontend
+- ~~Define needed window panes~~
+- ~~Refactor project directory structure~~
+- Create verilog configuration abstraction layer (VCAL)
+- Create local verilog configuration module (VCM)
 
 ### Sprint 3
 
+- Create remote verilog configuration module (VCM) 
+- Implement needed endpoints on flask server to support remote VCM
 - Implement git repository functions on backend (might use [GitPython](https://github.com/gitpython-developers/GitPython) for this)
   - fetching metadata
   - issues
