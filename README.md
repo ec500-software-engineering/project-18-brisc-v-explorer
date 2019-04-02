@@ -46,6 +46,7 @@ BRISC-V is a one page web application with a backend component handling the Veri
 
 - ~~Define needed window panes~~
 - ~~Refactor project directory structure~~
+- Refactor old code base
 - Create verilog configuration abstraction layer (VCAL)
 - Create local verilog configuration module (VCM)
 
