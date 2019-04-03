@@ -1,13 +1,19 @@
-language: python
-group: travis_latest
 dist: xenial
+group: travis_latest
 
 git:
   depth: 25
   quiet: true
 
-python:
-- 3.7
+matrix:
+  include:
+    - language: python
+      python: 3.7
+      script:
+        - flake8 --extend-ignore=W,E1,E2,E3,E5
 
-script:
-- flake8 --extend-ignore=W,E1,E2,E3,E5
+    - language: node_js
+      before_script:
+        - cd js/
+      script:
+        - jest
