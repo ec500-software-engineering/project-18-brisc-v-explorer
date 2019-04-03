@@ -1,17 +1,18 @@
 dist: xenial
-group: travis_latest
-
-git:
+git: 
   depth: 25
   quiet: true
-
-matrix:
-  include:
-    - language: python
+group: travis_latest
+matrix: 
+  include: 
+    - 
+      language: python
       python: 3.7
-      script:
-        - flake8 --extend-ignore=W,E1,E2,E3,E5
-
-    - language: node_js
-      script:
-        - npm run test
+      script: 
+        - "flake8 --extend-ignore=W,E1,E2,E3,E5"
+    - 
+      language: node_js
+      node_js: 
+        - node
+      script: 
+        - "npm run test"
