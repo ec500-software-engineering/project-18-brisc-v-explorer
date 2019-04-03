@@ -1,5 +1,7 @@
 # Boston University RISC-V Explorer
 
+[![Build Status](https://travis-ci.com/ec500-software-engineering/project-18-brisc-v-explorer.svg?branch=master)](https://travis-ci.com/ec500-software-engineering/project-18-brisc-v-explorer)
+
 ## Project Description
 BRISC-V Explorer is a web application which allows for __design space exploration__ for an
 __open source__ RISC-V implementation written in Verilog 2001. The aim is allow both students
