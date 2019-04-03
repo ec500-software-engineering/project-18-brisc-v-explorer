@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/ec500-software-engineering/project-18-brisc-v-explorer/issues"
   },
-  "homepage": "https://github.com/ec500-software-engineering/project-18-brisc-v-explorer#readme"
+  "homepage": "https://github.com/ec500-software-engineering/project-18-brisc-v-explorer#readme",
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "file-saver": "^2.0.1",
+    "jquery": "^3.3.1",
+    "jszip": "^3.2.1",
+    "popper.js": "^1.14.7"
+  }
 }
