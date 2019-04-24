@@ -56,7 +56,11 @@ function zipProject(contentList, zip) {
     }
 }
 
-function initDiagram() {
+function getBlockName(cellView) {
+     return cellView.model.prop('attrs/label/text').replace(/\n/g, ' ');
+}
+
+function initSingleCycleDiagram() {
     var graph = new joint.dia.Graph;
     
     var paper = new joint.dia.Paper({
@@ -66,7 +70,14 @@ function initDiagram() {
         height: 400,
         gridSize: 1
     });
-
+    
+    paper.on('cell:pointerdown', function(cellView, evt, x, y) {
+        console.log(`Mouse click on (${x}, ${y}): detected element \"${getBlockName(cellView)}\"`);
+    });
+    paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
+        console.log(`Double click on (${x}, ${y}): detected element \"${getBlockName(cellView)}\"`);
+    });
+    
     var fetchBlock = new joint.shapes.standard.Rectangle();
     fetchBlock.position(6, 106);
     fetchBlock.resize(80, 100);
@@ -90,7 +101,7 @@ function initDiagram() {
     var decodeBlock = fetchBlock.clone();
     decodeBlock.position(110, 106);
     decodeBlock.attr('label/text', 'Decode\nUnit');
-    decodeBlock.attr('body/fill', '#77b1bd')
+    decodeBlock.attr('body/fill', '#77b1bd');
     decodeBlock.addTo(graph);
     decodeBlock.on('change:position', function() {
         console.log('DecodeBlock position: ' + decodeBlock.position());
@@ -127,7 +138,7 @@ function initDiagram() {
     var dataMemoryBlock = fetchBlock.clone();
     dataMemoryBlock.position(memoryUnitBlock.position().x, 253);
     dataMemoryBlock.attr('label/text', 'Data\nMemory\n16kB');
-    dataMemoryBlock.attr('body/fill', '#993131')
+    dataMemoryBlock.attr('body/fill', '#993131');
     dataMemoryBlock.resize(100, 60);
     dataMemoryBlock.addTo(graph);
     dataMemoryBlock.on('change:position', function() {
@@ -159,11 +170,11 @@ function initDiagram() {
     fetchToDecodeLink.target(decodeBlock);
     fetchToDecodeLink.attr({
         line: {
-            stroke: '#71b3aa',
-            strokeWidth: 4,
+            strokeWidth: 2,
+            stroke: fetchBlock.attr('body/fill'),
             targetMarker: {
                 type: 'path',
-                fill: '#71b3aa'
+                fill: fetchBlock.attr('body/fill')
             }
         }
     });
@@ -172,30 +183,78 @@ function initDiagram() {
     var decodeToExecuteLink = fetchToDecodeLink.clone();
     decodeToExecuteLink.source(decodeBlock);
     decodeToExecuteLink.target(executeBlock);
-    decodeToExecuteLink.attr('line/stroke', '#77b1bd');
-    decodeToExecuteLink.attr('line/targetMarker/fill', '#77b1bd');
+    decodeToExecuteLink.attr('line/stroke', decodeBlock.attr('body/fill'));
+    decodeToExecuteLink.attr('line/targetMarker/fill', decodeBlock.attr('body/fill'));
     decodeToExecuteLink.addTo(graph);
     
-    var executeToMemoryUnitLink = decodeToExecuteLink.clone();
-    executeToMemoryUnitLink.source(executeBlock);
-    executeToMemoryUnitLink.target(memoryUnitBlock);
-    executeToMemoryUnitLink.attr('line/stroke', '#597cab');
-    executeToMemoryUnitLink.attr('line/targetMarker/fill', '#597cab');
-    executeToMemoryUnitLink.addTo(graph);
+    var executeToMemoryLink = decodeToExecuteLink.clone();
+    executeToMemoryLink.source(executeBlock);
+    executeToMemoryLink.target(memoryUnitBlock);
+    executeToMemoryLink.attr('line/stroke', executeBlock.attr('body/fill'));
+    executeToMemoryLink.attr('line/targetMarker/fill', executeBlock.attr('body/fill'));
+    executeToMemoryLink.addTo(graph);
     
-    var memoryUnitTiWriteBackLink = executeToMemoryUnitLink.clone();
-    memoryUnitTiWriteBackLink.source(memoryUnitBlock);
-    memoryUnitTiWriteBackLink.target(writeBackBlock);
-    memoryUnitTiWriteBackLink.attr('line/stroke', '#5762ab');
-    memoryUnitTiWriteBackLink.attr('line/targetMarker/fill', '#5762ab');
-    memoryUnitTiWriteBackLink.addTo(graph);
+    var memoryToWriteBackLink = executeToMemoryLink.clone();
+    memoryToWriteBackLink.source(memoryUnitBlock);
+    memoryToWriteBackLink.target(writeBackBlock);
+    memoryToWriteBackLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
+    memoryToWriteBackLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
+    memoryToWriteBackLink.addTo(graph);
     
+    // control unit links
+    var controlToFetchLink = fetchToDecodeLink.clone();
+    controlToFetchLink.source(controlUnitBlock);
+    controlToFetchLink.target(fetchBlock);
+    controlToFetchLink.addTo(graph);
+    var controlToDecodeLink = controlToFetchLink.clone();
+    controlToDecodeLink.target(decodeBlock);
+    controlToDecodeLink.attr({
+        line: {
+            strokeWidth: 2,
+            stroke: controlUnitBlock.attr('body/fill'),
+            sourceMarker: {
+                type: 'path',
+                fill: controlUnitBlock.attr('body/fill'),
+                d: controlToDecodeLink.attr('line/targetMarker/d')
+            }
+        }
+    });
+    console.log(controlToDecodeLink.attr('line'));
+    controlToDecodeLink.addTo(graph);
+    var controlToExectuteLink = controlToFetchLink.clone();
+    controlToExectuteLink.target(executeBlock);
+    controlToExectuteLink.addTo(graph);
+    var controlToMemoryLink = controlToExectuteLink.clone();
+    controlToMemoryLink.target(memoryUnitBlock);
+    controlToMemoryLink.addTo(graph);
+    var controlToWriteBack = controlToMemoryLink.clone();
+    controlToWriteBack.target(writeBackBlock);
+    controlToWriteBack.vertices({
+        
+    });
+    controlToWriteBack.addTo(graph);
+    
+    var memoryUnitToDataMemoryLink = controlToDecodeLink.clone();
+    memoryUnitToDataMemoryLink.source(memoryUnitBlock);
+    memoryUnitToDataMemoryLink.target(dataMemoryBlock);
+    memoryUnitToDataMemoryLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
+    memoryUnitToDataMemoryLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
+    memoryUnitToDataMemoryLink.attr('line/sourceMarker/fill', memoryUnitBlock.attr('body/fill'));
+    memoryUnitToDataMemoryLink.addTo(graph);
+    
+    var fetchToInsMemoryLink = controlToDecodeLink.clone();
+    fetchToInsMemoryLink.source(fetchBlock);
+    fetchToInsMemoryLink.target(insMemoryBlock);
+    fetchToInsMemoryLink.attr('line/stroke', fetchBlock.attr('body/fill'));
+    fetchToInsMemoryLink.attr('line/targetMarker/fill', fetchBlock.attr('body/fill'));
+    fetchToInsMemoryLink.attr('line/sourceMarker/fill', fetchBlock.attr('body/fill'));
+    fetchToInsMemoryLink.addTo(graph);
     
 }
 
 window.onload = function () {
     // initialize diagram
-    initDiagram();
+    initSingleCycleDiagram();
     // set handlers
     //document.getElementById('generate-button').onclick = saveProject;
     ///document.getElementById('project_name').onchange = gui.cleanProjectName;
