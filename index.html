@@ -17,6 +17,9 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="node_modules/file-saver/dist/FileSaver.min.js"></script>
     <script src="node_modules/jszip/dist/jszip.min.js"></script>
+    <script src="node_modules/lodash/lodash.js"></script>
+    <script src="node_modules/backbone/backbone.js"></script>
+    <script src="node_modules/jointjs/dist/joint.js"></script>
     <script src="bundle.js"></script>
 
 </head>
@@ -260,10 +263,7 @@
                     with javascript. The SVGs are hard coded in these JS files.
                     Running the JS script adds the SVG to the current location.
                   -->
-                                <script src="js/svg_includes/include_single_cycle_svg.js"></script>
-                                <script src="js/svg_includes/include_five_stage_pipeline_svg.js"></script>
-                                <script src="js/svg_includes/include_seven_stage_pipeline_svg.js"></script>
-                                <script src="js/svg_includes/include_out_of_order_svg.js"></script>
+                                <div id="diagram-div"></div>
                             </div>
                         </div>
                     </div>

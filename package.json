@@ -19,6 +19,7 @@
   "dependencies": {
     "bootstrap": "^4.3.1",
     "file-saver": "^2.0.1",
+    "jointjs": "^2.2.1",
     "jquery": "^3.3.1",
     "jszip": "^3.2.1",
     "popper.js": "^1.14.7"
