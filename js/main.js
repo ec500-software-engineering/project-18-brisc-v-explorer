@@ -57,7 +57,9 @@ function zipProject(contentList, zip) {
 }
 
 function getBlockName(cellView) {
-     return cellView.model.prop('attrs/label/text').replace(/\n/g, ' ');
+    if (cellView !==  undefined) {
+         return cellView.model.prop('attrs/label/text').replace(/\n/g, ' ');
+    } 
 }
 
 function initSingleCycleDiagram() {
@@ -79,12 +81,12 @@ function initSingleCycleDiagram() {
     });
     
     var fetchBlock = new joint.shapes.standard.Rectangle();
-    fetchBlock.position(6, 106);
-    fetchBlock.resize(80, 100);
+    fetchBlock.position(20, 106);
+    fetchBlock.resize(70, 80);
     fetchBlock.attr({
         body: {
-            rx: 8,
-            ry: 8,
+            rx: 6,
+            ry: 6,
             fill: '#71b3aa'
         },
         label: {
@@ -93,22 +95,32 @@ function initSingleCycleDiagram() {
         }
     });
     fetchBlock.addTo(graph);
+    console.log(fetchBlock);
+    console.log(fetchBlock.attributes.size.width);
     fetchBlock.on('change:position', function() {
         console.log('FetchBlock position: ' + fetchBlock.position());
     });
 
     // decode block
     var decodeBlock = fetchBlock.clone();
-    decodeBlock.position(110, 106);
+    decodeBlock.translate(fetchBlock.attributes.size.width + 20, 0);
     decodeBlock.attr('label/text', 'Decode\nUnit');
     decodeBlock.attr('body/fill', '#77b1bd');
     decodeBlock.addTo(graph);
     decodeBlock.on('change:position', function() {
         console.log('DecodeBlock position: ' + decodeBlock.position());
     });
+    // regfile
+    var regfileBlock = decodeBlock.clone();
+    regfileBlock.translate(decodeBlock.attributes.size.width - 10, 0);
+    regfileBlock.resize(35, 80);
+    regfileBlock.attr('body/fill', '#bababa');
+    regfileBlock.attr('label/text', 'Reg\nFile');
+    regfileBlock.attr('label/fill', 'black');
+    regfileBlock.addTo(graph);
     // instruction memory
     var insMemoryBlock = fetchBlock.clone();
-    insMemoryBlock.position(fetchBlock.position().x, 253);
+    insMemoryBlock.translate(-14, fetchBlock.attributes.size.height + 35);
     insMemoryBlock.attr('label/text', 'Instruction\nMemory\n16kB');
     insMemoryBlock.resize(100, 60);
     insMemoryBlock.attr('body/fill', '#993131');
@@ -117,17 +129,19 @@ function initSingleCycleDiagram() {
         console.log('InsMemoryBlock position: ' + insMemoryBlock.position());
     });
     // execute block
-    var executeBlock = fetchBlock.clone();
-    executeBlock.position(205, 106);
+    var executeBlock = regfileBlock.clone();
+    executeBlock.resize(fetchBlock.attributes.size.width, fetchBlock.attributes.size.height);
+    executeBlock.translate(regfileBlock.attributes.size.width + 20, 0);
     executeBlock.attr('label/text', 'Execute\nUnit');
+    executeBlock.attr('label/fill', 'white');
     executeBlock.attr('body/fill', '#597cab');
     executeBlock.addTo(graph);
     executeBlock.on('change:position', function() {
         console.log('ExectuteBlock position: ' + executeBlock.position());
     });
     // memory unit
-    var memoryUnitBlock = fetchBlock.clone();
-    memoryUnitBlock.position(306, 106);
+    var memoryUnitBlock = executeBlock.clone();
+    memoryUnitBlock.translate(executeBlock.attributes.size.width + 20, 0);
     memoryUnitBlock.attr('label/text', 'Memory\nUnit');
     memoryUnitBlock.attr('body/fill', '#5762ab');
     memoryUnitBlock.addTo(graph);
@@ -135,8 +149,8 @@ function initSingleCycleDiagram() {
         console.log('MemoryUnitBlock position: ' + memoryUnitBlock.position());
     });
     // data memory
-    var dataMemoryBlock = fetchBlock.clone();
-    dataMemoryBlock.position(memoryUnitBlock.position().x, 253);
+    var dataMemoryBlock = memoryUnitBlock.clone();
+    dataMemoryBlock.translate(-14, memoryUnitBlock.attributes.size.height + 35);
     dataMemoryBlock.attr('label/text', 'Data\nMemory\n16kB');
     dataMemoryBlock.attr('body/fill', '#993131');
     dataMemoryBlock.resize(100, 60);
@@ -145,8 +159,8 @@ function initSingleCycleDiagram() {
         console.log('DataMemoryBlock position: ' + dataMemoryBlock.position());
     });
     // write back
-    var writeBackBlock = fetchBlock.clone();
-    writeBackBlock.position(405, 106);
+    var writeBackBlock = memoryUnitBlock.clone();
+    writeBackBlock.translate(memoryUnitBlock.attributes.size.width + 20, 0);
     writeBackBlock.attr('label/text', 'Writeback\nUnit');
     writeBackBlock.attr('body/fill', '#4f4d85');
     writeBackBlock.addTo(graph);
@@ -154,9 +168,9 @@ function initSingleCycleDiagram() {
         console.log('WriteBackBlock position: ' + writeBackBlock.position());
     });
     // control unit
-    var controlUnitBlock = fetchBlock.clone();
+    var controlUnitBlock = decodeBlock.clone();
     controlUnitBlock.resize(80, 35);
-    controlUnitBlock.position(109, 40);
+    controlUnitBlock.translate(-4, -decodeBlock.attributes.size.height + 10);
     controlUnitBlock.attr('label/text', 'Control\nUnit');
     controlUnitBlock.attr('body/fill', '#77b1bd');
     controlUnitBlock.addTo(graph);
@@ -170,7 +184,7 @@ function initSingleCycleDiagram() {
     fetchToDecodeLink.target(decodeBlock);
     fetchToDecodeLink.attr({
         line: {
-            strokeWidth: 2,
+            strokeWidth: 4,
             stroke: fetchBlock.attr('body/fill'),
             targetMarker: {
                 type: 'path',
@@ -180,14 +194,15 @@ function initSingleCycleDiagram() {
     });
     fetchToDecodeLink.addTo(graph);
     
-    var decodeToExecuteLink = fetchToDecodeLink.clone();
-    decodeToExecuteLink.source(decodeBlock);
-    decodeToExecuteLink.target(executeBlock);
-    decodeToExecuteLink.attr('line/stroke', decodeBlock.attr('body/fill'));
-    decodeToExecuteLink.attr('line/targetMarker/fill', decodeBlock.attr('body/fill'));
-    decodeToExecuteLink.addTo(graph);
+    var regfileToDecodeLink = fetchToDecodeLink.clone();
+    regfileToDecodeLink.source(regfileBlock);
+    regfileToDecodeLink.target(executeBlock);
+    regfileToDecodeLink.attr('line/stroke', decodeBlock.attr('body/fill'));
+    regfileToDecodeLink.attr('line/targetMarker/fill', decodeBlock.attr('body/fill'));
+    regfileToDecodeLink.toBack();
+    regfileToDecodeLink.addTo(graph);
     
-    var executeToMemoryLink = decodeToExecuteLink.clone();
+    var executeToMemoryLink = regfileToDecodeLink.clone();
     executeToMemoryLink.source(executeBlock);
     executeToMemoryLink.target(memoryUnitBlock);
     executeToMemoryLink.attr('line/stroke', executeBlock.attr('body/fill'));
@@ -201,16 +216,26 @@ function initSingleCycleDiagram() {
     memoryToWriteBackLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
     memoryToWriteBackLink.addTo(graph);
     
+    var writeBackToDecodeLink = memoryToWriteBackLink.clone();
+    writeBackToDecodeLink.source(writeBackBlock);
+    writeBackToDecodeLink.target(decodeBlock);
+    writeBackToDecodeLink.router('manhattan');
+    writeBackToDecodeLink.attr('line/stroke', writeBackBlock.attr('body/fill'));
+    writeBackToDecodeLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
+    writeBackToDecodeLink.addTo(graph);
+    
     // control unit links
     var controlToFetchLink = fetchToDecodeLink.clone();
     controlToFetchLink.source(controlUnitBlock);
     controlToFetchLink.target(fetchBlock);
+    controlToFetchLink.router('manhattan');
     controlToFetchLink.addTo(graph);
-    var controlToDecodeLink = controlToFetchLink.clone();
+    var controlToDecodeLink = fetchToDecodeLink.clone();
+    controlToDecodeLink.source(controlUnitBlock);
     controlToDecodeLink.target(decodeBlock);
     controlToDecodeLink.attr({
         line: {
-            strokeWidth: 2,
+            strokeWidth: 4,
             stroke: controlUnitBlock.attr('body/fill'),
             sourceMarker: {
                 type: 'path',
@@ -219,7 +244,6 @@ function initSingleCycleDiagram() {
             }
         }
     });
-    console.log(controlToDecodeLink.attr('line'));
     controlToDecodeLink.addTo(graph);
     var controlToExectuteLink = controlToFetchLink.clone();
     controlToExectuteLink.target(executeBlock);
@@ -229,11 +253,8 @@ function initSingleCycleDiagram() {
     controlToMemoryLink.addTo(graph);
     var controlToWriteBack = controlToMemoryLink.clone();
     controlToWriteBack.target(writeBackBlock);
-    controlToWriteBack.vertices({
-        
-    });
     controlToWriteBack.addTo(graph);
-    
+    // memory links
     var memoryUnitToDataMemoryLink = controlToDecodeLink.clone();
     memoryUnitToDataMemoryLink.source(memoryUnitBlock);
     memoryUnitToDataMemoryLink.target(dataMemoryBlock);
@@ -249,7 +270,6 @@ function initSingleCycleDiagram() {
     fetchToInsMemoryLink.attr('line/targetMarker/fill', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.attr('line/sourceMarker/fill', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.addTo(graph);
-    
 }
 
 window.onload = function () {
