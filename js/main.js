@@ -1,6 +1,5 @@
 gui = require('./gui.js');
-verilog = require('./verilog.js');;
-diagram = require('./block_diagram.js')
+verilog = require('./verilog.js');
 
 function saveProject() {
     var dispStr;
@@ -46,10 +45,6 @@ function saveProject() {
     userParams['program_reader'].readAsText(file);
 }
 
-function updateBlockDiagram(selector) {
-    gui.updateBlockDiagram(selector);
-}
-
 function zipProject(contentList, zip) {
     var arrayLen = contentList.length;
     for (var i = 0; i < arrayLen; i++) {
@@ -59,6 +54,5 @@ function zipProject(contentList, zip) {
 
 window.onload = function () {
     // initialize diagram
-    diagram.initCanvas();
-    diagram.initSingleCycle();
+    gui.init();
 };

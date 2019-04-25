@@ -1,4 +1,5 @@
 utils = require('./utils.js');
+diagram = require('./block_diagram.js');
 
 var consoleWindow = {
     consoleStr: '',
@@ -129,45 +130,10 @@ function cleanProjectName() {
 }
 
 function updateBlockDiagram(selector) {
-    var singleCycleSvg = document.getElementById("diagram_single_cycle_svg");
-    var fiveStagePipeline = document.getElementById("diagram_five_stage_pipeline_svg");
-    var sevenStagePipeline = document.getElementById("diagram_seven_stage_pipeline_svg");
-    var oooPipeline = document.getElementById("diagram_ooo_pipeline_svg");
-
-    // Single Cycle
-    if (selector.value == "Single Cycle") {
-        singleCycleSvg.style.display = "block";
-        updateSingleCycleDiagram();
-    } else {
-        singleCycleSvg.style.display = "none";
-    }
-
-    // Five Stage Pipeline
-    if (selector.value == "5 Stage Stalled Pipeline" || selector.value == "5 Stage Bypassed Pipeline") {
-        fiveStagePipeline.style.display = "block";
-        updateFiveStagePipelineDiagram();
-    } else {
-        fiveStagePipeline.style.display = "none";
-    }
-
-    // Seven Stage Pipeline
-    if (selector.value == "7 Stage Bypassed Pipeline") {
-        sevenStagePipeline.style.display = "block";
-        updateSevenStagePipelineDiagram();
-    } else {
-        sevenStagePipeline.style.display = "none";
-    }
-
-    // Out Of Order Pipeline
-    if (selector.value == "Out Of Order Pipeline") {
-        oooPipeline.style.display = "block";
-        updateOOOPipleDiagram();
-    } else {
-        oooPipeline.style.display = "none";
-        document.getElementById("instruction_queue_length").value = "N/A";
-        document.getElementById("instruction_queue_length").disabled = true;
-    }
-
+    if (selector === 'Single Cycle')
+       diagram.initSingleCycle()
+    else
+        console.log(`"${selector}" diagram not supported yet...`);
 }
 
 function getUserParameters() {
@@ -200,16 +166,11 @@ function getUserParameters() {
 
 function init() {
     // Address Bits Update
-    var svgIds = ['sc_i_mem_size', 'sc_d_mem_size', '5sp_i_mem_size',
-                   '5sp_d_mem_size', 'ooo_i_mem_size', 'ooo_d_mem_size'];
-    updateBramSvg(utils.getMemorySizeFromInput(), svgIds);
-
-    // Instruction Queue Update
-    selector = document.getElementById('sel1');
-    if (selector.value == "Out Of Order Pipeline") {
-        var svgIds = ['ooo_instruction_queue_length'];
-        updateIQueueSvg('instruction_queue_length', svgIds);
-    }
+    diagram.initCanvas();
+    diagram.initSingleCycle();
+     $('#core-sel').on('change', function(event) {
+        gui.updateBlockDiagram(event.target.value);
+    });
 }
 
 exports.init = init;
