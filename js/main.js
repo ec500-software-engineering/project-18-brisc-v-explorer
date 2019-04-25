@@ -62,6 +62,40 @@ function getBlockName(cellView) {
     } 
 }
 
+function getRegfileTemplate(x, y) {
+    var regfileBlock = new joint.shapes.standard.Rectangle();
+    regfileBlock.attr({
+         body: {
+            rx: 6,
+            ry: 6,
+            fill: '#bababa'
+        },
+        label: {
+            fill: 'black'
+        }
+    });
+    regfileBlock.position(x, y);
+    regfileBlock.resize(35, 80);
+    regfileBlock.attr('body/fill', '#bababa');
+    regfileBlock.attr('label/text', 'Reg\nFile');
+    regfileBlock.attr('label/fill', 'black');
+    var clockPathSymbol = new joint.shapes.standard.Path();
+    clockPathSymbol.attr({
+        body: {
+            refD: 'M8 48 L56 48 L32 12 Z',
+            fill: '#bababa'
+        }
+    });
+    clockPathSymbol.resize(12, 8);
+    var regfileHalfX = regfileBlock.position().x + (regfileBlock.attributes.size.width / 2) - (clockPathSymbol.attributes.size.width / 2);
+    var regfileBottomY = regfileBlock.position().y + regfileBlock.attributes.size.height - clockPathSymbol.attributes.size.height;
+    clockPathSymbol.position(regfileHalfX, regfileBottomY);
+    return {
+        regfile: regfileBlock,
+        clockSymbol: clockPathSymbol
+    };
+}
+
 function initSingleCycleDiagram() {
     var graph = new joint.dia.Graph;
     
@@ -111,13 +145,14 @@ function initSingleCycleDiagram() {
         console.log('DecodeBlock position: ' + decodeBlock.position());
     });
     // regfile
-    var regfileBlock = decodeBlock.clone();
-    regfileBlock.translate(decodeBlock.attributes.size.width - 10, 0);
-    regfileBlock.resize(35, 80);
-    regfileBlock.attr('body/fill', '#bababa');
-    regfileBlock.attr('label/text', 'Reg\nFile');
-    regfileBlock.attr('label/fill', 'black');
-    regfileBlock.addTo(graph);
+    //regfileBlock.translate(decodeBlock.attributes.size.width - 10, 0);
+    var regTemplate = getRegfileTemplate(
+        decodeBlock.position().x + (decodeBlock.attributes.size.width - 10), 
+        decodeBlock.position().y);
+    regTemplate.regfile.attr('label/text', 'Reg\nFile');
+    regTemplate.regfile.addTo(graph);
+    regTemplate.clockSymbol.addTo(graph);
+    
     // instruction memory
     var insMemoryBlock = fetchBlock.clone();
     insMemoryBlock.translate(-14, fetchBlock.attributes.size.height + 35);
@@ -129,9 +164,9 @@ function initSingleCycleDiagram() {
         console.log('InsMemoryBlock position: ' + insMemoryBlock.position());
     });
     // execute block
-    var executeBlock = regfileBlock.clone();
+    var executeBlock = regTemplate.regfile.clone();
     executeBlock.resize(fetchBlock.attributes.size.width, fetchBlock.attributes.size.height);
-    executeBlock.translate(regfileBlock.attributes.size.width + 20, 0);
+    executeBlock.translate(regTemplate.regfile.attributes.size.width + 20, 0);
     executeBlock.attr('label/text', 'Execute\nUnit');
     executeBlock.attr('label/fill', 'white');
     executeBlock.attr('body/fill', '#597cab');
@@ -184,7 +219,7 @@ function initSingleCycleDiagram() {
     fetchToDecodeLink.target(decodeBlock);
     fetchToDecodeLink.attr({
         line: {
-            strokeWidth: 4,
+            strokeWidth: 3,
             stroke: fetchBlock.attr('body/fill'),
             targetMarker: {
                 type: 'path',
@@ -194,15 +229,15 @@ function initSingleCycleDiagram() {
     });
     fetchToDecodeLink.addTo(graph);
     
-    var regfileToDecodeLink = fetchToDecodeLink.clone();
-    regfileToDecodeLink.source(regfileBlock);
-    regfileToDecodeLink.target(executeBlock);
-    regfileToDecodeLink.attr('line/stroke', decodeBlock.attr('body/fill'));
-    regfileToDecodeLink.attr('line/targetMarker/fill', decodeBlock.attr('body/fill'));
-    regfileToDecodeLink.toBack();
-    regfileToDecodeLink.addTo(graph);
+    var regfileToExecuteLink = fetchToDecodeLink.clone();
+    regfileToExecuteLink.source(regTemplate.regfile);
+    regfileToExecuteLink.target(executeBlock);
+    regfileToExecuteLink.attr('line/stroke', decodeBlock.attr('body/fill'));
+    regfileToExecuteLink.attr('line/targetMarker/fill', decodeBlock.attr('body/fill'));
+    regfileToExecuteLink.toBack();
+    regfileToExecuteLink.addTo(graph);
     
-    var executeToMemoryLink = regfileToDecodeLink.clone();
+    var executeToMemoryLink = regfileToExecuteLink.clone();
     executeToMemoryLink.source(executeBlock);
     executeToMemoryLink.target(memoryUnitBlock);
     executeToMemoryLink.attr('line/stroke', executeBlock.attr('body/fill'));
@@ -220,6 +255,7 @@ function initSingleCycleDiagram() {
     writeBackToDecodeLink.source(writeBackBlock);
     writeBackToDecodeLink.target(decodeBlock);
     writeBackToDecodeLink.router('manhattan');
+    writeBackToDecodeLink.connector('rounded');
     writeBackToDecodeLink.attr('line/stroke', writeBackBlock.attr('body/fill'));
     writeBackToDecodeLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
     writeBackToDecodeLink.addTo(graph);
@@ -229,13 +265,14 @@ function initSingleCycleDiagram() {
     controlToFetchLink.source(controlUnitBlock);
     controlToFetchLink.target(fetchBlock);
     controlToFetchLink.router('manhattan');
+    controlToFetchLink.connector('rounded');
     controlToFetchLink.addTo(graph);
     var controlToDecodeLink = fetchToDecodeLink.clone();
     controlToDecodeLink.source(controlUnitBlock);
     controlToDecodeLink.target(decodeBlock);
     controlToDecodeLink.attr({
         line: {
-            strokeWidth: 4,
+            strokeWidth: 3,
             stroke: controlUnitBlock.attr('body/fill'),
             sourceMarker: {
                 type: 'path',
@@ -244,6 +281,7 @@ function initSingleCycleDiagram() {
             }
         }
     });
+    console.log(controlToDecodeLink);
     controlToDecodeLink.addTo(graph);
     var controlToExectuteLink = controlToFetchLink.clone();
     controlToExectuteLink.target(executeBlock);
@@ -270,11 +308,26 @@ function initSingleCycleDiagram() {
     fetchToInsMemoryLink.attr('line/targetMarker/fill', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.attr('line/sourceMarker/fill', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.addTo(graph);
+    
+    // decode to regfile link
+    var decodeHalfX = decodeBlock.position().x + (decodeBlock.attributes.size.width / 2);
+    var decodeYOff = decodeBlock.position().y + decodeBlock.attributes.size.height;
+    
+    
+    // decode to regfile link
+    // TODO: draw arrow from decode to regfile
+    
+   //var graphScale = 1;
+    //paper.scale(0.5, 0.5);
 }
 
 window.onload = function () {
     // initialize diagram
     initSingleCycleDiagram();
+    $('#block_diagram').focus();
+    document.getElementById('block_diagram').onkeydown = function(e) {
+        console.log(e.code);
+    };
     // set handlers
     //document.getElementById('generate-button').onclick = saveProject;
     ///document.getElementById('project_name').onchange = gui.cleanProjectName;
