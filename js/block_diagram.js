@@ -1,5 +1,11 @@
 var paper = undefined;
 var graph = undefined;
+var graphScale = {
+    x: 1,
+    y: 1
+};
+const MIN_SCALE = 0.5;
+const MAX_SCALE = 2.0;
 
 function initCanvas() {
     graph = new joint.dia.Graph;
@@ -25,7 +31,16 @@ function initCanvas() {
         this.focus();
     })
     .on('keydown', function(e) {
-        console.log(e.which);
+        console.log(`Keypress ${e.which} detected on canvas`);
+        if (e.which === 189 && graphScale.x > MIN_SCALE) {
+            graphScale.x -= 0.1;
+            graphScale.y -= 0.1;
+            paper.scale(graphScale.x, graphScale.y);
+        } else if (e.which === 187 && graphScale.x < MAX_SCALE) {
+            graphScale.x += 0.1;
+            graphScale.y += 0.1;
+            paper.scale(graphScale.x, graphScale.y);
+        }
     });
 }
 
