@@ -32,7 +32,7 @@ function changeText(id_value, text_str, text_index) {
     fontObject.appendChild(t);
     return;
 
-};
+}
 
 // Set single cycle diagram to match current parameters
 function updateSingleCycleDiagram() {
