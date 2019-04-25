@@ -265,3 +265,11 @@ width: 90%;
 .smallgraytext a:hover{
   text-decoration:underline;
 }
+
+/*****************************************************************************/
+/* diagram div                                                               */
+/*****************************************************************************/
+
+#diagram-div:focus {
+    outline: None !important;
+}
