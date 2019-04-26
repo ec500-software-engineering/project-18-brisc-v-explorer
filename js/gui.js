@@ -131,10 +131,12 @@ function cleanProjectName() {
 
 function updateBlockDiagram(selector) {
     if (selector === 'Single Cycle')
-        diagram.initSingleCycle()
+        diagram.showSingleCycleDiagram();
     else if (selector === '5 Stage Stalled Pipeline' 
              || selector === '5 Stage Bypassed Pipeline')
-        diagram.init5StageStalledOrBypassedPipeline();
+        diagram.show5StagePipelineDiagram();
+    else if (selector === '7 Stage Bypassed Pipeline') 
+        diagram.show7StagePipelineDiagram();
     else
         console.log(`"${selector}" diagram not supported yet...`);
 }
@@ -170,7 +172,7 @@ function getUserParameters() {
 function init() {
     // Address Bits Update
     diagram.initCanvas();
-    diagram.init5StageStalledOrBypassedPipeline();
+    diagram.show7StagePipelineDiagram();
     $('#core-sel').on('change', function(event) {
         gui.updateBlockDiagram(event.target.value);
     });
