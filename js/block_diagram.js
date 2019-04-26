@@ -229,7 +229,9 @@ function initSingleCycleDiagram() {
     writeBackToDecodeLink.source(writeBackBlock);
     writeBackToDecodeLink.target(decodeBlock);
     writeBackToDecodeLink.router('manhattan');
-    writeBackToDecodeLink.connector('rounded');
+    writeBackToDecodeLink.connector('rounded', {
+        radius: 5
+    });
     writeBackToDecodeLink.attr('line/stroke', writeBackBlock.attr('body/fill'));
     writeBackToDecodeLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
     writeBackToDecodeLink.addTo(graph);
@@ -239,7 +241,9 @@ function initSingleCycleDiagram() {
     controlToFetchLink.source(controlUnitBlock);
     controlToFetchLink.target(fetchBlock);
     controlToFetchLink.router('manhattan');
-    controlToFetchLink.connector('rounded');
+    controlToFetchLink.connector('rounded', {
+        radius: 5
+    });
     controlToFetchLink.addTo(graph);
     var controlToDecodeLink = fetchToDecodeLink.clone();
     controlToDecodeLink.source(controlUnitBlock);
@@ -268,6 +272,7 @@ function initSingleCycleDiagram() {
     controlToWriteBack.addTo(graph);
     // memory links
     var memoryUnitToDataMemoryLink = controlToDecodeLink.clone();
+    memoryUnitToDataMemoryLink.router('manhattan');
     memoryUnitToDataMemoryLink.source(memoryUnitBlock);
     memoryUnitToDataMemoryLink.target(dataMemoryBlock);
     memoryUnitToDataMemoryLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
@@ -276,12 +281,14 @@ function initSingleCycleDiagram() {
     memoryUnitToDataMemoryLink.addTo(graph);
     
     var fetchToInsMemoryLink = controlToDecodeLink.clone();
+    console.log(fetchToInsMemoryLink);
     fetchToInsMemoryLink.source(fetchBlock);
     fetchToInsMemoryLink.target(insMemoryBlock);
     fetchToInsMemoryLink.attr('line/stroke', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.attr('line/targetMarker/fill', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.attr('line/sourceMarker/fill', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.addTo(graph);
+    console.log(fetchToInsMemoryLink);
     
     // decode to regfile link
     var decodeHalfX = decodeBlock.position().x + (decodeBlock.attributes.size.width / 2);
@@ -297,12 +304,12 @@ function initSingleCycleDiagram() {
 
 function init5StageStalledOrBypassedPipelineDiagram() {
     graph.clear();
-    graphScale.x -= 0.2;
-    graphScale.y -= 0.2;
+    graphScale.x = 0.8;
+    graphScale.y = 0.8;
     paper.scale(graphScale.x, graphScale.y);
     var fetchBlock = new joint.shapes.standard.Rectangle();
     fetchBlock.position(16, 106);
-    fetchBlock.resize(90, 80);
+    fetchBlock.resize(80, 100);
     fetchBlock.attr({
         body: {
             rx: 6,
@@ -322,8 +329,8 @@ function init5StageStalledOrBypassedPipelineDiagram() {
     });
     // fetch block Regfile
     var fetchRegFileBlockTemplate = getRegfileTemplate(
-        fetchBlock.position().x + (fetchBlock.attributes.size.width - 24), 
-        fetchBlock.position().y, 25, 80);
+        fetchBlock.position().x + (fetchBlock.attributes.size.width - 20), 
+        fetchBlock.position().y, 25, fetchBlock.attributes.size.height);
     fetchRegFileBlockTemplate.regfile.attr('label/text', '');
     fetchRegFileBlockTemplate.regfile.addTo(graph);
     fetchRegFileBlockTemplate.clockSymbol.addTo(graph);
@@ -340,14 +347,14 @@ function init5StageStalledOrBypassedPipelineDiagram() {
     //regfileBlock.translate(decodeBlock.attributes.size.width - 10, 0);
     var regTemplate = getRegfileTemplate(
         decodeBlock.position().x + (decodeBlock.attributes.size.width - 18), 
-        decodeBlock.position().y, 35, 80);
+        decodeBlock.position().y, 35, fetchBlock.attributes.size.height);
     regTemplate.regfile.attr('label/text', 'Reg\nFile');
     regTemplate.regfile.addTo(graph);
     regTemplate.clockSymbol.addTo(graph);
     
     // instruction memory
     var insMemoryBlock = fetchBlock.clone();
-    insMemoryBlock.translate(-6, fetchBlock.attributes.size.height + 48);
+    insMemoryBlock.translate(-11, fetchBlock.attributes.size.height + 60);
     insMemoryBlock.attr('label/text', 'Instruction\nMemory\n16kB');
     insMemoryBlock.resize(100, 60);
     insMemoryBlock.attr('body/fill', '#993131');
@@ -368,14 +375,14 @@ function init5StageStalledOrBypassedPipelineDiagram() {
     });
     // execute block Regfile
     var executeRegFileBlockTemplate = getRegfileTemplate(
-        executeBlock.position().x + (executeBlock.attributes.size.width - 16), 
-        executeBlock.position().y, 25, 80);
+        executeBlock.position().x + (executeBlock.attributes.size.width - 14), 
+        executeBlock.position().y, 25, fetchBlock.attributes.size.height);
     executeRegFileBlockTemplate.regfile.attr('label/text', '');
     executeRegFileBlockTemplate.regfile.addTo(graph);
     executeRegFileBlockTemplate.clockSymbol.addTo(graph);
     // memory unit
     var memoryUnitBlock = executeBlock.clone();
-    memoryUnitBlock.translate(executeBlock.attributes.size.width + 25, 0);
+    memoryUnitBlock.translate(executeBlock.attributes.size.width + 50, 0);
     memoryUnitBlock.attr('label/text', 'Memory\nUnit');
     memoryUnitBlock.attr('body/fill', '#5762ab');
     memoryUnitBlock.addTo(graph);
@@ -384,14 +391,14 @@ function init5StageStalledOrBypassedPipelineDiagram() {
     });
     // memory unit block Regfile
     var memoryRegFileBlockTemplate = getRegfileTemplate(
-        memoryUnitBlock.position().x + (memoryUnitBlock.attributes.size.width - 16), 
-        memoryUnitBlock.position().y, 25, 80);
+        memoryUnitBlock.position().x + (memoryUnitBlock.attributes.size.width - 13), 
+        memoryUnitBlock.position().y, 25, fetchBlock.attributes.size.height);
     memoryRegFileBlockTemplate.regfile.attr('label/text', '');
     memoryRegFileBlockTemplate.regfile.addTo(graph);
     memoryRegFileBlockTemplate.clockSymbol.addTo(graph);
     // data memory
     var dataMemoryBlock = memoryUnitBlock.clone();
-    dataMemoryBlock.translate(-6, memoryUnitBlock.attributes.size.height + 48);
+    dataMemoryBlock.translate(-10, memoryUnitBlock.attributes.size.height + 60);
     dataMemoryBlock.attr('label/text', 'Data\nMemory\n16kB');
     dataMemoryBlock.attr('body/fill', '#993131');
     dataMemoryBlock.resize(100, 60);
@@ -410,22 +417,28 @@ function init5StageStalledOrBypassedPipelineDiagram() {
     });
     // write back unit block Regfile
     var writeBackRegFileBlockTemplate = getRegfileTemplate(
-        writeBackBlock.position().x + (writeBackBlock.attributes.size.width - 10), 
-        writeBackBlock.position().y, 25, 80);
+        writeBackBlock.position().x + (writeBackBlock.attributes.size.width - 8), 
+        writeBackBlock.position().y, 25, fetchBlock.attributes.size.height);
     writeBackRegFileBlockTemplate.regfile.attr('label/text', '');
     writeBackRegFileBlockTemplate.regfile.addTo(graph);
     writeBackRegFileBlockTemplate.clockSymbol.addTo(graph);
     // control unit
     var controlUnitBlock = decodeBlock.clone();
     controlUnitBlock.resize(80, 35);
-    controlUnitBlock.translate(4, -decodeBlock.attributes.size.height + 10);
+    controlUnitBlock.translate(2, -decodeBlock.attributes.size.height + 10);
     controlUnitBlock.attr('label/text', 'Control\nUnit');
     controlUnitBlock.attr('body/fill', '#77b1bd');
     controlUnitBlock.addTo(graph);
     controlUnitBlock.on('change:position', function() {
         console.log('ControlUnitBlock position: ' + controlUnitBlock.position());
     });
-    
+     // control unit Regfile
+    var controlRegFileBlockTemplate = getRegfileTemplate(
+        controlUnitBlock.position().x + (controlUnitBlock.attributes.size.width - 14), 
+        controlUnitBlock.position().y, 25, controlUnitBlock.attributes.size.height);
+    controlRegFileBlockTemplate.regfile.attr('label/text', '');
+    controlRegFileBlockTemplate.regfile.addTo(graph);
+    controlRegFileBlockTemplate.clockSymbol.addTo(graph);
     // Linking
     var fetchToDecodeLink = new joint.shapes.standard.Link();
     fetchToDecodeLink.source(fetchRegFileBlockTemplate.regfile);
@@ -442,6 +455,23 @@ function init5StageStalledOrBypassedPipelineDiagram() {
     });
     fetchToDecodeLink.addTo(graph);
     
+    // bypass registers?
+    //exec to memory
+    var execToMemRegFileBlockTemplate = getRegfileTemplate(
+        executeRegFileBlockTemplate.regfile.position().x, 
+        controlUnitBlock.position().y, 25, 
+        controlUnitBlock.attributes.size.height);
+    execToMemRegFileBlockTemplate.regfile.attr('label/text', '');
+    execToMemRegFileBlockTemplate.regfile.addTo(graph);
+    execToMemRegFileBlockTemplate.clockSymbol.addTo(graph);
+    // memory to exec register
+    var memToWriteBackRegFileBlockTemplate = getRegfileTemplate(
+        memoryRegFileBlockTemplate.regfile.position().x, 
+        controlUnitBlock.position().y, 25, 
+        controlUnitBlock.attributes.size.height);
+    memToWriteBackRegFileBlockTemplate.regfile.attr('label/text', '');
+    memToWriteBackRegFileBlockTemplate.regfile.addTo(graph);
+    memToWriteBackRegFileBlockTemplate.clockSymbol.addTo(graph);
     var regfileToExecuteLink = fetchToDecodeLink.clone();
     regfileToExecuteLink.source(regTemplate.regfile);
     regfileToExecuteLink.target(executeBlock);
@@ -470,20 +500,20 @@ function init5StageStalledOrBypassedPipelineDiagram() {
     writeBackToDecodeLink.router('manhattan', {
         startDirections: ['right'],
         endDirections: ['bottom'],
-        padding: 12
+        padding: {
+            vertical: 15,
+            horizontal: 20
+        }
     });
-    writeBackToDecodeLink.connector('rounded');
+    writeBackToDecodeLink.connector('rounded', {
+        radius: 5
+    });
     writeBackToDecodeLink.attr('line/stroke', writeBackBlock.attr('body/fill'));
     writeBackToDecodeLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
     writeBackToDecodeLink.addTo(graph);
     
     // control unit links
-    var controlToFetchLink = fetchToDecodeLink.clone();
-    controlToFetchLink.source(controlUnitBlock);
-    controlToFetchLink.target(fetchBlock);
-    controlToFetchLink.router('manhattan');
-    controlToFetchLink.connector('rounded');
-    controlToFetchLink.addTo(graph);
+    
     var controlToDecodeLink = fetchToDecodeLink.clone();
     controlToDecodeLink.source(controlUnitBlock);
     controlToDecodeLink.target(decodeBlock);
@@ -500,16 +530,61 @@ function init5StageStalledOrBypassedPipelineDiagram() {
     });
     console.log(controlToDecodeLink);
     controlToDecodeLink.addTo(graph);
-    var controlToExectuteLink = controlToFetchLink.clone();
+    
+    var controlToExectuteLink = fetchToDecodeLink.clone();
+    controlToExectuteLink.source(controlRegFileBlockTemplate.regfile);
     controlToExectuteLink.target(executeBlock);
+    controlToExectuteLink.router('manhattan', {
+        startDirections: ['right']
+    });
+    controlToExectuteLink.connector('rounded', {
+        radius: 5
+    });
     controlToExectuteLink.addTo(graph);
-    var controlToMemoryLink = controlToExectuteLink.clone();
-    controlToMemoryLink.target(memoryUnitBlock);
-    controlToMemoryLink.addTo(graph);
-    var controlToWriteBack = controlToMemoryLink.clone();
-    controlToWriteBack.target(writeBackBlock);
-    controlToWriteBack.addTo(graph);
-    // memory links
+    
+    var controlToExecStallLink = controlToExectuteLink.clone();
+    controlToExecStallLink.target(execToMemRegFileBlockTemplate.regfile);
+    controlToExecStallLink.addTo(graph);
+    
+    var executeToFetchBypassLink = executeToMemoryLink.clone();
+    executeToFetchBypassLink.source(executeRegFileBlockTemplate.regfile);
+    executeToFetchBypassLink.target(fetchBlock);
+    executeToFetchBypassLink.router('manhattan', {
+        startDirections: ['right'],
+        endDirections: ['bottom'],
+        padding: {
+            vertical: 25,
+            left: 12
+        }
+    });
+    executeToFetchBypassLink.addTo(graph);
+    
+    var execStallToMemLink = controlToExectuteLink.clone();
+    execStallToMemLink.source(execToMemRegFileBlockTemplate.regfile);
+    execStallToMemLink.target(memoryUnitBlock);
+    execStallToMemLink.addTo(graph);
+    
+    var execStallToFetchLink = execStallToMemLink.clone();
+    execStallToFetchLink.target(fetchBlock);
+    execStallToFetchLink.router('manhattan', {
+        startDirections: ['right'],
+        padding: 12
+    });
+    execStallToFetchLink.addTo(graph);
+    
+    var execStallToMemStallLink = execStallToFetchLink.clone();
+    execStallToMemStallLink.source(execToMemRegFileBlockTemplate.regfile);
+    execStallToMemStallLink.target(memToWriteBackRegFileBlockTemplate.regfile);
+    execStallToMemStallLink.addTo(graph);
+    
+    var memStallToWriteBackLink = execStallToMemStallLink.clone();
+    memStallToWriteBackLink.source(memToWriteBackRegFileBlockTemplate.regfile);
+    memStallToWriteBackLink.target(writeBackBlock);
+    memStallToWriteBackLink.router('manhattan', {
+        startDirections: ['right']
+    });
+    memStallToWriteBackLink.addTo(graph);
+    
     var memoryUnitToDataMemoryLink = controlToDecodeLink.clone();
     memoryUnitToDataMemoryLink.source(memoryUnitBlock);
     memoryUnitToDataMemoryLink.target(dataMemoryBlock);
@@ -519,16 +594,28 @@ function init5StageStalledOrBypassedPipelineDiagram() {
     memoryUnitToDataMemoryLink.addTo(graph);
     
     var fetchToInsMemoryLink = controlToDecodeLink.clone();
-    fetchToInsMemoryLink.source(fetchBlock);
-    fetchToInsMemoryLink.target(insMemoryBlock);
+    fetchToInsMemoryLink.source(fetchBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: -20
+            }
+        }
+    });
+    fetchToInsMemoryLink.target(insMemoryBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: -20
+            }
+        }
+    });
     fetchToInsMemoryLink.attr('line/stroke', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.attr('line/targetMarker/fill', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.attr('line/sourceMarker/fill', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.addTo(graph);
     
-    // decode to regfile link
-    var decodeHalfX = decodeBlock.position().x + (decodeBlock.attributes.size.width / 2);
-    var decodeYOff = decodeBlock.position().y + decodeBlock.attributes.size.height;
+    //  bypass / stall links
 }
 
 exports.initCanvas = initCanvas;
