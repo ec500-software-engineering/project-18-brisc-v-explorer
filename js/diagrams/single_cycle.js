@@ -1,8 +1,10 @@
+blockDiagramUtils = require('../block_diagram.js');
+
 function initSingleCycleDiagram(canvas) {
     canvas.graph.clear();
     canvas.graphScale.x = 1;
     canvas.graphScale.y = 1;
-    canvas.paper.scale(graphScale.x, graphScale.y);
+    canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
     var fetchBlock = new joint.shapes.standard.Rectangle();
     fetchBlock.position(20, 106);
     fetchBlock.resize(70, 80);
@@ -17,7 +19,7 @@ function initSingleCycleDiagram(canvas) {
             text: 'Fetch\nUnit'
         }
     });
-    fetchBlock.addTo(graph);
+    fetchBlock.addTo(canvas.graph);
     console.log(fetchBlock);
     console.log(fetchBlock.attributes.size.width);
     fetchBlock.on('change:position', function() {
@@ -29,18 +31,18 @@ function initSingleCycleDiagram(canvas) {
     decodeBlock.translate(fetchBlock.attributes.size.width + 20, 0);
     decodeBlock.attr('label/text', 'Decode\nUnit');
     decodeBlock.attr('body/fill', '#77b1bd');
-    decodeBlock.addTo(graph);
+    decodeBlock.addTo(canvas.graph);
     decodeBlock.on('change:position', function() {
         console.log('DecodeBlock position: ' + decodeBlock.position());
     });
     // regfile
     //regfileBlock.translate(decodeBlock.attributes.size.width - 10, 0);
-    var regTemplate = getRegfileTemplate(
+    var regTemplate = blockDiagramUtils.getRegfileTemplate(
         decodeBlock.position().x + (decodeBlock.attributes.size.width - 10), 
         decodeBlock.position().y, 35, 80);
     regTemplate.regfile.attr('label/text', 'Reg\nFile');
-    regTemplate.regfile.addTo(graph);
-    regTemplate.clockSymbol.addTo(graph);
+    regTemplate.regfile.addTo(canvas.graph);
+    regTemplate.clockSymbol.addTo(canvas.graph);
     
     // instruction memory
     var insMemoryBlock = fetchBlock.clone();
@@ -48,7 +50,7 @@ function initSingleCycleDiagram(canvas) {
     insMemoryBlock.attr('label/text', 'Instruction\nMemory\n16kB');
     insMemoryBlock.resize(100, 60);
     insMemoryBlock.attr('body/fill', '#993131');
-    insMemoryBlock.addTo(graph);
+    insMemoryBlock.addTo(canvas.graph);
     insMemoryBlock.on('change:position', function() {
         console.log('InsMemoryBlock position: ' + insMemoryBlock.position());
     });
@@ -59,7 +61,7 @@ function initSingleCycleDiagram(canvas) {
     executeBlock.attr('label/text', 'Execute\nUnit');
     executeBlock.attr('label/fill', 'white');
     executeBlock.attr('body/fill', '#597cab');
-    executeBlock.addTo(graph);
+    executeBlock.addTo(canvas.graph);
     executeBlock.on('change:position', function() {
         console.log('ExectuteBlock position: ' + executeBlock.position());
     });
@@ -68,7 +70,7 @@ function initSingleCycleDiagram(canvas) {
     memoryUnitBlock.translate(executeBlock.attributes.size.width + 20, 0);
     memoryUnitBlock.attr('label/text', 'Memory\nUnit');
     memoryUnitBlock.attr('body/fill', '#5762ab');
-    memoryUnitBlock.addTo(graph);
+    memoryUnitBlock.addTo(canvas.graph);
     memoryUnitBlock.on('change:position', function() {
         console.log('MemoryUnitBlock position: ' + memoryUnitBlock.position());
     });
@@ -78,7 +80,7 @@ function initSingleCycleDiagram(canvas) {
     dataMemoryBlock.attr('label/text', 'Data\nMemory\n16kB');
     dataMemoryBlock.attr('body/fill', '#993131');
     dataMemoryBlock.resize(100, 60);
-    dataMemoryBlock.addTo(graph);
+    dataMemoryBlock.addTo(canvas.graph);
     dataMemoryBlock.on('change:position', function() {
         console.log('DataMemoryBlock position: ' + dataMemoryBlock.position());
     });
@@ -87,7 +89,7 @@ function initSingleCycleDiagram(canvas) {
     writeBackBlock.translate(memoryUnitBlock.attributes.size.width + 20, 0);
     writeBackBlock.attr('label/text', 'Writeback\nUnit');
     writeBackBlock.attr('body/fill', '#4f4d85');
-    writeBackBlock.addTo(graph);
+    writeBackBlock.addTo(canvas.graph);
     writeBackBlock.on('change:position', function() {
         console.log('WriteBackBlock position: ' + writeBackBlock.position());
     });
@@ -97,7 +99,7 @@ function initSingleCycleDiagram(canvas) {
     controlUnitBlock.translate(-4, -decodeBlock.attributes.size.height + 10);
     controlUnitBlock.attr('label/text', 'Control\nUnit');
     controlUnitBlock.attr('body/fill', '#77b1bd');
-    controlUnitBlock.addTo(graph);
+    controlUnitBlock.addTo(canvas.graph);
     controlUnitBlock.on('change:position', function() {
         console.log('ControlUnitBlock position: ' + controlUnitBlock.position());
     });
@@ -116,7 +118,7 @@ function initSingleCycleDiagram(canvas) {
             }
         }
     });
-    fetchToDecodeLink.addTo(graph);
+    fetchToDecodeLink.addTo(canvas.graph);
     
     var regfileToExecuteLink = fetchToDecodeLink.clone();
     regfileToExecuteLink.source(regTemplate.regfile);
@@ -124,21 +126,21 @@ function initSingleCycleDiagram(canvas) {
     regfileToExecuteLink.attr('line/stroke', decodeBlock.attr('body/fill'));
     regfileToExecuteLink.attr('line/targetMarker/fill', decodeBlock.attr('body/fill'));
     regfileToExecuteLink.toBack();
-    regfileToExecuteLink.addTo(graph);
+    regfileToExecuteLink.addTo(canvas.graph);
     
     var executeToMemoryLink = regfileToExecuteLink.clone();
     executeToMemoryLink.source(executeBlock);
     executeToMemoryLink.target(memoryUnitBlock);
     executeToMemoryLink.attr('line/stroke', executeBlock.attr('body/fill'));
     executeToMemoryLink.attr('line/targetMarker/fill', executeBlock.attr('body/fill'));
-    executeToMemoryLink.addTo(graph);
+    executeToMemoryLink.addTo(canvas.graph);
     
     var memoryToWriteBackLink = executeToMemoryLink.clone();
     memoryToWriteBackLink.source(memoryUnitBlock);
     memoryToWriteBackLink.target(writeBackBlock);
     memoryToWriteBackLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
     memoryToWriteBackLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
-    memoryToWriteBackLink.addTo(graph);
+    memoryToWriteBackLink.addTo(canvas.graph);
     
     var writeBackToDecodeLink = memoryToWriteBackLink.clone();
     writeBackToDecodeLink.source(writeBackBlock);
@@ -149,7 +151,7 @@ function initSingleCycleDiagram(canvas) {
     });
     writeBackToDecodeLink.attr('line/stroke', writeBackBlock.attr('body/fill'));
     writeBackToDecodeLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
-    writeBackToDecodeLink.addTo(graph);
+    writeBackToDecodeLink.addTo(canvas.graph);
     
     // control unit links
     var controlToFetchLink = fetchToDecodeLink.clone();
@@ -159,7 +161,7 @@ function initSingleCycleDiagram(canvas) {
     controlToFetchLink.connector('rounded', {
         radius: 5
     });
-    controlToFetchLink.addTo(graph);
+    controlToFetchLink.addTo(canvas.graph);
     var controlToDecodeLink = fetchToDecodeLink.clone();
     controlToDecodeLink.source(controlUnitBlock);
     controlToDecodeLink.target(decodeBlock);
@@ -175,16 +177,16 @@ function initSingleCycleDiagram(canvas) {
         }
     });
     console.log(controlToDecodeLink);
-    controlToDecodeLink.addTo(graph);
+    controlToDecodeLink.addTo(canvas.graph);
     var controlToExectuteLink = controlToFetchLink.clone();
     controlToExectuteLink.target(executeBlock);
-    controlToExectuteLink.addTo(graph);
+    controlToExectuteLink.addTo(canvas.graph);
     var controlToMemoryLink = controlToExectuteLink.clone();
     controlToMemoryLink.target(memoryUnitBlock);
-    controlToMemoryLink.addTo(graph);
+    controlToMemoryLink.addTo(canvas.graph);
     var controlToWriteBack = controlToMemoryLink.clone();
     controlToWriteBack.target(writeBackBlock);
-    controlToWriteBack.addTo(graph);
+    controlToWriteBack.addTo(canvas.graph);
     // memory links
     var memoryUnitToDataMemoryLink = controlToDecodeLink.clone();
     memoryUnitToDataMemoryLink.router('manhattan');
@@ -193,7 +195,7 @@ function initSingleCycleDiagram(canvas) {
     memoryUnitToDataMemoryLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
     memoryUnitToDataMemoryLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
     memoryUnitToDataMemoryLink.attr('line/sourceMarker/fill', memoryUnitBlock.attr('body/fill'));
-    memoryUnitToDataMemoryLink.addTo(graph);
+    memoryUnitToDataMemoryLink.addTo(canvas.graph);
     
     var fetchToInsMemoryLink = controlToDecodeLink.clone();
     console.log(fetchToInsMemoryLink);
@@ -202,7 +204,7 @@ function initSingleCycleDiagram(canvas) {
     fetchToInsMemoryLink.attr('line/stroke', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.attr('line/targetMarker/fill', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.attr('line/sourceMarker/fill', fetchBlock.attr('body/fill'));
-    fetchToInsMemoryLink.addTo(graph);
+    fetchToInsMemoryLink.addTo(canvas.graph);
     console.log(fetchToInsMemoryLink);
     
     // decode to regfile link
