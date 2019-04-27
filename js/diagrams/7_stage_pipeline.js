@@ -52,7 +52,7 @@ function init7StageBypassedPiplineDiagram(canvas) {
     
     // instruction memory
     var insMemoryBlock = fetchBlock.clone();
-    insMemoryBlock.translate(-11, fetchBlock.attributes.size.height + 60);
+    insMemoryBlock.translate(26, fetchBlock.attributes.size.height + 100);
     insMemoryBlock.attr('label/text', 'Instruction\nMemory\n16kB');
     insMemoryBlock.resize(100, 60);
     insMemoryBlock.attr('body/fill', '#993131');
@@ -97,7 +97,7 @@ function init7StageBypassedPiplineDiagram(canvas) {
     memoryRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
     // data memory
     var dataMemoryBlock = memoryUnitBlock.clone();
-    dataMemoryBlock.translate(-10, memoryUnitBlock.attributes.size.height + 60);
+    dataMemoryBlock.translate(26, memoryUnitBlock.attributes.size.height + 100);
     dataMemoryBlock.attr('label/text', 'Data\nMemory\n16kB');
     dataMemoryBlock.attr('body/fill', '#993131');
     dataMemoryBlock.resize(100, 60);
@@ -323,11 +323,21 @@ function init7StageBypassedPiplineDiagram(canvas) {
     memPipeline2ndRegToWriteBackLink.addTo(canvas.graph);
     
     var memoryUnitToDataMemoryLink = fetchToDecodeLink.clone();
-    memoryUnitToDataMemoryLink.source(memoryUnitBlock);
+    memoryUnitToDataMemoryLink.source(memoryUnitBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: -20
+            }
+        }
+    });
     memoryUnitToDataMemoryLink.target(dataMemoryBlock);
     memoryUnitToDataMemoryLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
     memoryUnitToDataMemoryLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
     memoryUnitToDataMemoryLink.attr('line/sourceMarker/fill', memoryUnitBlock.attr('body/fill'));
+    memoryUnitToDataMemoryLink.connector('rounded', {
+        radius: 10
+    })
     memoryUnitToDataMemoryLink.router('manhattan', {
         startDirections: ['bottom'],
         endDirections: ['left']
@@ -340,24 +350,42 @@ function init7StageBypassedPiplineDiagram(canvas) {
         anchor: {
             name: 'center',
             args: {
-                dx: 50
+                dx: 30
             }
         }
     });
     dataMemoryToMemoryUnitLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
     dataMemoryToMemoryUnitLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
     dataMemoryToMemoryUnitLink.attr('line/sourceMarker/fill', memoryUnitBlock.attr('body/fill'));
+    dataMemoryToMemoryUnitLink.vertices([
+        new g.Point(555, 286) 
+    ]);
+    dataMemoryToMemoryUnitLink.connector('rounded', {
+        radius: 10
+    });
     dataMemoryToMemoryUnitLink.router('manhattan', {
-        startDirections: ['right']
+        startDirections: ['right'],
+        endDirections: ['bottom']
     });
     dataMemoryToMemoryUnitLink.addTo(canvas.graph);
     
     var fetchToInsMemoryLink = dataMemoryToMemoryUnitLink.clone();
-    fetchToInsMemoryLink.source(fetchBlock);
+    fetchToInsMemoryLink.vertices([]);
+    fetchToInsMemoryLink.source(fetchBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: -20
+            }
+        }
+    });
     fetchToInsMemoryLink.target(insMemoryBlock);
     fetchToInsMemoryLink.attr('line/stroke', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.attr('line/targetMarker/fill', fetchBlock.attr('body/fill'));
     fetchToInsMemoryLink.attr('line/sourceMarker/fill', fetchBlock.attr('body/fill'));
+    fetchToInsMemoryLink.connector('rounded', {
+        radius: 10
+    })
     fetchToInsMemoryLink.router('manhattan', {
         startDirections: ['bottom'],
         endDirections: ['left']
@@ -370,13 +398,16 @@ function init7StageBypassedPiplineDiagram(canvas) {
         anchor: {
             name: 'center',
             args: {
-                dx: 46
+                dx: 30
             }
         }
     });
     insMemoryToFetchLink.attr('line/stroke', fetchBlock.attr('body/fill'));
     insMemoryToFetchLink.attr('line/targetMarker/fill', fetchBlock.attr('body/fill'));
     insMemoryToFetchLink.attr('line/sourceMarker/fill', fetchBlock.attr('body/fill'));
+    insMemoryToFetchLink.vertices([
+       new g.Point(121, 286) 
+    ]);
     insMemoryToFetchLink.router('manhattan', {
         startDirections: ['right'],
         endDirections: ['bottom']
