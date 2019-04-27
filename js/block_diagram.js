@@ -28,6 +28,9 @@ function initCanvas() {
         gridSize: 1
     });
     
+    paper.on('blank:pointerdown', function(evt, x, y) {
+        console.log(`Mouse click on blank area (${x}, ${y})"`);
+    });
     paper.on('cell:pointerdown', function(cellView, evt, x, y) {
         console.log(`Mouse click on (${x}, ${y}): detected element \"${getBlockName(cellView)}\"`);
     });
