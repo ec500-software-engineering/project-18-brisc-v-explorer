@@ -209,39 +209,6 @@ function init5StageStalledOrBypassedPipelineDiagram(canvas) {
     writeBackToDecodeLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
     writeBackToDecodeLink.addTo(canvas.graph);
     
-    var decodeInvisBlock = decodeBlock.clone();
-    decodeInvisBlock.resize(decodeBlock.attributes.size.width, 1);
-    var decodeToRegFileLink = new joint.shapes.standard.Link();
-    decodeToRegFileLink.connector('rounded', {
-        radius: 5
-    });
-    decodeToRegFileLink.source(decodeBlock);
-    decodeToRegFileLink.target(decodeRegFileBlockTemplate.regfile, {
-        anchor: {
-            name: 'left',
-            args: {
-                dy: 20
-            }
-        }
-    });
-    decodeToRegFileLink.attr({
-        line: {
-            stroke: 'white',
-            strokeWidth: 3,
-            'stroke-dasharray': '6 6',
-            'stroke-miterlimit': 10
-        }
-    });
-    decodeToRegFileLink.vertices([
-        new g.Point(163, 181)
-    ])
-    decodeToRegFileLink.router('manhattan', {
-        startDirections: ['center'],
-        excludeEnds: ['source']
-    });
-    decodeToRegFileLink.addTo(canvas.graph);
-    // control unit links
-    
     var controlToDecodeLink = fetchToDecodeLink.clone();
     controlToDecodeLink.source(controlUnitBlock);
     controlToDecodeLink.target(decodeBlock);
