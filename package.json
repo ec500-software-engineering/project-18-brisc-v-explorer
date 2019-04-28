@@ -20,9 +20,11 @@
     "bootstrap": "^4.3.1",
     "file-saver": "^2.0.1",
     "jointjs": "^2.2.1",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.0",
     "jszip": "^3.2.1",
-    "popper.js": "^1.14.7"
+    "jszip-utils": "0.0.2",
+    "popper.js": "^1.14.7",
+    "svg-pan-zoom": "^3.6.0"
   },
   "devDependencies": {
     "jest": "^24.7.0"
