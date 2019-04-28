@@ -52,10 +52,37 @@ function zipProject(contentList, zip) {
     }
 }
 
+function loadUserParameters(configJson) {
+    $('#project_name').val(configJson['project_name']);
+    $('#data_width').val(configJson['data_width']);
+    $('num_indexesL1').val(configJson['#num_indexesL1']);
+    $('#associativityL1').val(configJson['associativityL1']);
+    $('#line_size').val(configJson['line_size']);
+    $('#index_bits').val(configJson['index_bits']);
+    $('#offset_bits').val(configJson['offset_bits']);
+    $('#address_bits').val(configJson['address_bits']);
+    $('#core-sel').val(configJson['core_type']);
+}
+
+
 window.onload = function () {
     // initialize diagram
     gui.init();
-    $('#generate-button').on('click', function(event) {
+    $('#download-project-button').on('click', function(event) {
         saveProject();
     });
+    $('#download-diagram-button').on('click', function(event) {
+        diagram.saveBlockDiagramAsPng();
+    });
+    $('#config').on('change', function(event) {
+        var reader = new FileReader();
+        reader.onload = function(event) {
+            console.log(event.target.result);
+            var configJson = JSON.parse(event.target.result);
+            console.log(configJson);
+            loadUserParameters(configJson);
+        };
+        reader.readAsText(event.target.files[0]);
+    });
+    
 };
