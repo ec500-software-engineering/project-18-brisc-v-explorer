@@ -145,7 +145,7 @@ function getUserParameters() {
     // Get all of the user input parameters
     var dict = {}
     dict['project_name'] = document.getElementById("project_name").value;
-    dict['core_type'] = document.getElementById("sel1").value;
+    dict['core_type'] = document.getElementById("core-sel").value;
     // Hard code this parameter. It is not used in these cores.
     dict['core'] = 0;
     dict['data_width'] = document.getElementById("data_width").value;
@@ -172,7 +172,7 @@ function getUserParameters() {
 function init() {
     // Address Bits Update
     diagram.initCanvas();
-    diagram.show7StagePipelineDiagram();
+    diagram.showSingleCycleDiagram();
     $('#core-sel').on('change', function(event) {
         gui.updateBlockDiagram(event.target.value);
     });

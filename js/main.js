@@ -10,9 +10,9 @@ function saveProject() {
     }
     var userParams = gui.getUserParams();
     var zip = new JSZip();
-    var projectContentList = verilog.local.getConfiguredProject(userParams);
+    var projectContentList = verilog.remote.getConfiguredProject(userParams);
     
-    userParams['program_reader'].onload = function (e) {
+    /*userParams['program_reader'].onload = function (e) {
         // Put program in zip
         zip.file(userParams['program'].slice(2), userParams['program_reader'].result);
         zipProject(projectContentList, zip);
@@ -39,7 +39,7 @@ function saveProject() {
                 // see FileSaver.js
                 saveAs(content, userParams['project_name'] + ".zip");
             });
-    }
+    }*/
 
     var file = document.getElementById("program").files[0]; // get first file
     userParams['program_reader'].readAsText(file);
@@ -55,4 +55,7 @@ function zipProject(contentList, zip) {
 window.onload = function () {
     // initialize diagram
     gui.init();
+    $('#generate-button').on('click', function(event) {
+        saveProject();
+    });
 };
