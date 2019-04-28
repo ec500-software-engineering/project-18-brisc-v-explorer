@@ -1,13 +1,19 @@
 gui = require('./gui.js');
 verilog = require('./verilog.js');
 
-function createZip(userParams, zip) {
+const SaveStageEnum = {
+    STAGE_1: 0,
+    STAGE_2: 1
+};
+
+function createZip(userParams, zip, saveArgs) {
     var fileReader = new FileReader();
     fileReader.onload = function (e) {
         // Put program in zip
         zip.file(userParams['program'].slice(2), fileReader.result);
         //zipProject(projectContentList, zip);
-        
+        // put png in zip
+        zip.file('block_diagram.png', saveArgs.png);
 
         // Display parameters on output text area
         dispStr = "Generating Project with the following settings:\n";
@@ -35,22 +41,29 @@ function createZip(userParams, zip) {
     fileReader.readAsText(file);
 }
 
-function saveProject() {
+function addBlockDiagramToProject(pngBlob) {
+    saveProject(SaveStageEnum.STAGE_2, {png: pngBlob});
+}
+
+// kinda hacky but args represents objects we need to add to the final zip
+// because javascript is heavy on callbacks, we keep passing a reference
+// to our needed objects on the stack until we finally zip the project
+// SaveStageEnum helps us keep track of where we are in the save process
+function saveProject(stage, args) {
     var dispStr;
     if (!document.getElementById("program").files[0]) {
         dispStr = "Error: You must select a program file\n";
         document.getElementById("output_textarea").value = dispStr;
         return;
     }
-    var userParams = gui.getUserParams();
-    var projectContentList = verilog.remote.getConfiguredProject(userParams, createZip);
     // TODO: visualize progression through status bar or console output
-}
-
-function zipProject(contentList, zip) {
-    var arrayLen = contentList.length;
-    for (var i = 0; i < arrayLen; i++) {
-        zip.file(contentList[i].filename, contentList[i].fileContent);
+    if (stage === SaveStageEnum.STAGE_1) {
+        diagram.getBlockDiagramPngBlob(addBlockDiagramToProject);
+    } else if (stage === SaveStageEnum.STAGE_2) {
+        // assert args !== {}
+        var userParams = gui.getUserParams();
+        // this launch an async request to fetch files from the remote server
+        verilog.remote.getConfiguredProject(userParams, createZip, args);
     }
 }
 
@@ -71,7 +84,7 @@ window.onload = function () {
     // initialize diagram
     gui.init();
     $('#download-project-button').on('click', function(event) {
-        saveProject();
+        saveProject(SaveStageEnum.STAGE_1, {});
     });
     $('#download-diagram-button').on('click', function(event) {
         diagram.saveBlockDiagramAsPng();

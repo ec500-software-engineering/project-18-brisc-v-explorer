@@ -151,16 +151,15 @@ var local = {
 
 };
 
-// TODO: define remote routines
 var remote = {
-    getConfiguredProject: function (params, callback) {
+    getConfiguredProject: function (params, callback, saveArgs) {
         JSZipUtils.getBinaryContent('http://localhost:8000/verilog_fetch', function (err, data) {
             if (err) {
                 throw err; // or handle err
             }
 
             JSZip.loadAsync(data).then(function (zip) {
-                callback(params, zip);
+                callback(params, zip, saveArgs);
             });
         });
     }
