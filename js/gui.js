@@ -156,16 +156,7 @@ function getUserParameters() {
     dict['index_bits'] = Math.log2(dict['num_indexesL1']);
     dict['offset_bits'] = Math.log2(dict['line_size']);
     dict['address_bits'] = document.getElementById("address_bits").value;
-
-    //var print_cycles_min
-    //var print_cycles_max
-
-    // Get file name
-    dict['program'] = "./" + document.getElementById("program").files[0].name;
-    // Load the file content
-    var reader = new FileReader();
-    dict['program_reader'] = reader;
-
+    dict['program'] = './' + document.getElementById('program').files[0].name;
     return dict;
 }
 

@@ -1,21 +1,13 @@
 gui = require('./gui.js');
 verilog = require('./verilog.js');
 
-function saveProject() {
-    var dispStr;
-    if (!document.getElementById("program").files[0]) {
-        dispStr = "Error: You must select a program file\n";
-        document.getElementById("output_textarea").value = dispStr;
-        return;
-    }
-    var userParams = gui.getUserParams();
-    var zip = new JSZip();
-    var projectContentList = verilog.remote.getConfiguredProject(userParams);
-    
-    /*userParams['program_reader'].onload = function (e) {
+function createZip(userParams, zip) {
+    var fileReader = new FileReader();
+    fileReader.onload = function (e) {
         // Put program in zip
-        zip.file(userParams['program'].slice(2), userParams['program_reader'].result);
-        zipProject(projectContentList, zip);
+        zip.file(userParams['program'].slice(2), fileReader.result);
+        //zipProject(projectContentList, zip);
+        
 
         // Display parameters on output text area
         dispStr = "Generating Project with the following settings:\n";
@@ -30,19 +22,29 @@ function saveProject() {
         // action to take. Consider appending text and storing 100ish lines.
         document.getElementById("output_textarea").value = dispStr;
 
-        // FIXME: This doesn't work on chrome
         // Generate and download the zip file
         zip.generateAsync({
-                type: "blob"
-            })
-            .then(function (content) {
-                // see FileSaver.js
-                saveAs(content, userParams['project_name'] + ".zip");
-            });
-    }*/
+            type: 'blob'
+        }).then(function (content) {
+            // see FileSaver.js
+            saveAs(content, userParams['project_name'] + '.zip');
+        });
+    };
 
-    var file = document.getElementById("program").files[0]; // get first file
-    userParams['program_reader'].readAsText(file);
+    var file = document.getElementById("program").files[0];
+    fileReader.readAsText(file);
+}
+
+function saveProject() {
+    var dispStr;
+    if (!document.getElementById("program").files[0]) {
+        dispStr = "Error: You must select a program file\n";
+        document.getElementById("output_textarea").value = dispStr;
+        return;
+    }
+    var userParams = gui.getUserParams();
+    var projectContentList = verilog.remote.getConfiguredProject(userParams, createZip);
+    // TODO: visualize progression through status bar or console output
 }
 
 function zipProject(contentList, zip) {
