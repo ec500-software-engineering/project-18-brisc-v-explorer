@@ -25,7 +25,8 @@ function initCanvas() {
         model: graph,
         width: 500,
         height: 400,
-        gridSize: 1
+        gridSize: 1,
+        interactive: false
     });
     
     paper.on('blank:pointerdown', function(evt, x, y) {
