@@ -86,6 +86,36 @@ function initCanvas() {
     });
 }
 
+function saveBlockDiagramAsPng() {
+    var xmlData = new XMLSerializer().serializeToString($('#diagram-div').find('svg')[0]);
+    var domURL = window.URL || window.webkitURL || window;
+    
+    var canvas = document.getElementById('image-canvas');
+    // set canvas dimensions
+    canvas.width = $('#diagram-div').width();
+    canvas.height = $('#diagram-div').height();
+    // set background color
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    var img = new Image();
+    var svg = new Blob([xmlData], {
+        type: 'image/svg+xml'
+    });
+    console.log(`${canvas.width} ${canvas.height}`);
+    var url = domURL.createObjectURL(svg);
+    img.onload = function () {
+        ctx.drawImage(img, 0, 0);
+        domURL.revokeObjectURL(url);
+        var ppngImage = canvas.toDataURL("image/png");
+        canvas.toBlob(function(blob) {
+            saveAs(blob, 'block_diagram.png');
+        }, 'image/png');
+    };
+    img.src = url;
+}
+
 function getBlockName(cellView) {
     if (cellView !==  undefined) {
          return cellView.model.prop('attrs/label/text').replace(/\n/g, ' ');
@@ -139,6 +169,7 @@ function showSingleCycleDiagram() {
 
 exports.initCanvas = initCanvas;
 exports.getRegfileTemplate = getRegfileTemplate;
+exports.saveBlockDiagramAsPng = saveBlockDiagramAsPng;
 exports.showSingleCycleDiagram = showSingleCycleDiagram;
 exports.show5StagePipelineDiagram = show5StagePipelineDiagram
 exports.show7StagePipelineDiagram = show7StagePipelineDiagram;
