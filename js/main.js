@@ -84,5 +84,13 @@ window.onload = function () {
         };
         reader.readAsText(event.target.files[0]);
     });
+    $('#download-config-button').on('click', function(event) {
+        var userParams = gui.getUserParams();
+        var data = JSON.stringify(userParams);
+        var blob = new Blob([data], {
+            type: 'application/json;charset=utf-8'
+        });
+        saveAs(blob, 'briscv_config.ebv');
+    });
     
 };
