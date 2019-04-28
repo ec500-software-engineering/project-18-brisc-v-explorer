@@ -174,8 +174,9 @@ function init() {
     diagram.initCanvas();
     diagram.showSingleCycleDiagram();
     $('#core-sel').on('change', function(event) {
-        gui.updateBlockDiagram(event.target.value);
+        updateBlockDiagram(event.target.value);
     });
+    
 }
 
 exports.init = init;
