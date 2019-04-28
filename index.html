@@ -81,7 +81,7 @@
                                     <a class="nav-link" data-toggle="pill" href="#processor_parameters">Processor Parameters</a>
                                     <a class="nav-link" data-toggle="pill" href="#cache_parameters">Cache Parameters</a>
                                     <a class="nav-link" data-toggle="pill" href="#memory_organization">Memory Organization</a>
-                                    <a class="nav-link" data-toggle="pill" id="generate-button" href="#do_not_switch_tabs">Generate</a>
+                                    <a class="nav-link" data-toggle="pill" id="generate-button" href="#downloads-tab">Downloads</a>
                                 </nav>
                             </div>
 
@@ -238,10 +238,12 @@
                                     </form>
                                 </div>
 
-                                <!-- Generate Button -->
-                                <div id="generate" class="container tab-pane fade">
-                                    <h2>Generating Project</h2>
-                                    Your project is downloading as a zip file.
+                                <!-- Downloads Tab -->
+                                <div id="downloads-tab" class="container tab-pane fade">
+                                    <h2>Choose a download option</h2>
+                                    <button type="button" id="download-config-button">Save current system configuration</button>
+                                    <button type="button" id="download-diagram-button">Download the current block diagram</button>
+                                    <button type="button" id="download-project-button">Download configured BRISC-V Verilog project</button>
                                 </div>
 
                             </div>
