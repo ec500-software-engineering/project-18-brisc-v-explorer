@@ -76,7 +76,7 @@ function initSingleCycleDiagram(canvas) {
     });
     // data memory
     var dataMemoryBlock = memoryUnitBlock.clone();
-    dataMemoryBlock.translate(-14, memoryUnitBlock.attributes.size.height + 35);
+    dataMemoryBlock.translate(-15, memoryUnitBlock.attributes.size.height + 35);
     dataMemoryBlock.attr('label/text', 'Data\nMemory\n16kB');
     dataMemoryBlock.attr('body/fill', '#993131');
     dataMemoryBlock.resize(100, 60);
