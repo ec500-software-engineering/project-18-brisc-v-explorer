@@ -34,7 +34,7 @@ function initCanvas() {
     paper.on('cell:pointerdown', function(cellView, evt, x, y) {
         console.log(`Mouse click on (${x}, ${y}): detected element \"${getBlockName(cellView)}\"`);
     });
-    paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
+    /*paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
         console.log(`Double click on (${x}, ${y}): detected element \"${getBlockName(cellView)}\"`);
     });
     
@@ -54,11 +54,35 @@ function initCanvas() {
             graphScale.y += 0.1;
             paper.scale(graphScale.x, graphScale.y);
         }
-    });
+    });*/
     
     canvas.paper = paper;
     canvas.graph = graph;
     canvas.graphScale = graphScale;
+    
+    // set up pan and zoom
+    var svgElement = $('#diagram-div').find('svg')[0];
+    var svgPanAndZoom = svgPanZoom(svgElement, {
+        panEnabled: true,
+        controlIconsEnabled: false,
+        zoomEnabled: true,
+        dblClickZoomEnabled: true,
+        mouseWheelZoomEnabled: true,
+        preventMouseEventsDefault: true,
+        zoomScaleSensitivity: 0.2,
+        minZoom: 0.5,
+        maxZoom: 10,
+        fit: false,
+        contain: false,
+        center: false,
+        refreshRate: 'auto',
+        beforeZoom: function () {},
+        onZoom: function () {},
+        beforePan: function () {},
+        onPan: function () {},
+        onUpdatedCTM: function () {},
+        eventsListenerElement: null
+    });
 }
 
 function getBlockName(cellView) {
