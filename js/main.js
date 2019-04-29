@@ -14,19 +14,15 @@ function createZip(userParams, zip, saveArgs) {
         //zipProject(projectContentList, zip);
         // put png in zip
         zip.file('block_diagram.png', saveArgs.png);
-
         // Display parameters on output text area
-        dispStr = "Generating Project with the following settings:\n";
-        dispStr += "Project Name: " + userParams['project_name'] + "\n";
-        dispStr += "Core Type: " + userParams['core_type'] + "\n";
-        dispStr += "Data Width: " + userParams['data_width'] + "\n";
-        dispStr += "Index Bits: " + userParams['index_bits'] + " (Fixed and Unused)\n";
-        dispStr += "Offset Bits: " + userParams['offset_bits'] + " (Fixed and Unused)\n";
-        dispStr += "Address Bits: " + userParams['address_bits'] + "\n";
-        dispStr += "Program: " + userParams['program'] + "\n";
-        // Overwrite any output currently in the text area. This may not be the best
-        // action to take. Consider appending text and storing 100ish lines.
-        document.getElementById("output_textarea").value = dispStr;
+        gui.messageWindow.println("Generating Project with the following settings:");
+        gui.messageWindow.println("Project Name: " + userParams['project_name']);
+        gui.messageWindow.println("Core Type: " + userParams['core_type']);
+        gui.messageWindow.println("Data Width: " + userParams['data_width']);
+        gui.messageWindow.println("Index Bits: " + userParams['index_bits'] + " (Fixed and Unused)")
+        gui.messageWindow.println("Offset Bits: " + userParams['offset_bits'] + " (Fixed and Unused)");
+        gui.messageWindow.println("Address Bits: " + userParams['address_bits']);
+        gui.messageWindow.println("Program: " + userParams['program']);
 
         // Generate and download the zip file
         zip.generateAsync({
@@ -36,7 +32,6 @@ function createZip(userParams, zip, saveArgs) {
             saveAs(content, userParams['project_name'] + '.zip');
         });
     };
-
     var file = document.getElementById("program").files[0];
     fileReader.readAsText(file);
 }
@@ -52,8 +47,7 @@ function addBlockDiagramToProject(pngBlob) {
 function saveProject(stage, args) {
     var dispStr;
     if (!document.getElementById("program").files[0]) {
-        dispStr = "Error: You must select a program file\n";
-        document.getElementById("output_textarea").value = dispStr;
+        gui.messageWindow.println("Error: You must select a program file");
         return;
     }
     // TODO: visualize progression through status bar or console output

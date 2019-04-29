@@ -1,27 +1,29 @@
 utils = require('./utils.js');
 diagram = require('./block_diagram.js');
 
-var consoleWindow = {
-    consoleStr: '',
+var messageWindow = {
+    displayStr: '',
+    
+    MAX_NUM_LINES: 100,
 
     print: function (str) {
-        var consoleElem = document.getElementById('console');
-        if (consoleElem != null) {
-            consoleStr += str.replace('\n', '<br>');
-            consoleElem.innerHTML = consoleStr;
-            consoleElem.scrollTop = consoleElem.scrollHeight;
+        var messagesElem = document.getElementById('messages');
+        if (messagesElem !== null) {
+            this.displayStr += str.replace('\n', '<br>');
+            messagesElem.innerHTML = this.displayStr;
+            messagesElem.scrollTop = messagesElem.scrollHeight;
         }
     },
 
     println: function (str) {
-        print('\n');
+        this.print(str + '\n');
     },
 
     clear: function () {
-        var consoleElem = document.getElementById('console');
-        if (consoleElem != null) {
-            consoleElem.innerHTML = '';
-            consoleStr = '';
+        var messagesElem = document.getElementById('messages');
+        if (messagesElem !== null) {
+            messagesElem.innerHTML = '';
+            this.displayStr = '';
         }
     }
 };
@@ -171,7 +173,7 @@ function init() {
 }
 
 exports.init = init;
-exports.consoleWindow = consoleWindow;
 exports.getUserParams = getUserParameters;
 exports.updateBlockDiagram = updateBlockDiagram;
 exports.cleanProjectName = cleanProjectName;
+exports.messageWindow = messageWindow;

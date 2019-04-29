@@ -281,3 +281,18 @@ width: 90%;
 #image-canvas {
     display: none;
 }
+
+/*****************************************************************************/
+/* messages                                                           */
+/*****************************************************************************/
+
+#messages {
+    overflow: auto;
+    height: 100px;
+    background-color: white;
+    white-space: nowrap;
+    width: 80%;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
+}
