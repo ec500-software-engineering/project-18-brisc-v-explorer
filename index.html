@@ -11,6 +11,7 @@
 
     <link href="style.css" rel="stylesheet">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
     <!-- JS -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
@@ -245,10 +246,45 @@
 
                                 <!-- Downloads Tab -->
                                 <div id="downloads-tab" class="container tab-pane fade">
-                                    <h2>Choose a download option</h2>
-                                    <button type="button" id="download-config-button">Save current system configuration</button>
-                                    <button type="button" id="download-diagram-button">Download the current block diagram</button>
-                                    <button type="button" id="download-project-button">Download configured BRISC-V Verilog project</button>
+                                    <h2>Available Downloads</h2>
+                                    <section id="project-section">
+                                        <div class="download">
+                                            <p>
+                                                <button class="download-button fas fa-file-code" id="download-project-button">
+                                                    Download Project
+                                                </button>
+                                            </p>
+                                            <p>
+                                                <small class="download-desc">Download the configured Verilog RTL source code to your local machine.</small>
+                                            </p>
+                                        </div>
+                                    </section>
+                                    <hr>
+                                    <section id="diagram-section">
+                                        <div class="download">
+                                            <p>
+                                                <button class="download-button fas fa-images" id="download-diagram-button">
+                                                    Download Diagram
+                                                </button>
+                                            </p>
+                                            <p>
+                                                <small class="download-desc">Download the block diagram of the configured project as a PNG image.</small>
+                                            </p>
+                                        </div>
+                                    </section>
+                                    <hr>
+                                    <section id="config-section">
+                                        <div class="download">
+                                            <p>
+                                                <button class="download-button fas fa-cogs" id="download-config-button">
+                                                    Download Config
+                                                </button>
+                                            </p>
+                                            <p>
+                                                <small class="download-desc">Save the current project configuration to your local machine.</small>
+                                            </p>
+                                        </div>
+                                    </section>   
                                 </div>
 
                             </div>

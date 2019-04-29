@@ -19,6 +19,7 @@
   "dependencies": {
     "bootstrap": "^4.3.1",
     "file-saver": "^2.0.1",
+    "fontawesome": "^5.6.3",
     "jointjs": "^2.2.1",
     "jquery": "^3.4.0",
     "jszip": "^3.2.1",
