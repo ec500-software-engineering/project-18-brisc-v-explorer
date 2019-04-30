@@ -153,7 +153,11 @@ var local = {
 
 var remote = {
     getConfiguredProject: function (params, callback, saveArgs) {
-        JSZipUtils.getBinaryContent('http://localhost:8000/verilog_fetch', function (err, data) {
+        var urlParams = Object.keys(params).map(function (k) {
+            return encodeURIComponent(k) + '=' + encodeURIComponent(params[k])
+        }).join('&');
+        var verilogEndpoint = 'http://168.122.210.26:8000/verilog_fetch?' + urlParams;
+        JSZipUtils.getBinaryContent(verilogEndpoint, function (err, data) {
             if (err) {
                 throw err; // or handle err
             }
@@ -164,5 +168,5 @@ var remote = {
         });
     }
 };
-exports.local  = local;
+exports.local = local;
 exports.remote = remote;
