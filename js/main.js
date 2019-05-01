@@ -51,7 +51,7 @@ function addBlockDiagramToProject(pngBlob) {
 // SaveStageEnum helps us keep track of where we are in the save process
 function saveProject(stage, args) {
     var dispStr;
-    if (!document.getElementById("program").files[0]) {
+    if ($('#choose_radio').is(':checked') && !$('#program').val()) {
         gui.messageWindow.println("Error: You must select a program file");
         return;
     }
