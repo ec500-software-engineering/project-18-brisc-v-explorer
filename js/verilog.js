@@ -1,3 +1,4 @@
+gui = require('./gui.js');
 utils = require('./utils.js');
 zeroFill = require('./verilog_local_repo/zero_fill_data.js');
 singleCycle = require('./verilog_local_repo/single_cycle_base.js');
@@ -157,14 +158,16 @@ var remote = {
             return encodeURIComponent(k) + '=' + encodeURIComponent(params[k])
         }).join('&');
         var verilogEndpoint = 'http://168.122.210.26:8000/verilog_fetch?' + urlParams;
+        gui.messageWindow.println('Please wait; retrieving project files from remote verilog repository...');
         JSZipUtils.getBinaryContent(verilogEndpoint, function (err, data) {
-            if (err) {
-                throw err; // or handle err
-            }
+            if (err === null) {
 
-            JSZip.loadAsync(data).then(function (zip) {
-                callback(params, zip, saveArgs);
-            });
+                JSZip.loadAsync(data).then(function (zip) {
+                    callback(params, zip, saveArgs);
+                });
+            } else {
+                gui.messageWindow.println('Error: Failed to connect to remote Verilog Repository at IP address 168.122.210.26:8000');
+            }
         });
     }
 };
