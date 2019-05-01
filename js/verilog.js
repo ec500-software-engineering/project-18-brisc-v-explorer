@@ -161,7 +161,6 @@ var remote = {
         gui.messageWindow.println('Please wait; retrieving project files from remote verilog repository...');
         JSZipUtils.getBinaryContent(verilogEndpoint, function (err, data) {
             if (err === null) {
-
                 JSZip.loadAsync(data).then(function (zip) {
                     callback(params, zip, saveArgs);
                 });
