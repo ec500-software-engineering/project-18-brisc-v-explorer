@@ -158,7 +158,11 @@ function getUserParameters() {
     dict['index_bits'] = Math.log2(dict['num_indexesL1']);
     dict['offset_bits'] = Math.log2(dict['line_size']);
     dict['address_bits'] = document.getElementById("address_bits").value;
-    dict['program'] = './' + document.getElementById('program').files[0].name;
+    if ($('#default_radio').is(':checked')) {
+        dict['program'] = 'gcd_default';
+    } else {
+        dict['program'] = './' + document.getElementById('program').files[0].name;
+    }
     return dict;
 }
 

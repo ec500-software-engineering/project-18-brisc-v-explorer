@@ -154,10 +154,15 @@
                                         </div>-->
 
                                         <!--Note: instruction memory size equals 2^(Address Bit Width)<br>-->
-                                        <div class="form-group">
-                                            <label for="program">Default Program:</label>
+                                        <label for="program-options">Default Program:</label>
+                                        <fieldset id="program-options">
+                                            <input type="radio" name="choose_program" value="default_gcd.vmh" id="default_radio">
+                                            <label for="default">Greatest Common Divisor</label><br />
+                                            <input type="radio" name="choose_program" value="choose" id="choose_radio">
+                                            <label for="choose">Choose Program</label>
+                                        </fieldset>
+                                        <div class="form-group" id="program-form">
                                             <input type="file" id="program" name="files[]" />
-                                            <!--<input type="text" class="form-control" value="../software/binaries/mandelbrot.vmh" id="program">-->
                                         </div>
                                     </form>
                                 </div>

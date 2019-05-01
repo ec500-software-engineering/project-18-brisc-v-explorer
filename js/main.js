@@ -1,5 +1,6 @@
 gui = require('./gui.js');
 verilog = require('./verilog.js');
+binaries = require('./example_binaries.js');
 
 const SaveStageEnum = {
     STAGE_1: 0,
@@ -10,7 +11,11 @@ function createZip(userParams, zip, saveArgs) {
     var fileReader = new FileReader();
     fileReader.onload = function (e) {
         // Put program in zip
-        zip.file(userParams['program'].slice(2), fileReader.result);
+        if (userParams['program'] === 'gcd_default') {
+            zip.file('./' + binaries.gcd.filename, binaries.gcd.content);
+        } else {
+            zip.file(userParams['program'].slice(2), fileReader.result);
+        }
         //zipProject(projectContentList, zip);
         // put png in zip
         zip.file('block_diagram.png', saveArgs.png);
@@ -101,5 +106,11 @@ window.onload = function () {
         });
         saveAs(blob, 'briscv_config.ebv');
     });
-    
+    $('#default_radio').prop('checked', true);
+    $('#default_radio').on('change', function(event) {
+        $('#program-form').css('display', 'none');
+    });
+    $('#choose_radio').on('change', function(event) {
+        $('#program-form').css('display', 'block');
+    });
 };
