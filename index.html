@@ -81,9 +81,9 @@
                                     <a class="nav-link active" data-toggle="pill" href="#directions">Directions</a>
                                     <a class="nav-link" data-toggle="pill" href="#core_selection">System Configuration</a>
                                     <a class="nav-link" data-toggle="pill" href="#processor_parameters">Processor Parameters</a>
-                                    <a class="nav-link" data-toggle="pill" href="#cache_parameters">Cache Parameters</a>
-                                    <a class="nav-link" data-toggle="pill" href="#memory_organization">Memory Organization</a>
-                                    <a class="nav-link" data-toggle="pill" id="generate-button" href="#downloads-tab">Downloads</a>
+                                    <a class="nav-link" data-toggle="pill" href="#memory_subsystem">Memory Subsystem</a>
+                                    <a class="nav-link" data-toggle="pill" href="#interconnect_parameters">Interconnect Parameters</a>
+                                    <a class="nav-link" data-toggle="pill" href="#downloads-tab">Downloads</a>
                                 </nav>
                             </div>
 
@@ -128,20 +128,7 @@
                                             <label for="num_cores">Number of Cores:</label>
                                             <input type="text" class="form-control" value="1" id="num_cores" disabled>
                                         </div>-->
-                                        <!-- Make Radio Buttons for Topology: Bus-Based, 2D mesh, torus... -->
-                                        <!--
-                                        <div class="form-group">
-                                            <label for="noc_topology">NoC Topology:</label>
-                                            <input type="text" class="form-control" value="N/A" id="noc_tolology" disabled>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="router_config">NoC Router Configuration:</label>
-                                            <input type="text" class="form-control" value="N/A" id="router_config" disabled>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="router_algorithm">NoC Routing Algorithm:</label>
-                                            <input type="text" class="form-control" value="N/A" id="router_algorithm" disabled>
-                                        </div>-->
+                                        
                                         <div class="form-group">
                                             <label for="config">Import Saved Configuration:</label>
                                             <input type="file" id="config" name="files" accept=".ebv"/>
@@ -176,8 +163,8 @@
                                 </div>
 
                                 <!-- Cache Parameter Tab -->
-                                <div id="cache_parameters" class="container tab-pane fade">
-                                    <h2>Cache Parameters</h2>
+                                <div id="memory_subsystem" class="container tab-pane fade">
+                                    <h2>Memory Subsystem</h2>
                                     <form action="/action_page.php">
                                         <div class="form-group">
                                             <label for="num_indexesL1">Number of Indexes (L1):</label>
@@ -200,13 +187,6 @@
                                             <label for="line_size">Line Size (L1 &amp L2):</label>
                                             <input type="text" class="form-control" value="8" id="line_size" disabled>
                                         </div>
-                                    </form>
-                                </div>
-
-                                <!-- Memory Organization Tab -->
-                                <div id="memory_organization" class="container tab-pane fade">
-                                    <h2>Memory Organization</h2>
-                                    <form action="/action_page.php">
                                         <div class="form-group">
                                             <label for="num_cache_levels">Number of Cache Levels:</label>
                                             <input type="text" class="form-control" value="2" id="num_cache_levels" disabled>
@@ -221,6 +201,25 @@
                                             <input type="text" class="form-control" value="8192" id="mem_size" disabled>
                                         </div>
                                     </form>
+                                </div>
+
+                                <!-- Interconnect Tab -->
+                                <div id="interconnect_parameters" class="container tab-pane fade">
+                                    <h2>Interconnect Settings</h2>
+                                    <!-- Make Radio Buttons for Topology: Bus-Based, 2D mesh, torus... -->
+                                        
+                                        <div class="form-group">
+                                            <label for="noc_topology">NoC Topology:</label>
+                                            <input type="text" class="form-control" value="N/A" id="noc_tolology" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="router_config">NoC Router Configuration:</label>
+                                            <input type="text" class="form-control" value="N/A" id="router_config" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="router_algorithm">NoC Routing Algorithm:</label>
+                                            <input type="text" class="form-control" value="N/A" id="router_algorithm" disabled>
+                                        </div>
                                 </div>
 
                                 <!-- System Configuration Tab -->
