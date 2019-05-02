@@ -25,19 +25,19 @@ def dataParsing():
     data['address_bits'] = flask.request.args.get('address_bits')
     data['program'] = flask.request.args.get('program')
     #data = flask.request.get_json() 
-    print(data)
-    parameterSub(data)
-    resp = fileFetching()
+    wd = parameterSub(data)
+    resp = fileFetching(wd)
     resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
     resp.headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, X-Auth-Token'
     return resp
 
-def fileFetching():
+def fileFetching(wd):
     def generator():
         z = zipstream.ZipFile(mode='w') #, compression=ZIP_DEFLATED)
-        z.write('/home/rashmi/project-18-brisc-v-explorer/index.html')
-        z.write('/home/rashmi/project-18-brisc-v-explorer/read_repo.py')
+        z.write(wd)
+        #z.write('/home/rashmi/project-18-brisc-v-explorer/index.html')
+        #z.write('/home/rashmi/project-18-brisc-v-explorer/read_repo.py')
         for chunk in z:
             yield chunk
 
@@ -51,7 +51,7 @@ def parameterSub(data):
     cd = os.getcwd()
     # create workspace directory
     wd = os.path.join(cd,'work_space')
-    if os.path.exists(wd) == False:
+    if not os.path.exists(wd):
         os.mkdir(wd)
     # clone into temporary working dir
     git.Repo.clone_from('https://github.com/rashmi2383/BRISCV_Verilog.git', wd, branch='master', depth=1)
@@ -72,6 +72,7 @@ def parameterSub(data):
             print('  parameter PROGRAM = \'%s\'' % str(data['program']))
         else:
             sys.stdout.write(line)
+    return wd
 
 def main():
     app.run(debug=True, host='0.0.0.0')
