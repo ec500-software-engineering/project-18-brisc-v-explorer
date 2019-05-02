@@ -1,6 +1,7 @@
 diagram7Stage = require('./diagrams/7_stage_pipeline.js');
 diagram5Stage = require('./diagrams/5_stage_pipeline.js');
 diagramSingleCycle = require('./diagrams/single_cycle.js');
+diagramMemorySubsystem = require('./diagrams/memory_subsystem.js');
 
 var paper = undefined;
 var graph = undefined;
@@ -202,6 +203,10 @@ function showSingleCycleDiagram() {
     diagramSingleCycle.show(canvas);
 }
 
+function showMemorySubsystemDiagram() {
+    diagramMemorySubsystem.show(canvas);
+}
+
 exports.initCanvas = initCanvas;
 exports.getRegfileTemplate = getRegfileTemplate;
 exports.saveBlockDiagramAsPng = saveBlockDiagramAsPng;
@@ -209,4 +214,5 @@ exports.getBlockDiagramPngBlob = getBlockDiagramPngBlob;
 exports.showSingleCycleDiagram = showSingleCycleDiagram;
 exports.show5StagePipelineDiagram = show5StagePipelineDiagram;
 exports.show7StagePipelineDiagram = show7StagePipelineDiagram;
+exports.showMemorySubsystemDiagram = showMemorySubsystemDiagram;
 exports.updateDiagramDimensions = updateDiagramDimensions;

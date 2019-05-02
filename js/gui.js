@@ -1,6 +1,8 @@
 utils = require('./utils.js');
 diagram = require('./block_diagram.js');
 
+var currentDiagramName = '';
+
 var messageWindow = {
     displayStr: '',
     
@@ -171,8 +173,19 @@ function init() {
     diagram.initCanvas();
     diagram.showSingleCycleDiagram();
     $('#core-sel').on('change', function(event) {
-        updateBlockDiagram(event.target.value);
+        currentDiagramName = event.target.value;
+        updateBlockDiagram(currentDiagramName);
     });
+    $('#nav_menu_div nav a').on('click', function(event) {
+        console.log($(this).text());
+        var tabId = $(this).attr('href');
+        if (tabId === '#memory_subsystem') {
+            diagram.showMemorySubsystemDiagram();
+        } else {
+            updateBlockDiagram(currentDiagramName);
+        }
+    });
+    currentDiagramName = $('#core-sel option:selected').val();
     $(window).resize(function() {
         diagram.updateDiagramDimensions();
     });
