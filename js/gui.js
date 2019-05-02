@@ -173,7 +173,9 @@ function init() {
     $('#core-sel').on('change', function(event) {
         updateBlockDiagram(event.target.value);
     });
-    
+    $(window).resize(function() {
+        diagram.updateDiagramDimensions();
+    });
 }
 
 exports.init = init;

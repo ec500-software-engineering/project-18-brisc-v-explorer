@@ -23,8 +23,8 @@ function initCanvas() {
     paper = new joint.dia.Paper({
         el: document.getElementById('diagram-div'),
         model: graph,
-        width: 500,
-        height: 400,
+        width: $('#diagram-div').parent().width(),
+        height: $('#diagram-div').parent().height(),
         gridSize: 1,
         interactive: false
     });
@@ -84,6 +84,11 @@ function initCanvas() {
         onUpdatedCTM: function () {},
         eventsListenerElement: null
     });
+}
+
+function updateDiagramDimensions(newWidth, newHeight) {
+    canvas.paper.setDimensions($('#diagram-div').parent().width(), 
+                               $('#diagram-div').parent().height());
 }
 
 function saveBlockDiagramAsPng() {
@@ -204,3 +209,4 @@ exports.getBlockDiagramPngBlob = getBlockDiagramPngBlob;
 exports.showSingleCycleDiagram = showSingleCycleDiagram;
 exports.show5StagePipelineDiagram = show5StagePipelineDiagram;
 exports.show7StagePipelineDiagram = show7StagePipelineDiagram;
+exports.updateDiagramDimensions = updateDiagramDimensions;
