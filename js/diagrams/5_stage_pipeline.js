@@ -1,6 +1,6 @@
 blockDiagramUtils = require('../block_diagram.js');
 
-function init5StageStalledOrBypassedPipelineDiagram(canvas) {
+function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
     canvas.graph.clear();
     canvas.graphScale.x = 0.8;
     canvas.graphScale.y = 0.8;
@@ -161,8 +161,6 @@ function init5StageStalledOrBypassedPipelineDiagram(canvas) {
     });
     fetchToDecodeLink.addTo(canvas.graph);
     
-    // stall registers?
-    //exec to memory
     var execToMemRegFileBlockTemplate = blockDiagramUtils.getRegfileTemplate(
         executeRegFileBlockTemplate.regfile.position().x, 
         controlUnitBlock.position().y + 23, 25, 
@@ -251,9 +249,9 @@ function init5StageStalledOrBypassedPipelineDiagram(canvas) {
     });
     controlToExectuteLink.addTo(canvas.graph);
     
-    var controlToExecStallLink = controlToExectuteLink.clone();
-    controlToExecStallLink.target(execToMemRegFileBlockTemplate.regfile);
-    controlToExecStallLink.addTo(canvas.graph);
+    var controlToExecPipelineRegLink = controlToExectuteLink.clone();
+    controlToExecPipelineRegLink.target(execToMemRegFileBlockTemplate.regfile);
+    controlToExecPipelineRegLink.addTo(canvas.graph);
     
     var executeToFetchBypassLink = executeToMemoryLink.clone();
     executeToFetchBypassLink.source(executeRegFileBlockTemplate.regfile);
@@ -271,39 +269,39 @@ function init5StageStalledOrBypassedPipelineDiagram(canvas) {
     });
     executeToFetchBypassLink.addTo(canvas.graph);
     
-    var execStallToMemLink = controlToExectuteLink.clone();
-    execStallToMemLink.source(execToMemRegFileBlockTemplate.regfile);
-    execStallToMemLink.target(memoryUnitBlock);
-    execStallToMemLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
-    execStallToMemLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
-    execStallToMemLink.router('manhattan', {
+    var execPipelineRegToMemLink = controlToExectuteLink.clone();
+    execPipelineRegToMemLink.source(execToMemRegFileBlockTemplate.regfile);
+    execPipelineRegToMemLink.target(memoryUnitBlock);
+    execPipelineRegToMemLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
+    execPipelineRegToMemLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
+    execPipelineRegToMemLink.router('manhattan', {
         startDirections: ['right'],
         endDirections: ['top'] 
     });
-    execStallToMemLink.addTo(canvas.graph);
+    execPipelineRegToMemLink.addTo(canvas.graph);
     
-    var execStallToFetchLink = execStallToMemLink.clone();
-    execStallToFetchLink.target(fetchBlock);
-    execStallToFetchLink.router('manhattan', {
+    var execPipelineRegToFetchLink = execPipelineRegToMemLink.clone();
+    execPipelineRegToFetchLink.target(fetchBlock);
+    execPipelineRegToFetchLink.router('manhattan', {
         startDirections: ['right'],
         padding: 12
     });
-    execStallToFetchLink.addTo(canvas.graph);
+    execPipelineRegToFetchLink.addTo(canvas.graph);
     
-    var execStallToMemStallLink = execStallToFetchLink.clone();
-    execStallToMemStallLink.source(execToMemRegFileBlockTemplate.regfile);
-    execStallToMemStallLink.target(memToWriteBackRegFileBlockTemplate.regfile);
-    execStallToMemStallLink.addTo(canvas.graph);
+    var execPipelineRegToMemPipelineRegLink = execPipelineRegToFetchLink.clone();
+    execPipelineRegToMemPipelineRegLink.source(execToMemRegFileBlockTemplate.regfile);
+    execPipelineRegToMemPipelineRegLink.target(memToWriteBackRegFileBlockTemplate.regfile);
+    execPipelineRegToMemPipelineRegLink.addTo(canvas.graph);
     
-    var memStallToWriteBackLink = execStallToMemStallLink.clone();
-    memStallToWriteBackLink.source(memToWriteBackRegFileBlockTemplate.regfile);
-    memStallToWriteBackLink.target(writeBackBlock);
-    memStallToWriteBackLink.router('manhattan', {
+    var memPipelineRegToWriteBackLink = execPipelineRegToMemPipelineRegLink.clone();
+    memPipelineRegToWriteBackLink.source(memToWriteBackRegFileBlockTemplate.regfile);
+    memPipelineRegToWriteBackLink.target(writeBackBlock);
+    memPipelineRegToWriteBackLink.router('manhattan', {
         startDirections: ['right']
     });
-    memStallToWriteBackLink.attr('line/stroke', writeBackBlock.attr('body/fill'));
-    memStallToWriteBackLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
-    memStallToWriteBackLink.addTo(canvas.graph);
+    memPipelineRegToWriteBackLink.attr('line/stroke', writeBackBlock.attr('body/fill'));
+    memPipelineRegToWriteBackLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
+    memPipelineRegToWriteBackLink.addTo(canvas.graph);
     
     var memoryUnitToDataMemoryLink = controlToDecodeLink.clone();
     memoryUnitToDataMemoryLink.source(memoryUnitBlock);
@@ -336,4 +334,4 @@ function init5StageStalledOrBypassedPipelineDiagram(canvas) {
     fetchToInsMemoryLink.addTo(canvas.graph);
 }
 
-exports.show = init5StageStalledOrBypassedPipelineDiagram;
+exports.show = init5StagePipelineRegedOrBypassedPipelineDiagram;
