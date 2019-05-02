@@ -123,19 +123,21 @@ function init7StageBypassedPiplineDiagram(canvas) {
     writeBackRegFileBlockTemplate.regfile.addTo(canvas.graph);
     writeBackRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
     // control unit
-    var controlUnitBlock = decodeBlock.clone();
-    controlUnitBlock.resize(80, 35);
-    controlUnitBlock.translate(2, -decodeBlock.attributes.size.height + 10);
+    var controlUnitBlock = new joint.shapes.standard.Circle();
+    controlUnitBlock.resize(70, 70);
+    controlUnitBlock.position(decodeBlock.position().x + 2, 
+                              decodeBlock.position().y - decodeBlock.attributes.size.height - 20);
     controlUnitBlock.attr('label/text', 'Control\nUnit');
     controlUnitBlock.attr('body/fill', '#77b1bd');
+    controlUnitBlock.attr('label/fill', 'white');
     controlUnitBlock.addTo(canvas.graph);
     controlUnitBlock.on('change:position', function() {
         console.log('ControlUnitBlock position: ' + controlUnitBlock.position());
     });
      // control unit Regfile
     var controlRegFileBlockTemplate = blockDiagramUtils.getRegfileTemplate(
-        controlUnitBlock.position().x + (controlUnitBlock.attributes.size.width - 10), 
-        controlUnitBlock.position().y, 25, controlUnitBlock.attributes.size.height);
+        decodeRegFileBlockTemplate.regfile.position().x + 20, 
+        controlUnitBlock.position().y + 23, 25, 35);
     controlRegFileBlockTemplate.regfile.attr('label/text', '');
     controlRegFileBlockTemplate.regfile.addTo(canvas.graph);
     controlRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
@@ -159,24 +161,24 @@ function init7StageBypassedPiplineDiagram(canvas) {
     //exec to memory
     var execToMemRegFileBlockTemplate = blockDiagramUtils.getRegfileTemplate(
         executeRegFileBlockTemplate.regfile.position().x, 
-        controlUnitBlock.position().y, 25, 
-        controlUnitBlock.attributes.size.height);
+        controlUnitBlock.position().y + 23, 25, 
+        controlRegFileBlockTemplate.regfile.attributes.size.height);
     execToMemRegFileBlockTemplate.regfile.attr('label/text', '');
     execToMemRegFileBlockTemplate.regfile.addTo(canvas.graph);
     execToMemRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
     // memory to exec register
     var memStage2ndPipelineRegfileTemplate = blockDiagramUtils.getRegfileTemplate(
         memoryRegFileBlockTemplate.regfile.position().x, 
-        controlUnitBlock.position().y, 25, 
-        controlUnitBlock.attributes.size.height);
+        controlUnitBlock.position().y + 23, 25, 
+        controlRegFileBlockTemplate.regfile.attributes.size.height);
     memStage2ndPipelineRegfileTemplate.regfile.attr('label/text', '');
     memStage2ndPipelineRegfileTemplate.regfile.addTo(canvas.graph);
     memStage2ndPipelineRegfileTemplate.clockSymbol.addTo(canvas.graph);
     
     var memStage1stPipelineRegfileTemplate = blockDiagramUtils.getRegfileTemplate(
         memoryRegFileBlockTemplate.regfile.position().x - 60, 
-        controlUnitBlock.position().y, 25, 
-        controlUnitBlock.attributes.size.height);
+        controlUnitBlock.position().y + 23, 25, 
+        controlRegFileBlockTemplate.regfile.attributes.size.height);
     memStage1stPipelineRegfileTemplate.regfile.attr('label/text', '');
     memStage1stPipelineRegfileTemplate.regfile.addTo(canvas.graph);
     memStage1stPipelineRegfileTemplate.clockSymbol.addTo(canvas.graph);
@@ -223,7 +225,14 @@ function init7StageBypassedPiplineDiagram(canvas) {
     
     var controlToDecodeLink = fetchToDecodeLink.clone();
     controlToDecodeLink.source(controlUnitBlock);
-    controlToDecodeLink.target(decodeBlock);
+    controlToDecodeLink.target(decodeBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: -2
+            }
+        }
+    });
     controlToDecodeLink.attr({
         line: {
             strokeWidth: 3,
@@ -237,6 +246,11 @@ function init7StageBypassedPiplineDiagram(canvas) {
     });
     console.log(controlToDecodeLink);
     controlToDecodeLink.addTo(canvas.graph);
+    
+    var controlToUpperDecodePipelineRegLink = fetchToDecodeLink.clone();
+    controlToUpperDecodePipelineRegLink.source(controlUnitBlock);
+    controlToUpperDecodePipelineRegLink.target(controlRegFileBlockTemplate.regfile);
+    controlToUpperDecodePipelineRegLink.addTo(canvas.graph);
     
     var controlToExectuteLink = fetchToDecodeLink.clone();
     controlToExectuteLink.source(controlRegFileBlockTemplate.regfile);

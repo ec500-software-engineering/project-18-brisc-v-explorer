@@ -94,11 +94,13 @@ function initSingleCycleDiagram(canvas) {
         console.log('WriteBackBlock position: ' + writeBackBlock.position());
     });
     // control unit
-    var controlUnitBlock = decodeBlock.clone();
-    controlUnitBlock.resize(80, 35);
-    controlUnitBlock.translate(-4, -decodeBlock.attributes.size.height + 10);
+    var controlUnitBlock = new joint.shapes.standard.Circle();
+    controlUnitBlock.resize(70, 70);
+    controlUnitBlock.position(decodeBlock.position().x + 1, 
+                               decodeBlock.position().y - decodeBlock.attributes.size.height - 20);
     controlUnitBlock.attr('label/text', 'Control\nUnit');
     controlUnitBlock.attr('body/fill', '#77b1bd');
+    controlUnitBlock.attr('label/fill', 'white');
     controlUnitBlock.addTo(canvas.graph);
     controlUnitBlock.on('change:position', function() {
         console.log('ControlUnitBlock position: ' + controlUnitBlock.position());
