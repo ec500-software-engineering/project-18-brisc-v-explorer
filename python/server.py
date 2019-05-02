@@ -49,14 +49,30 @@ def fileFetching(wd):
 def parameterSub(data):
     # get current directory path
     cd = os.getcwd()
-    # create workspace directory
+    
+    # create workspace directory path and git repo path
+    gd = os.path.join(cd,'git_repo_dir')
     wd = os.path.join(cd,'work_space')
+    
+    # check if the git repo directory already exists
+    if not os.path.exists(gd):
+        os.mkdir(gd)
+
+    # check if the git repo is already cloned, if not clone the project from repo
+    if len(os.listdir(gd) == 0):          
+        # clone into git repo dir
+        git.Repo.clone_from('https://github.com/rashmi2383/BRISCV_Verilog.git', gd, branch='master', depth=1)
+
+    # check if the workspace directory already exists
     if not os.path.exists(wd):
         os.mkdir(wd)
-    # clone into temporary working dir
-    git.Repo.clone_from('https://github.com/rashmi2383/BRISCV_Verilog.git', wd, branch='master', depth=1)
+
+    if len(os.listdir(wd) == 0):
+        shutil.copy(os.path.join(gd,'project_template.v'),os.path.join(wd,'project_template.v'))   
+        
     # create path of the pulled template file
     fpath = os.path.join(wd,'project_template.v')
+    
     for line in fileinput.input(fpath,inplace=True):
         if line.startswith('  parameter CORE'):
             print('  parameter CORE = %s' % str(data['core']))
