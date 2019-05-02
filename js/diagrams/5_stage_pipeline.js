@@ -2,11 +2,11 @@ blockDiagramUtils = require('../block_diagram.js');
 
 function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
     canvas.graph.clear();
-    canvas.graphScale.x = 0.8;
-    canvas.graphScale.y = 0.8;
+    canvas.graphScale.x = 0.75;
+    canvas.graphScale.y = 0.75;
     canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
     var fetchBlock = new joint.shapes.standard.Rectangle();
-    fetchBlock.position(16, 106);
+    fetchBlock.position(16, 130);
     fetchBlock.resize(80, 100);
     fetchBlock.attr({
         body: {

@@ -2,11 +2,11 @@ blockDiagramUtils = require('../block_diagram.js');
 
 function init7StageBypassedPiplineDiagram(canvas) {
     canvas.graph.clear();
-    canvas.graphScale.x = 0.65;
-    canvas.graphScale.y = 0.65;
+    canvas.graphScale.x = 0.6;
+    canvas.graphScale.y = 0.6;
     canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
     var fetchBlock = new joint.shapes.standard.Rectangle();
-    fetchBlock.position(16, 106);
+    fetchBlock.position(16, 120);
     fetchBlock.resize(150, 100);
     fetchBlock.attr({
         body: {
