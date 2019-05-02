@@ -49,16 +49,6 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
     decodeRegFileBlockTemplate.regfile.addTo(canvas.graph);
     decodeRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
     
-    // instruction memory
-    var insMemoryBlock = fetchBlock.clone();
-    insMemoryBlock.translate(-11, fetchBlock.attributes.size.height + 60);
-    insMemoryBlock.attr('label/text', 'Instruction\nMemory\n16kB');
-    insMemoryBlock.resize(100, 60);
-    insMemoryBlock.attr('body/fill', '#993131');
-    insMemoryBlock.addTo(canvas.graph);
-    insMemoryBlock.on('change:position', function() {
-        console.log('InsMemoryBlock position: ' + insMemoryBlock.position());
-    });
     // execute block
     var executeBlock = decodeRegFileBlockTemplate.regfile.clone();
     executeBlock.resize(fetchBlock.attributes.size.width, fetchBlock.attributes.size.height);
@@ -93,16 +83,6 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
     memoryRegFileBlockTemplate.regfile.attr('label/text', '');
     memoryRegFileBlockTemplate.regfile.addTo(canvas.graph);
     memoryRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
-    // data memory
-    var dataMemoryBlock = memoryUnitBlock.clone();
-    dataMemoryBlock.translate(-10, memoryUnitBlock.attributes.size.height + 60);
-    dataMemoryBlock.attr('label/text', 'Data\nMemory\n16kB');
-    dataMemoryBlock.attr('body/fill', '#993131');
-    dataMemoryBlock.resize(100, 60);
-    dataMemoryBlock.addTo(canvas.graph);
-    dataMemoryBlock.on('change:position', function() {
-        console.log('DataMemoryBlock position: ' + dataMemoryBlock.position());
-    });
     // write back
     var writeBackBlock = memoryUnitBlock.clone();
     writeBackBlock.translate(memoryUnitBlock.attributes.size.width + 35, 0);
@@ -255,7 +235,14 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
     
     var executeToFetchBypassLink = executeToMemoryLink.clone();
     executeToFetchBypassLink.source(executeRegFileBlockTemplate.regfile);
-    executeToFetchBypassLink.target(fetchBlock);
+    executeToFetchBypassLink.target(fetchBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: 10
+            }
+        }
+    });
     executeToFetchBypassLink.router('manhattan', {
         startDirections: ['right'],
         endDirections: ['bottom'],
@@ -303,16 +290,21 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
     memPipelineRegToWriteBackLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
     memPipelineRegToWriteBackLink.addTo(canvas.graph);
     
-    var memoryUnitToDataMemoryLink = controlToDecodeLink.clone();
-    memoryUnitToDataMemoryLink.source(memoryUnitBlock);
-    memoryUnitToDataMemoryLink.target(dataMemoryBlock);
-    memoryUnitToDataMemoryLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
-    memoryUnitToDataMemoryLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
-    memoryUnitToDataMemoryLink.attr('line/sourceMarker/fill', memoryUnitBlock.attr('body/fill'));
-    memoryUnitToDataMemoryLink.addTo(canvas.graph);
+    // memory subsystem link
+    var memorySubsystemInterfaceBlock = fetchBlock.clone();
+    memorySubsystemInterfaceBlock.translate(0, fetchBlock.attributes.size.height + 80);
+    memorySubsystemInterfaceBlock.attr('label/text', 'Memory Subsystem');
+    var memIfWidth = writeBackBlock.position().x + 
+        (writeBackBlock.attributes.size.width) - fetchBlock.position().x;
+    memorySubsystemInterfaceBlock.resize(memIfWidth, 60);
+    memorySubsystemInterfaceBlock.attr('body/fill', '#006666');
+    memorySubsystemInterfaceBlock.addTo(canvas.graph);
+    memorySubsystemInterfaceBlock.on('change:position', function() {
+        console.log('InsMemoryBlock position: ' + memorySubsystemInterfaceBlock.position());
+    });
     
-    var fetchToInsMemoryLink = controlToDecodeLink.clone();
-    fetchToInsMemoryLink.source(fetchBlock, {
+    var fetchToMemSubsystemLink = controlToDecodeLink.clone();
+    fetchToMemSubsystemLink.source(fetchBlock, {
         anchor: {
             name: 'center',
             args: {
@@ -320,7 +312,7 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
             }
         }
     });
-    fetchToInsMemoryLink.target(insMemoryBlock, {
+    fetchToMemSubsystemLink.target(memorySubsystemInterfaceBlock, {
         anchor: {
             name: 'center',
             args: {
@@ -328,10 +320,29 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
             }
         }
     });
-    fetchToInsMemoryLink.attr('line/stroke', fetchBlock.attr('body/fill'));
-    fetchToInsMemoryLink.attr('line/targetMarker/fill', fetchBlock.attr('body/fill'));
-    fetchToInsMemoryLink.attr('line/sourceMarker/fill', fetchBlock.attr('body/fill'));
-    fetchToInsMemoryLink.addTo(canvas.graph);
+    fetchToMemSubsystemLink.attr('line/stroke', fetchBlock.attr('body/fill'));
+    fetchToMemSubsystemLink.attr('line/targetMarker/fill',fetchBlock.attr('body/fill'));
+    fetchToMemSubsystemLink.attr('line/sourceMarker/fill', fetchBlock.attr('body/fill'));
+    fetchToMemSubsystemLink.connector('rounded', {
+        radius: 5
+    });
+    fetchToMemSubsystemLink.router('manhattan', {
+        startDirections: ['bottom'],
+        endDirections: ['top']
+    });
+    fetchToMemSubsystemLink.addTo(canvas.graph);
+    
+    
+    var memUnitToMemSubsystemLink = fetchToMemSubsystemLink.clone();
+    memUnitToMemSubsystemLink.source(memoryUnitBlock);
+    memUnitToMemSubsystemLink.target(memorySubsystemInterfaceBlock);
+    memUnitToMemSubsystemLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
+    memUnitToMemSubsystemLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
+    memUnitToMemSubsystemLink.attr('line/sourceMarker/fill', memoryUnitBlock.attr('body/fill'));
+    memUnitToMemSubsystemLink.connector('rounded', {
+        radius: 5
+    });
+    memUnitToMemSubsystemLink.addTo(canvas.graph);
 }
 
 exports.show = init5StagePipelineRegedOrBypassedPipelineDiagram;
