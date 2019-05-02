@@ -44,16 +44,6 @@ function initSingleCycleDiagram(canvas) {
     regTemplate.regfile.addTo(canvas.graph);
     regTemplate.clockSymbol.addTo(canvas.graph);
     
-    // instruction memory
-    var insMemoryBlock = fetchBlock.clone();
-    insMemoryBlock.translate(-14, fetchBlock.attributes.size.height + 35);
-    insMemoryBlock.attr('label/text', 'Instruction\nMemory\n16kB');
-    insMemoryBlock.resize(100, 60);
-    insMemoryBlock.attr('body/fill', '#993131');
-    insMemoryBlock.addTo(canvas.graph);
-    insMemoryBlock.on('change:position', function() {
-        console.log('InsMemoryBlock position: ' + insMemoryBlock.position());
-    });
     // execute block
     var executeBlock = regTemplate.regfile.clone();
     executeBlock.resize(fetchBlock.attributes.size.width, fetchBlock.attributes.size.height);
@@ -73,16 +63,6 @@ function initSingleCycleDiagram(canvas) {
     memoryUnitBlock.addTo(canvas.graph);
     memoryUnitBlock.on('change:position', function() {
         console.log('MemoryUnitBlock position: ' + memoryUnitBlock.position());
-    });
-    // data memory
-    var dataMemoryBlock = memoryUnitBlock.clone();
-    dataMemoryBlock.translate(-15, memoryUnitBlock.attributes.size.height + 35);
-    dataMemoryBlock.attr('label/text', 'Data\nMemory\n16kB');
-    dataMemoryBlock.attr('body/fill', '#993131');
-    dataMemoryBlock.resize(100, 60);
-    dataMemoryBlock.addTo(canvas.graph);
-    dataMemoryBlock.on('change:position', function() {
-        console.log('DataMemoryBlock position: ' + dataMemoryBlock.position());
     });
     // write back
     var writeBackBlock = memoryUnitBlock.clone();
@@ -189,29 +169,53 @@ function initSingleCycleDiagram(canvas) {
     var controlToWriteBack = controlToMemoryLink.clone();
     controlToWriteBack.target(writeBackBlock);
     controlToWriteBack.addTo(canvas.graph);
-    // memory links
-    var memoryUnitToDataMemoryLink = controlToDecodeLink.clone();
-    memoryUnitToDataMemoryLink.router('manhattan');
-    memoryUnitToDataMemoryLink.source(memoryUnitBlock);
-    memoryUnitToDataMemoryLink.target(dataMemoryBlock);
-    memoryUnitToDataMemoryLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
-    memoryUnitToDataMemoryLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
-    memoryUnitToDataMemoryLink.attr('line/sourceMarker/fill', memoryUnitBlock.attr('body/fill'));
-    memoryUnitToDataMemoryLink.addTo(canvas.graph);
     
-    var fetchToInsMemoryLink = controlToDecodeLink.clone();
-    console.log(fetchToInsMemoryLink);
-    fetchToInsMemoryLink.source(fetchBlock);
-    fetchToInsMemoryLink.target(insMemoryBlock);
-    fetchToInsMemoryLink.attr('line/stroke', fetchBlock.attr('body/fill'));
-    fetchToInsMemoryLink.attr('line/targetMarker/fill', fetchBlock.attr('body/fill'));
-    fetchToInsMemoryLink.attr('line/sourceMarker/fill', fetchBlock.attr('body/fill'));
-    fetchToInsMemoryLink.addTo(canvas.graph);
-    console.log(fetchToInsMemoryLink);
+    // memory subsystem interface
+    var memorySubsystemInterfaceBlock = fetchBlock.clone();
+    memorySubsystemInterfaceBlock.translate(0, fetchBlock.attributes.size.height + 80);
+    memorySubsystemInterfaceBlock.attr('label/text', 'Memory Subsystem');
+    var memIfWidth = writeBackBlock.position().x + 
+        (writeBackBlock.attributes.size.width) - fetchBlock.position().x;
+    memorySubsystemInterfaceBlock.resize(memIfWidth, 60);
+    memorySubsystemInterfaceBlock.attr('body/fill', '#006666');
+    memorySubsystemInterfaceBlock.addTo(canvas.graph);
+    memorySubsystemInterfaceBlock.on('change:position', function() {
+        console.log('InsMemoryBlock position: ' + memorySubsystemInterfaceBlock.position());
+    });
     
-    // decode to regfile link
-    var decodeHalfX = decodeBlock.position().x + (decodeBlock.attributes.size.width / 2);
-    var decodeYOff = decodeBlock.position().y + decodeBlock.attributes.size.height;
+    var fetchToMemSubsystemLink = controlToDecodeLink.clone();
+    fetchToMemSubsystemLink.source(fetchBlock);
+    fetchToMemSubsystemLink.target(memorySubsystemInterfaceBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: -20
+            }
+        }
+    });
+    fetchToMemSubsystemLink.attr('line/stroke', fetchBlock.attr('body/fill'));
+    fetchToMemSubsystemLink.attr('line/targetMarker/fill',fetchBlock.attr('body/fill'));
+    fetchToMemSubsystemLink.attr('line/sourceMarker/fill', fetchBlock.attr('body/fill'));
+    fetchToMemSubsystemLink.connector('rounded', {
+        radius: 5
+    });
+    fetchToMemSubsystemLink.router('manhattan', {
+        startDirections: ['bottom'],
+        endDirections: ['top']
+    });
+    fetchToMemSubsystemLink.addTo(canvas.graph);
+    
+    
+    var memUnitToMemSubsystemLink = fetchToMemSubsystemLink.clone();
+    memUnitToMemSubsystemLink.source(memoryUnitBlock);
+    memUnitToMemSubsystemLink.target(memorySubsystemInterfaceBlock);
+    memUnitToMemSubsystemLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
+    memUnitToMemSubsystemLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
+    memUnitToMemSubsystemLink.attr('line/sourceMarker/fill', memoryUnitBlock.attr('body/fill'));
+    memUnitToMemSubsystemLink.connector('rounded', {
+        radius: 5
+    });
+    memUnitToMemSubsystemLink.addTo(canvas.graph);
 }
 
 exports.show = initSingleCycleDiagram;
