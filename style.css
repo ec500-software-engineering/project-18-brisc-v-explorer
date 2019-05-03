@@ -289,7 +289,7 @@ width: 90%;
 
 #messages {
     overflow: auto;
-    height: 100px;
+    height: 200px;
     background-color: white;
     white-space: nowrap;
     width: 80%;
