@@ -116,23 +116,6 @@ function updateIQueueSvg(inputId, svgIdList) {
     };
 }
 
-function cleanProjectName() {
-    // This function finds and removes/replaces charachters that cannot be in
-    // verilog module names.
-
-    var projectName = document.getElementById("project_name").value;
-    var cleanProjectName = projectName.replace(/[^a-zA-Z1-9 ]/g, "_");
-    var dispStr;
-
-    if (cleanProjectName != projectName) {
-        dispStr = "Warning: Replacing non alpha-numeric charachters in Project Name with underscores.";
-        dispStr += "\nOriginal Name: " + projectName;
-        dispStr += "\nClean Name: " + cleanProjectName;
-        document.getElementById("output_textarea").value = dispStr;
-        document.getElementById("project_name").value = cleanProjectName;
-    }
-}
-
 function updateBlockDiagram(selector) {
     if (selector === 'Single Cycle')
         diagram.showSingleCycleDiagram();
@@ -198,5 +181,4 @@ function init() {
 exports.init = init;
 exports.getUserParams = getUserParameters;
 exports.updateBlockDiagram = updateBlockDiagram;
-exports.cleanProjectName = cleanProjectName;
 exports.messageWindow = messageWindow;

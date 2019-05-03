@@ -84,6 +84,18 @@ function loadUserParameters(configJson) {
     $('#core-sel').val(configJson['core_type']);
 }
 
+function sanitizeProjectName() {
+    var projectName = $('#project_name').val();
+    var cleanProjectName = projectName.replace(/[^a-zA-Z1-9 ]/g, '_');
+
+    if (cleanProjectName !== projectName) {
+        gui.messageWindow.println("Warning: Replacing non alpha-numeric charachters in Project Name with underscores.");
+        gui.messageWindow.println("Original Name: " + projectName);
+        gui.messageWindow.println("Clean Name: " + cleanProjectName);
+        $('#project_name').val(cleanProjectName);
+    }
+}
+
 
 window.onload = function () {
     // initialize diagram
@@ -118,5 +130,8 @@ window.onload = function () {
     });
     $('#choose_radio').on('change', function(event) {
         $('#program-form').css('display', 'block');
+    });
+    $('#project_name').on('input', function(event) {
+        sanitizeProjectName();
     });
 };
