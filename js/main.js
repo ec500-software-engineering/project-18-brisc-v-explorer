@@ -7,38 +7,40 @@ const SaveStageEnum = {
     STAGE_2: 1
 };
 
-function createZip(userParams, zip, saveArgs) {
-    var fileReader = new FileReader();
-    fileReader.onload = function (e) {
-        // Put program in zip
-        if (userParams['program'] === 'gcd_default') {
-            zip.file('./' + binaries.gcd.filename, binaries.gcd.content);
-        } else {
-            zip.file(userParams['program'].slice(2), fileReader.result);
-        }
-        //zipProject(projectContentList, zip);
-        // put png in zip
-        zip.file('block_diagram.png', saveArgs.png);
-        // Display parameters on output text area
-        gui.messageWindow.println("Generating Project with the following settings:");
-        gui.messageWindow.println("Project Name: " + userParams['project_name']);
-        gui.messageWindow.println("Core Type: " + userParams['core_type']);
-        gui.messageWindow.println("Data Width: " + userParams['data_width']);
-        gui.messageWindow.println("Index Bits: " + userParams['index_bits'] + " (Fixed and Unused)")
-        gui.messageWindow.println("Offset Bits: " + userParams['offset_bits'] + " (Fixed and Unused)");
-        gui.messageWindow.println("Address Bits: " + userParams['address_bits']);
-        gui.messageWindow.println("Program: " + userParams['program']);
+function finalizeZip(userParams, zip, saveArgs) {
+    zip.file('block_diagram.png', saveArgs.png);
+    // Display parameters on output text area
+    gui.messageWindow.println("Generating Project with the following settings:");
+    gui.messageWindow.println("Project Name: " + userParams['project_name']);
+    gui.messageWindow.println("Core Type: " + userParams['core_type']);
+    gui.messageWindow.println("Data Width: " + userParams['data_width']);
+    gui.messageWindow.println("Index Bits: " + userParams['index_bits'] + " (Fixed and Unused)")
+    gui.messageWindow.println("Offset Bits: " + userParams['offset_bits'] + " (Fixed and Unused)");
+    gui.messageWindow.println("Address Bits: " + userParams['address_bits']);
+    gui.messageWindow.println("Program: " + userParams['program']);
 
-        // Generate and download the zip file
-        zip.generateAsync({
-            type: 'blob'
-        }).then(function (content) {
-            // see FileSaver.js
-            saveAs(content, userParams['project_name'] + '.zip');
-        });
-    };
-    var file = document.getElementById("program").files[0];
-    fileReader.readAsText(file);
+    // Generate and download the zip file
+    zip.generateAsync({
+        type: 'blob'
+    }).then(function (content) {
+        // see FileSaver.js
+        saveAs(content, userParams['project_name'] + '.zip');
+    });
+}
+
+function addProgramToZip(userParams, zip, saveArgs) {
+    if (userParams['program'] === 'gcd_default') {
+        zip.file(binaries.gcd.filename, binaries.gcd.content);
+        finalizeZip(userParams, zip, saveArgs);
+    } else {
+        var fileReader = new FileReader();
+        fileReader.onload = function (e) {
+            zip.file(userParams['program'].slice(2), fileReader.result);
+            finalizeZip(userParams, zip, saveArgs);
+        };
+        var file = document.getElementById("program").files[0];
+        fileReader.readAsText(file);
+    }
 }
 
 function addBlockDiagramToProject(pngBlob) {
@@ -62,7 +64,7 @@ function saveProject(stage, args) {
         // assert args !== {}
         var userParams = gui.getUserParams();
         // this launch an async request to fetch files from the remote server
-        verilog.remote.getConfiguredProject(userParams, createZip, args);
+        verilog.remote.getConfiguredProject(userParams, addProgramToZip, args);
     }
 }
 
