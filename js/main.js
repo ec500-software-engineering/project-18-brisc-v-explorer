@@ -17,7 +17,11 @@ function finalizeZip(userParams, zip, saveArgs) {
     gui.messageWindow.println("Index Bits: " + userParams['index_bits'] + " (Fixed and Unused)")
     gui.messageWindow.println("Offset Bits: " + userParams['offset_bits'] + " (Fixed and Unused)");
     gui.messageWindow.println("Address Bits: " + userParams['address_bits']);
-    gui.messageWindow.println("Program: " + userParams['program']);
+    if (userParams['program'] === 'gcd_default') {
+        gui.messageWindow.println("Program: ./" + binaries.gcd.filename);
+    } else {
+        gui.messageWindow.println("Program: " + userParams['program']);
+    }
 
     // Generate and download the zip file
     zip.generateAsync({
