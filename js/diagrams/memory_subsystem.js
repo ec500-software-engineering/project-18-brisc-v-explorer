@@ -11,14 +11,14 @@ function initMemorySubsystemDiagram(canvas) {
         body: {
             rx: 6,
             ry: 6,
-            fill: '#b32d00'
+            fill: '#0086b3'
         },
         label: {
             fill: 'white',
             text: 'L1 Instruction\nCache\n16kB'
         }
     });
-    l1InsCacheBlock.position(50, 10);
+    l1InsCacheBlock.position(50, 5);
     l1InsCacheBlock.resize(100, 60);
     l1InsCacheBlock.addTo(canvas.graph);
     l1InsCacheBlock.on('change:position', function () {
@@ -31,7 +31,7 @@ function initMemorySubsystemDiagram(canvas) {
         body: {
             rx: 6,
             ry: 6,
-            fill: '#b32d00'
+            fill: '#0086b3'
         },
         label: {
             fill: 'white',
@@ -46,20 +46,20 @@ function initMemorySubsystemDiagram(canvas) {
     });
     l1InsCacheBlock.addTo(canvas.graph);
 
-    var sharedBusBlock = l1InsCacheBlock.clone();
+    /*var sharedBusBlock = l1InsCacheBlock.clone();
     sharedBusBlock.attr('label/text', 'Shared Bus');
     var busWidth = (l1DataCacheBlock.position().x + l1DataCacheBlock.attributes.size.width) - l1InsCacheBlock.position().x;
     sharedBusBlock.resize(busWidth, 20);
     sharedBusBlock.translate(0, 100);
     sharedBusBlock.attr('body/fill', '#cc6600');
-    sharedBusBlock.addTo(canvas.graph);
+    sharedBusBlock.addTo(canvas.graph);*/
 
     var l2CombinedCacheBlock = new joint.shapes.standard.Rectangle();
     l2CombinedCacheBlock.attr({
         body: {
             rx: 6,
             ry: 6,
-            fill: '#992600'
+            fill: '#00a3cc'
         },
         label: {
             fill: 'white',
@@ -67,93 +67,113 @@ function initMemorySubsystemDiagram(canvas) {
         }
     });
     l2CombinedCacheBlock.resize(150, 70);
-    l2CombinedCacheBlock.addTo(canvas.graph);
+    var l1l2MidPoint = l1DataCacheBlock.position().x - (l1InsCacheBlock.position().x + l1InsCacheBlock.attributes.size.width);
+    l1l2MidPoint /= 2;
+    var l2PositionX = l1l2MidPoint + (l2CombinedCacheBlock.attributes.size.width / 2);
+    var l2PositionY = l1DataCacheBlock.position().y + 130;
+    l2CombinedCacheBlock.position(l2PositionX, l2PositionY);
     l2CombinedCacheBlock.on('change:position', function () {
         console.log('L1 Data cache position: ' + l2CombinedCacheBlock.position());
     });
-    var l2PositionX = (sharedBusBlock.position().x + (sharedBusBlock.attributes.size.width / 2));
-    l2PositionX -= (l2CombinedCacheBlock.attributes.size.width / 2);
-    var l2PositionY = sharedBusBlock.position().y + 50;
-    l2CombinedCacheBlock.position(l2PositionX, l2PositionY);
     l2CombinedCacheBlock.addTo(canvas.graph);
 
-    var mainMemoryInterfaceBlock = sharedBusBlock.clone();
+    var mainMemoryInterfaceBlock = l1InsCacheBlock.clone();
     mainMemoryInterfaceBlock.attr('label/text', 'Main Memory Interface');
-    mainMemoryInterfaceBlock.translate(0, l2CombinedCacheBlock.attributes.size.height + 80);
-    mainMemoryInterfaceBlock.attr('body/fill', '#cc6600');
+    var busWidth = (l1DataCacheBlock.position().x + l1DataCacheBlock.attributes.size.width) - l1InsCacheBlock.position().x;
+    mainMemoryInterfaceBlock.resize(busWidth, 20);
+    mainMemoryInterfaceBlock.translate(0, l2CombinedCacheBlock.position().y + 110);
+    mainMemoryInterfaceBlock.attr('body/fill', '#009999');
     mainMemoryInterfaceBlock.addTo(canvas.graph);
 
     var mainMemoryBlock = mainMemoryInterfaceBlock.clone();
     mainMemoryBlock.resize(200, 70);
     var memPositionX = l2PositionX;
     memPositionX -= (mainMemoryBlock.attributes.size.width / 8);
-    var memPositionY = mainMemoryInterfaceBlock.position().y + 50;
+    var memPositionY = mainMemoryInterfaceBlock.position().y + 60;
     mainMemoryBlock.attr('label/text', 'Main Memory\n32kB');
     mainMemoryBlock.position(memPositionX, memPositionY);
-    mainMemoryBlock.attr('body/fill', '#802000');
+    mainMemoryBlock.attr('body/fill', '#2eb8b8');
     mainMemoryBlock.addTo(canvas.graph);
 
     // handle links
     // l1 i$ to shared bus
-    var busMiddleX = sharedBusBlock.position().x +
-        (sharedBusBlock.attributes.size.width / 2);
-    var l1InsCacheMiddleX = l1InsCacheBlock.position().x +
-        (l1InsCacheBlock.attributes.size.width / 2);
-    var l1InsTargetAnchorDelta = busMiddleX - l1InsCacheMiddleX;
-    var l1InsCacheToSharedBusLink = new joint.shapes.standard.Link();
-    l1InsCacheToSharedBusLink.source(l1InsCacheBlock);
-    l1InsCacheToSharedBusLink.target(sharedBusBlock, {
+    var l1InsCacheToL2CacheLink = new joint.shapes.standard.Link();
+    l1InsCacheToL2CacheLink.attr({
+        line: {
+            width: 3,
+        }
+    })
+    l1InsCacheToL2CacheLink.source(l1InsCacheBlock);
+    l1InsCacheToL2CacheLink.target(l2CombinedCacheBlock, {
         anchor: {
             name: 'center',
             args: {
-                dx: -l1InsTargetAnchorDelta
+                dx: -15
             }
         }
     });
-    l1InsCacheToSharedBusLink.attr({
+    l1InsCacheToL2CacheLink.attr({
         line: {
+            stroke: l1DataCacheBlock.attr('body/fill'),
+            strokeWidth: 3,
             sourceMarker: {
                 type: 'path',
-                d: l1InsCacheToSharedBusLink.attr('line/targetMarker/d')
+                d: l1InsCacheToL2CacheLink.attr('line/targetMarker/d')
             }
         }
     });
-    l1InsCacheToSharedBusLink.addTo(canvas.graph);
+    l1InsCacheToL2CacheLink.router('manhattan', {
+        startDirections: ['bottom'],
+        endDirections: ['top']
+    });
+    l1InsCacheToL2CacheLink.connector('rounded');
+    l1InsCacheToL2CacheLink.addTo(canvas.graph);
     // l1 i$ to shared bus
-    var l1DataCacheMiddleX = l1DataCacheBlock.position().x +
-        (l1DataCacheBlock.attributes.size.width / 2);
-    var l1DataTargetAnchorDelta = busMiddleX - l1DataCacheMiddleX;
-    var l1DataCacheToSharedBusLink = new joint.shapes.standard.Link();
-    l1DataCacheToSharedBusLink.source(l1DataCacheBlock);
-    l1DataCacheToSharedBusLink.target(sharedBusBlock, {
+    var l1DataCacheToL2CacheLink = new joint.shapes.standard.Link();
+    l1DataCacheToL2CacheLink.source(l1DataCacheBlock);
+    l1DataCacheToL2CacheLink.target(l2CombinedCacheBlock, {
         anchor: {
             name: 'center',
             args: {
-                dx: -l1DataTargetAnchorDelta
+                dx: 15
             }
         }
     });
-    l1DataCacheToSharedBusLink.attr({
+    l1DataCacheToL2CacheLink.attr({
         line: {
+            stroke: l1DataCacheBlock.attr('body/fill'),
+            strokeWidth: 3,
             sourceMarker: {
                 type: 'path',
-                d: l1DataCacheToSharedBusLink.attr('line/targetMarker/d')
+                d: l1DataCacheToL2CacheLink.attr('line/targetMarker/d')
             }
         }
     });
-    l1DataCacheToSharedBusLink.addTo(canvas.graph);
-    // bus to L2
-    var sharedBusToL2Link = l1DataCacheToSharedBusLink.clone();
-    sharedBusToL2Link.source(sharedBusBlock);
-    sharedBusToL2Link.target(l2CombinedCacheBlock);
-    sharedBusToL2Link.addTo(canvas.graph);
+    l1DataCacheToL2CacheLink.router('manhattan', {
+        startDirections: ['bottom'],
+        endDirections: ['top']
+    });
+    l1DataCacheToL2CacheLink.connector('rounded');
+    l1DataCacheToL2CacheLink.addTo(canvas.graph);
     // L2 to main memory interface
-    var l2ToMainMemInterfaceLink = l1DataCacheToSharedBusLink.clone();
+    var l2ToMainMemInterfaceLink = l1DataCacheToL2CacheLink.clone();
+    l2ToMainMemInterfaceLink.attr({
+        line: {
+            stroke: l2CombinedCacheBlock.attr('body/fill'),
+            strokeWidth: 3
+        }
+    });
     l2ToMainMemInterfaceLink.source(l2CombinedCacheBlock);
     l2ToMainMemInterfaceLink.target(mainMemoryInterfaceBlock);
     l2ToMainMemInterfaceLink.addTo(canvas.graph);
     // L2 to main memory interface
     var memInterfaceToMainMemory = l2ToMainMemInterfaceLink.clone();
+    memInterfaceToMainMemory.attr({
+       line: {
+           stroke: mainMemoryInterfaceBlock.attr('body/fill'),
+           strokeWidth: 3
+       } 
+    });
     memInterfaceToMainMemory.source(mainMemoryInterfaceBlock);
     memInterfaceToMainMemory.target(mainMemoryBlock);
     memInterfaceToMainMemory.addTo(canvas.graph);
