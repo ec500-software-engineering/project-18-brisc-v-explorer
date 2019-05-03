@@ -7,6 +7,7 @@ fiveStageStall = require('./verilog_local_repo/5_stage_pipeline_stall_base.js');
 fiveStageStallBypass = require('./verilog_local_repo/5_stage_pipeline_stall_bypass.js');
 sevenStageStallBypass = require('./verilog_local_repo/7_stage_pipeline_stall_bypass.js');
 
+const SERVER_ADDRESS = 'localhost';
 
 var local = {
     getProcessorSpecificMarcos: function (params) {
@@ -157,7 +158,7 @@ var remote = {
         var urlParams = Object.keys(params).map(function (k) {
             return encodeURIComponent(k) + '=' + encodeURIComponent(params[k])
         }).join('&');
-        var verilogEndpoint = 'http://168.122.210.26:8000/verilog_fetch?' + urlParams;
+        var verilogEndpoint = 'http://' + SERVER_ADDRESS + ':8000/verilog_fetch?' + urlParams;
         gui.messageWindow.println('Please wait; retrieving project files from remote verilog repository...');
         JSZipUtils.getBinaryContent(verilogEndpoint, function (err, data) {
             if (err === null) {
@@ -165,7 +166,7 @@ var remote = {
                     callback(params, zip, saveArgs);
                 });
             } else {
-                gui.messageWindow.println('Error: Failed to connect to remote Verilog Repository at IP address 168.122.210.26:8000');
+                gui.messageWindow.println('Error: Failed to connect to remote Verilog Repository at IP address ' + SERVER_ADDRESS + ':8000');
             }
         });
     }
