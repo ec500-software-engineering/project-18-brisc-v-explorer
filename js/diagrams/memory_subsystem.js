@@ -2,10 +2,10 @@ blockDiagramUtils = require('../block_diagram.js');
 
 function initMemorySubsystemDiagram(canvas) {
     canvas.graph.clear();
-    canvas.graphScale.x = 1;
-    canvas.graphScale.y = 1;
+    canvas.graphScale.x = 0.9;
+    canvas.graphScale.y = 0.9;
     canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
-
+    
     var l1InsCacheBlock = new joint.shapes.standard.Rectangle();
     l1InsCacheBlock.attr({
         body: {
@@ -18,7 +18,7 @@ function initMemorySubsystemDiagram(canvas) {
             text: 'L1 Instruction\nCache\n16kB'
         }
     });
-    l1InsCacheBlock.position(50, 5);
+    l1InsCacheBlock.position(50, 100);
     l1InsCacheBlock.resize(100, 60);
     l1InsCacheBlock.addTo(canvas.graph);
     l1InsCacheBlock.on('change:position', function () {
@@ -38,7 +38,7 @@ function initMemorySubsystemDiagram(canvas) {
             text: 'L1 Data\nCache\n16kB'
         }
     });
-    l1DataCacheBlock.position(canvas.paper.options.width - 150, 10);
+    l1DataCacheBlock.position(canvas.paper.options.width - 150, 100);
     l1DataCacheBlock.resize(100, 60);
     l1DataCacheBlock.addTo(canvas.graph);
     l1DataCacheBlock.on('change:position', function () {
@@ -66,27 +66,27 @@ function initMemorySubsystemDiagram(canvas) {
             text: 'L2 Combined Cache\n16kB'
         }
     });
-    l2CombinedCacheBlock.resize(150, 70);
+    l2CombinedCacheBlock.resize(150, 60);
     var l1l2MidPoint = l1DataCacheBlock.position().x - (l1InsCacheBlock.position().x + l1InsCacheBlock.attributes.size.width);
     l1l2MidPoint /= 2;
     var l2PositionX = l1l2MidPoint + (l2CombinedCacheBlock.attributes.size.width / 2);
-    var l2PositionY = l1DataCacheBlock.position().y + 130;
+    var l2PositionY = l1DataCacheBlock.position().y + l1DataCacheBlock.attributes.size.height + 50;
     l2CombinedCacheBlock.position(l2PositionX, l2PositionY);
     l2CombinedCacheBlock.on('change:position', function () {
         console.log('L1 Data cache position: ' + l2CombinedCacheBlock.position());
     });
     l2CombinedCacheBlock.addTo(canvas.graph);
 
-    var mainMemoryInterfaceBlock = l1InsCacheBlock.clone();
+    var mainMemoryInterfaceBlock = l2CombinedCacheBlock.clone();
     mainMemoryInterfaceBlock.attr('label/text', 'Main Memory Interface');
     var busWidth = (l1DataCacheBlock.position().x + l1DataCacheBlock.attributes.size.width) - l1InsCacheBlock.position().x;
     mainMemoryInterfaceBlock.resize(busWidth, 20);
-    mainMemoryInterfaceBlock.translate(0, l2CombinedCacheBlock.position().y + 110);
+    mainMemoryInterfaceBlock.position(l1InsCacheBlock.position().x, l2CombinedCacheBlock.position().y + l2CombinedCacheBlock.attributes.size.height + 40);
     mainMemoryInterfaceBlock.attr('body/fill', '#009999');
     mainMemoryInterfaceBlock.addTo(canvas.graph);
 
     var mainMemoryBlock = mainMemoryInterfaceBlock.clone();
-    mainMemoryBlock.resize(200, 70);
+    mainMemoryBlock.resize(200, 60);
     var memPositionX = l2PositionX;
     memPositionX -= (mainMemoryBlock.attributes.size.width / 8);
     var memPositionY = mainMemoryInterfaceBlock.position().y + 60;
@@ -177,7 +177,64 @@ function initMemorySubsystemDiagram(canvas) {
     memInterfaceToMainMemory.source(mainMemoryInterfaceBlock);
     memInterfaceToMainMemory.target(mainMemoryBlock);
     memInterfaceToMainMemory.addTo(canvas.graph);
-
+    
+    var coreCloudInterface = new joint.shapes.standard.Rectangle();
+    var cloudWidth = (l1DataCacheBlock.position().x + l1DataCacheBlock.attributes.size.width) - l1InsCacheBlock.position().x;
+    coreCloudInterface.resize(cloudWidth, 60);
+    coreCloudInterface.attr({
+        body: {
+            rx: 6,
+            ry: 6,
+            fill: '#006666'
+        },
+        label: {
+            fill: 'white',
+            text: 'Processor Interface'
+        }
+    });
+    coreCloudInterface.position(l1InsCacheBlock.position().x, 5);
+    coreCloudInterface.addTo(canvas.graph);
+    
+    var procIfMidPoint = coreCloudInterface.position().x + (coreCloudInterface.attributes.size.width / 2);
+    var l1InsCacheMidpoint = l1InsCacheBlock.position().x + (l1InsCacheBlock.attributes.size.width / 2);
+    var l1CacheBlockSrcAnchorDelta = procIfMidPoint - l1InsCacheMidpoint;
+    var procIfToL1InsCacheLink = l1InsCacheToL2CacheLink.clone();
+    procIfToL1InsCacheLink.source(coreCloudInterface, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: -l1CacheBlockSrcAnchorDelta
+            }
+        }
+    });
+    procIfToL1InsCacheLink.target(l1InsCacheBlock);
+    procIfToL1InsCacheLink.attr({
+        line: {
+            stroke: coreCloudInterface.attr('body/fill')
+        }
+    });
+    procIfToL1InsCacheLink.router('manhattan', {
+        startDirections: ['bottom'],
+        endDirections: ['top']
+    });
+    procIfToL1InsCacheLink.addTo(canvas.graph);
+    
+    var l1DataCacheMidpoint = l1DataCacheBlock.position().x + (l1DataCacheBlock.attributes.size.width / 2);
+    var procIfToL1DataCacheLink = procIfToL1InsCacheLink.clone();
+    procIfToL1DataCacheLink.source(coreCloudInterface, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: l1CacheBlockSrcAnchorDelta
+            }
+        }
+    });
+    procIfToL1DataCacheLink.router('manhattan', {
+        startDirections: ['bottom'],
+        endDirections: ['top']
+    });
+    procIfToL1DataCacheLink.target(l1DataCacheBlock);
+    procIfToL1DataCacheLink.addTo(canvas.graph);
 }
 
 exports.show = initMemorySubsystemDiagram;
