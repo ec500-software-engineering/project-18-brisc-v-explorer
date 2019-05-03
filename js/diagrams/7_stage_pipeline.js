@@ -2,12 +2,12 @@ blockDiagramUtils = require('../block_diagram.js');
 
 function init7StageBypassedPiplineDiagram(canvas) {
     canvas.graph.clear();
-    canvas.graphScale.x = 0.6;
-    canvas.graphScale.y = 0.6;
+    canvas.graphScale.x = 0.75;
+    canvas.graphScale.y = 0.75;
     canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
     var fetchBlock = new joint.shapes.standard.Rectangle();
-    fetchBlock.position(16, 120);
-    fetchBlock.resize(150, 100);
+    fetchBlock.position(16, 130);
+    fetchBlock.resize(80, 100);
     fetchBlock.attr({
         body: {
             rx: 6,
@@ -70,7 +70,6 @@ function init7StageBypassedPiplineDiagram(canvas) {
     executeRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
     // memory unit
     var memoryUnitBlock = executeBlock.clone();
-    memoryUnitBlock.resize(150, 100);
     memoryUnitBlock.translate(executeBlock.attributes.size.width + 55, 0);
     memoryUnitBlock.attr('label/text', 'Memory\nUnit');
     memoryUnitBlock.attr('body/fill', '#5762ab');
@@ -253,7 +252,7 @@ function init7StageBypassedPiplineDiagram(canvas) {
         anchor: {
             name: 'center',
             args: {
-                dx: -40
+                dx: 10
             }
         }
     });
@@ -272,14 +271,7 @@ function init7StageBypassedPiplineDiagram(canvas) {
     
     var execPipelineToMemLink = controlToExectuteLink.clone();
     execPipelineToMemLink.source(execToMemRegFileBlockTemplate.regfile);
-    execPipelineToMemLink.target(memoryUnitBlock, {
-        anchor: {
-            name: 'center',
-            args: {
-                dx: -40
-            }
-        }
-    });
+    execPipelineToMemLink.target(memoryUnitBlock);
     execPipelineToMemLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
     execPipelineToMemLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
     execPipelineToMemLink.router('manhattan', {
@@ -317,8 +309,8 @@ function init7StageBypassedPiplineDiagram(canvas) {
     memPipeline2ndRegToWriteBackLink.addTo(canvas.graph);
     
     // left justifying text for blocks
-    fetchBlock.attr('text/ref-x', -48);
-    memoryUnitBlock.attr('text/ref-x', -46);
+    //fetchBlock.attr('text/ref-x', -48);
+    //memoryUnitBlock.attr('text/ref-x', -46);
     
     // memory subsystem link
     var memorySubsystemInterfaceBlock = fetchBlock.clone();
@@ -334,7 +326,14 @@ function init7StageBypassedPiplineDiagram(canvas) {
     });
     
     var fetchToMemSubsystemLink = controlToDecodeLink.clone();
-    fetchToMemSubsystemLink.source(fetchBlock);
+    fetchToMemSubsystemLink.source(fetchBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: -20
+            }
+        }
+    });
     fetchToMemSubsystemLink.target(memorySubsystemInterfaceBlock, {
         anchor: {
             name: 'center',
