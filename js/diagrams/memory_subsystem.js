@@ -7,10 +7,18 @@ function initMemorySubsystemDiagram(canvas) {
     canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
 
     var l1InsCacheBlock = new joint.shapes.standard.Rectangle();
+    l1InsCacheBlock.attr({
+        body: {
+            rx: 6,
+            ry: 6,
+            fill: '#b32d00'
+        },
+        label: {
+            fill: 'white',
+            text: 'L1 Instruction\nCache\n16kB'
+        }
+    });
     l1InsCacheBlock.position(50, 10);
-    l1InsCacheBlock.attr('label/text', 'L1 Instruction\nCache\n16kB');
-    l1InsCacheBlock.attr('body/fill', '#b32d00');
-    l1InsCacheBlock.attr('label/fill', 'white');
     l1InsCacheBlock.resize(100, 60);
     l1InsCacheBlock.addTo(canvas.graph);
     l1InsCacheBlock.on('change:position', function () {
@@ -19,10 +27,18 @@ function initMemorySubsystemDiagram(canvas) {
     l1InsCacheBlock.addTo(canvas.graph);
 
     var l1DataCacheBlock = new joint.shapes.standard.Rectangle();
+    l1DataCacheBlock.attr({
+        body: {
+            rx: 6,
+            ry: 6,
+            fill: '#b32d00'
+        },
+        label: {
+            fill: 'white',
+            text: 'L1 Data\nCache\n16kB'
+        }
+    });
     l1DataCacheBlock.position(canvas.paper.options.width - 150, 10);
-    l1DataCacheBlock.attr('label/text', 'L1 Data\nCache\n16kB');
-    l1DataCacheBlock.attr('body/fill', '#b32d00');
-    l1DataCacheBlock.attr('label/fill', 'white');
     l1DataCacheBlock.resize(100, 60);
     l1DataCacheBlock.addTo(canvas.graph);
     l1DataCacheBlock.on('change:position', function () {
@@ -39,9 +55,17 @@ function initMemorySubsystemDiagram(canvas) {
     sharedBusBlock.addTo(canvas.graph);
 
     var l2CombinedCacheBlock = new joint.shapes.standard.Rectangle();
-    l2CombinedCacheBlock.attr('label/text', 'L2 Combined Cache\n16kB');
-    l2CombinedCacheBlock.attr('body/fill', '#992600');
-    l2CombinedCacheBlock.attr('label/fill', 'white');
+    l2CombinedCacheBlock.attr({
+        body: {
+            rx: 6,
+            ry: 6,
+            fill: '#992600'
+        },
+        label: {
+            fill: 'white',
+            text: 'L2 Combined Cache\n16kB'
+        }
+    });
     l2CombinedCacheBlock.resize(150, 70);
     l2CombinedCacheBlock.addTo(canvas.graph);
     l2CombinedCacheBlock.on('change:position', function () {
