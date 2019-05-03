@@ -18,7 +18,7 @@ var canvas = {
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 2.0;
 
-function initCanvas() {
+function initCanvas(clickCallback) {
     graph = new joint.dia.Graph;
     
     paper = new joint.dia.Paper({
@@ -35,6 +35,7 @@ function initCanvas() {
     });
     paper.on('cell:pointerdown', function(cellView, evt, x, y) {
         console.log(`Mouse click on (${x}, ${y}): detected element \"${getBlockName(cellView)}\"`);
+        clickCallback(getBlockName(cellView));
     });
     /*paper.on('cell:pointerdblclick', function(cellView, evt, x, y) {
         console.log(`Double click on (${x}, ${y}): detected element \"${getBlockName(cellView)}\"`);

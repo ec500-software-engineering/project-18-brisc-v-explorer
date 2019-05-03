@@ -170,7 +170,11 @@ function getUserParameters() {
 
 function init() {
     // Address Bits Update
-    diagram.initCanvas();
+    diagram.initCanvas(function(objName) {
+        if (objName === 'Memory Subsystem') {
+            $('#menu_nav a[href="#memory_subsystem"]').trigger('click');
+        }
+    });
     diagram.showSingleCycleDiagram();
     $('#core-sel').on('change', function(event) {
         currentDiagramName = event.target.value;
