@@ -35,7 +35,10 @@ def dataParsing():
 def fileFetching(wd):
     def generator():
         z = zipstream.ZipFile(mode='w') #, compression=ZIP_DEFLATED)
-        z.write(wd)
+        for folder,subfolders,files in os.walk(wd):
+            for filename in files:
+                fp = os.path.join(folder,filename)
+                z.write(fp)
         #z.write('/home/rashmi/project-18-brisc-v-explorer/index.html')
         #z.write('/home/rashmi/project-18-brisc-v-explorer/read_repo.py')
         for chunk in z:
@@ -59,7 +62,7 @@ def parameterSub(data):
         os.mkdir(gd)
 
     # check if the git repo is already cloned, if not clone the project from repo
-    if len(os.listdir(gd) == 0):          
+    if os.listdir(gd) == 0:          
         # clone into git repo dir
         git.Repo.clone_from('https://github.com/rashmi2383/BRISCV_Verilog.git', gd, branch='master', depth=1)
 
@@ -67,7 +70,7 @@ def parameterSub(data):
     if not os.path.exists(wd):
         os.mkdir(wd)
 
-    if len(os.listdir(wd) == 0):
+    if os.listdir(wd) == 0:
         shutil.copy(os.path.join(gd,'project_template.v'),os.path.join(wd,'project_template.v'))   
         
     # create path of the pulled template file
