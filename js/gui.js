@@ -156,6 +156,8 @@ function init() {
     diagram.initCanvas(function(objName) {
         if (objName === 'Memory Subsystem') {
             $('#menu_nav a[href="#memory_subsystem"]').trigger('click');
+        } else if (objName === 'Processor Interface') {
+            $('#menu_nav a[href="#processor_parameters"]').trigger('click');
         }
     });
     diagram.showSingleCycleDiagram();
