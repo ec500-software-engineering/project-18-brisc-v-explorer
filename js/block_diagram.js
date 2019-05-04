@@ -21,11 +21,12 @@ const MAX_SCALE = 2.0;
 function initCanvas(clickCallback) {
     graph = new joint.dia.Graph;
     
+    var paperHeight = $('#current_diagram').height() - $('#block_diagram_title').height();
     paper = new joint.dia.Paper({
         el: document.getElementById('diagram-div'),
         model: graph,
         width: $('#diagram-div').parent().width(),
-        height: $('#diagram-div').parent().height(),
+        height: paperHeight,
         gridSize: 1,
         interactive: false
     });
