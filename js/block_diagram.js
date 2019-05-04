@@ -18,6 +18,7 @@ var canvas = {
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 2.0;
 
+
 function initCanvas(clickCallback) {
     graph = new joint.dia.Graph;
     
@@ -87,11 +88,12 @@ function initCanvas(clickCallback) {
         onUpdatedCTM: function () {},
         eventsListenerElement: null
     });
+    
 }
 
 function updateDiagramDimensions(newWidth, newHeight) {
     canvas.paper.setDimensions($('#diagram-div').parent().width(), 
-                               $('#diagram-div').parent().height());
+                               $('#current_diagram').height() - $('#block_diagram_title').height());
 }
 
 function saveBlockDiagramAsPng() {
