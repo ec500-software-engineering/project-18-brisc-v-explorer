@@ -144,10 +144,10 @@ function init() {
             content: [{
                 type: 'component',
                 componentName: 'Getting Started',
-                width: 30
+                width: 25
             }, {
                 type: 'column',
-                width: 30,
+                width: 35,
                 content: [{
                     id: 'settings_stack',
                     type: 'stack',
