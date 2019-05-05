@@ -2,8 +2,8 @@ blockDiagramUtils = require('../block_diagram.js');
 
 function initMemorySubsystemDiagram(canvas) {
     canvas.graph.clear();
-    canvas.graphScale.x = 0.9;
-    canvas.graphScale.y = 0.9;
+    canvas.graphScale.x = 1;
+    canvas.graphScale.y = 1;
     canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
     
     var l1InsCacheBlock = new joint.shapes.standard.Rectangle();
