@@ -125,12 +125,9 @@ const downloadsTemplate = {
    <br >
    <section id="project-section">
       <div class="download">
-         <form>
-         <p>
-            <button class="download-button fas fa-file-code" id="download_project_button">
-            Download Project
-            </button>
-         </p>
+         <button class="download-button fas fa-file-code" id="download_project_button">
+         Download Project
+         </button>
          <p>
             <small class="download-desc">Download the configured Verilog RTL source code to your local machine.</small>
          </p>
@@ -139,11 +136,9 @@ const downloadsTemplate = {
    <hr>
    <section id="diagram-section">
       <div class="download">
-         <p>
-            <button class="download-button fas fa-images" id="download_diagram_button">
-            Download Diagram
-            </button>
-         </p>
+         <button class="download-button fas fa-images" id="download_diagram_button">
+         Download Diagram
+         </button>
          <p>
             <small class="download-desc">Download the block diagram of the configured project as a PNG image.</small>
          </p>
@@ -156,19 +151,15 @@ const downloadsTemplate = {
          <input type="text" class="form-control input-normal" id="config_name" value="explorer.ebv" spellcheck="false" style="width: 60%;">
       </div>
       <div class="download">
-         <p>
-            <button class="download-button fas fa-cogs" id="download_config_button">
-            Download Config
-            </button>
-         </p>
+         <button class="download-button fas fa-cogs" id="download_config_button">
+         Download Config
+         </button>
          <p>
             <small class="download-desc">Save the current project configuration to your local machine.</small>
          </p>
       </div>
    </section>
 </div>
-
-
 `
 };
 

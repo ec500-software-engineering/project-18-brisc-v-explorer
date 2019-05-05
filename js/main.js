@@ -35,10 +35,12 @@ function finalizeZip(userParams, zip, saveArgs) {
 }
 
 function addProgramToZip(userParams, zip, saveArgs) {
-    if (userParams['program'] === 'gcd_default') {
+    if (userParams['default_program_chosen'] &&
+        userParams['default_prog_name'] === 'gcd_default') {
         zip.file(binaries.gcd.filename, binaries.gcd.content);
         finalizeZip(userParams, zip, saveArgs);
-    } else if (userParams['program'] === 'factorial_default') {
+    } else if (userParams['default_program_chosen'] &&
+        userParams['default_prog_name'] === 'factorial_default') {
         zip.file(binaries.gcd.filename, binaries.factorial.content);
         finalizeZip(userParams, zip, saveArgs);
     } else {
