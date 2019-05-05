@@ -18,16 +18,21 @@ var canvas = {
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 2.0;
 
+const BlockDiagramEnum = {
+    SINGLE_CYCLE: 0,
+    FIVE_STAGE_PIPELINE_STALL: 1,
+    FIVE_STAGE_PIPELINE_BYPASS: 2,
+    SEVEN_STAGE_PIPELINE_BYPASS: 3
+};
 
 function initCanvas(clickCallback) {
     graph = new joint.dia.Graph;
     
-    var paperHeight = $('#current_diagram').height() - $('#block_diagram_title').height();
     paper = new joint.dia.Paper({
-        el: document.getElementById('diagram-div'),
+        el: document.getElementById('diagram_div'),
         model: graph,
-        width: $('#diagram-div').parent().width(),
-        height: paperHeight,
+        width: $('#diagram_div').parent().width(),
+        height: $('#diagram_div').parent().height(),
         gridSize: 1,
         interactive: false
     });
@@ -66,7 +71,7 @@ function initCanvas(clickCallback) {
     canvas.graphScale = graphScale;
     
     // set up pan and zoom
-    var svgElement = $('#diagram-div').find('svg')[0];
+    var svgElement = $('#diagram_div').find('svg')[0];
     var svgPanAndZoom = svgPanZoom(svgElement, {
         panEnabled: true,
         controlIconsEnabled: false,
@@ -92,18 +97,18 @@ function initCanvas(clickCallback) {
 }
 
 function updateDiagramDimensions(newWidth, newHeight) {
-    canvas.paper.setDimensions($('#diagram-div').parent().width(), 
-                               $('#current_diagram').height() - $('#block_diagram_title').height());
+    canvas.paper.setDimensions($('#diagram_div').parent().width(), 
+                               $('#diagram_div').parent().height());
 }
 
 function saveBlockDiagramAsPng() {
-    var xmlData = new XMLSerializer().serializeToString($('#diagram-div').find('svg')[0]);
+    var xmlData = new XMLSerializer().serializeToString($('#diagram_div').find('svg')[0]);
     var domURL = window.URL || window.webkitURL || window;
     
-    var canvas = document.getElementById('image-canvas');
+    var canvas = $('#image_canvas')[0];
     // set canvas dimensions
-    canvas.width = $('#diagram-div').width();
-    canvas.height = $('#diagram-div').height();
+    canvas.width = $('#diagram_div').width();
+    canvas.height = $('#diagram_div').height();
     // set background color
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = 'white';
@@ -127,13 +132,13 @@ function saveBlockDiagramAsPng() {
 }
 
 function getBlockDiagramPngBlob(callback) {
-    var xmlData = new XMLSerializer().serializeToString($('#diagram-div').find('svg')[0]);
+    var xmlData = new XMLSerializer().serializeToString($('#diagram_div').find('svg')[0]);
     var domURL = window.URL || window.webkitURL || window;
     
-    var canvas = document.getElementById('image-canvas');
+    var canvas = $('#image_canvas')[0];
     // set canvas dimensions
-    canvas.width = $('#diagram-div').width();
-    canvas.height = $('#diagram-div').height();
+    canvas.width = $('#diagram_div').width();
+    canvas.height = $('#diagram_div').height();
     // set background color
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = 'white';
@@ -220,3 +225,4 @@ exports.show5StagePipelineDiagram = show5StagePipelineDiagram;
 exports.show7StagePipelineDiagram = show7StagePipelineDiagram;
 exports.showMemorySubsystemDiagram = showMemorySubsystemDiagram;
 exports.updateDiagramDimensions = updateDiagramDimensions;
+exports.BlockDiagramEnum = BlockDiagramEnum;

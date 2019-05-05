@@ -1,7 +1,8 @@
 utils = require('./utils.js');
 diagram = require('./block_diagram.js');
+htmlTemplates = require('./html_templates.js');
 
-var currentDiagramName = '';
+var currentDiagramId = '';
 
 var messageWindow = {
     displayStr: '',
@@ -117,70 +118,156 @@ function updateIQueueSvg(inputId, svgIdList) {
 }
 
 function updateBlockDiagram(selector) {
-    if (selector === 'Single Cycle')
+    if (selector === diagram.BlockDiagramEnum.SINGLE_CYCLE)
         diagram.showSingleCycleDiagram();
-    else if (selector === '5 Stage Stalled Pipeline' 
-             || selector === '5 Stage Bypassed Pipeline')
+    else if (selector === diagram.BlockDiagramEnum.FIVE_STAGE_PIPELINE_STALL 
+             || selector === diagram.BlockDiagramEnum.FIVE_STAGE_PIPELINE_BYPASS)
         diagram.show5StagePipelineDiagram();
-    else if (selector === '7 Stage Bypassed Pipeline') 
+    else if (selector === diagram.BlockDiagramEnum.SEVEN_STAGE_PIPELINE_BYPASS) 
         diagram.show7StagePipelineDiagram();
     else
         console.log(`"${selector}" diagram not supported yet...`);
 }
 
-function getUserParameters() {
-    // Get all of the user input parameters
-    var dict = {}
-    dict['project_name'] = document.getElementById("project_name").value;
-    dict['core_type'] = document.getElementById("core-sel").value;
-    // Hard code this parameter. It is not used in these cores.
-    dict['core'] = 0;
-    dict['data_width'] = document.getElementById("data_width").value;
-    // Cache are unused in the current cores
-    dict['num_indexesL1'] = document.getElementById("num_indexesL1").value;
-    dict['associativityL1'] = document.getElementById("associativityL1").value;
-    dict['line_size'] = document.getElementById("line_size").value;
-    dict['index_bits'] = Math.log2(dict['num_indexesL1']);
-    dict['offset_bits'] = Math.log2(dict['line_size']);
-    dict['address_bits'] = document.getElementById("address_bits").value;
-    if ($('#default_radio').is(':checked')) {
-        dict['program'] = 'gcd_default';
-    } else {
-        dict['program'] = './' + document.getElementById('program').files[0].name;
+function switchGLSettingsTabTo(tabId, glLayout) {
+    var stack = glLayout.root.getItemsById('settings_stack')[0];
+    var tabs = glLayout.root.getItemsById(tabId);
+    if (tabs !== undefined) {
+        stack.setActiveContentItem(tabs[0]);
     }
-    return dict;
 }
 
 function init() {
-    // Address Bits Update
+    var layoutConfig = {
+        content: [{
+            type: 'row',
+            content: [{
+                type: 'component',
+                componentName: 'Getting Started',
+                width: 30
+            }, {
+                type: 'column',
+                width: 30,
+                content: [{
+                    id: 'settings_stack',
+                    type: 'stack',
+                    height: 80,
+                    content: [{
+                        type: 'component',
+                        componentName: 'Project Settings',
+                        id: 'project_settings'
+                }, {
+                        type: 'component',
+                        componentName: 'Core Settings',
+                        id: 'core_settings'
+                    
+                }, {
+                        type: 'component',
+                        componentName: 'Memory Settings',
+                        id: 'memory_settings'
+                }, {
+                        type: 'component',
+                        componentName: 'Downloads',
+                        id: 'downloads'
+                }]
+                }, {
+                    type: 'component',
+                    componentName: 'Console',
+                    height: 20
+                }]
+            }, {
+                type: 'component',
+                componentName: 'Canvas',
+                width: 40
+            }]
+        }]
+    };
+    var layout = new GoldenLayout(layoutConfig, '#gl_wrapper');
+    layout.registerComponent('Getting Started', function (container, componentState) {
+        container.getElement().html(htmlTemplates.gettingStarted.html);
+    });
+    layout.registerComponent('Core Settings', function (container, componentState) {
+        container.getElement().html(htmlTemplates.coreSettings.html);
+    });
+    layout.registerComponent('Memory Settings', function (container, componentState) {
+        container.getElement().html(htmlTemplates.memorySettings.html);
+    });
+    layout.registerComponent('Downloads', function (container, componentState) {
+        container.getElement().html(htmlTemplates.downloads.html);
+    });
+    layout.registerComponent('Canvas', function (container, componentState) {
+        container.getElement().html(htmlTemplates.canvas.html);
+    });
+    layout.registerComponent('Console', function (container, componentState) {
+        container.getElement().html(htmlTemplates.consoleWindow.html);
+    });
+    layout.registerComponent('Project Settings', function (container, componentState) {
+        container.getElement().html(htmlTemplates.projectSettings.html);
+    });
+    layout.init();
+    $('.selectpicker').selectpicker();
     diagram.initCanvas(function(objName) {
         if (objName === 'Memory Subsystem') {
-            $('#menu_nav a[href="#memory_subsystem"]').trigger('click');
+            switchGLSettingsTabTo('memory_settings', layout);
         } else if (objName === 'Processor Interface') {
-            $('#menu_nav a[href="#processor_parameters"]').trigger('click');
+            switchGLSettingsTabTo('core_settings', layout);
         }
     });
     diagram.showSingleCycleDiagram();
-    $('#core-sel').on('change', function(event) {
-        currentDiagramName = event.target.value;
-        updateBlockDiagram(currentDiagramName);
-    });
-    $('#nav_menu_div nav a').on('click', function(event) {
-        console.log($(this).text());
-        var tabId = $(this).attr('href');
-        if (tabId === '#memory_subsystem') {
-            diagram.showMemorySubsystemDiagram();
-        } else {
-            updateBlockDiagram(currentDiagramName);
+    $('#cycle_type_sel').on('change', function(event) {
+        if (event.target.value === 'Single Cycle') {
+            currentDiagramId = diagram.BlockDiagramEnum.SINGLE_CYCLE;
+            updateBlockDiagram(currentDiagramId);
+            $('#stage_group').slideUp();
+            // FIXME: lazy...
+            $('#pipeline_group_1').slideUp();
+            $('#pipeline_group_2').slideUp();
+        } else if (event.target.value === 'Multi Cycle') {
+            currentDiagramId = diagram.BlockDiagramEnum.FIVE_STAGE_PIPELINE_STALL;
+            updateBlockDiagram(currentDiagramId);
+            $('#stage_group').slideDown();
+            $('#pipeline_group_1').slideDown();
         }
     });
-    currentDiagramName = $('#core-sel option:selected').val();
+    $('#num_stages_sel').on('change', function(event) {
+        if (event.target.value === '5 Stage') {
+            $('#pipeline_group_2').hide();
+            $('#pipeline_group_1').show();
+            currentDiagramId = diagram.BlockDiagramEnum.FIVE_STAGE_PIPELINE_STALL;
+            updateBlockDiagram(currentDiagramId);
+        } else if (event.target.value === '7 Stage') {
+            $('#pipeline_group_1').hide();
+            $('#pipeline_group_2').show();
+            currentDiagramId = diagram.BlockDiagramEnum.SEVEN_STAGE_PIPELINE_BYPASS;
+            updateBlockDiagram(currentDiagramId);
+        }
+    });
+    $('#stage_group').hide();
+    $('#pipeline_group_1').hide();
+    $('#pipeline_group_2').hide();
+    var settingsStack = layout.root.getItemsById('settings_stack')[0];
+    settingsStack.on('activeContentItemChanged', function(component) {
+        if (component.config.id === 'memory_settings') {
+            diagram.showMemorySubsystemDiagram();
+        } else {
+            updateBlockDiagram(currentDiagramId);
+        }
+    });
+    currentDiagramId = diagram.BlockDiagramEnum.SINGLE_CYCLE;
     $(window).resize(function() {
         diagram.updateDiagramDimensions();
     });
+    $('#program_choose').hide();
+    $('input[name="default_program"]').on('change', function() {
+        var radioId = $(this)[0].id;
+        if (radioId === 'custom_radio') 
+            $('#program_choose').slideDown();
+        else {
+            if ($('#program_choose').attr('display') !== 'none')
+                $('#program_choose').slideUp();
+        }
+    });
 }
-
 exports.init = init;
-exports.getUserParams = getUserParameters;
 exports.updateBlockDiagram = updateBlockDiagram;
 exports.messageWindow = messageWindow;

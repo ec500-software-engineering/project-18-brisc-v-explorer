@@ -19,6 +19,8 @@ function finalizeZip(userParams, zip, saveArgs) {
     gui.messageWindow.println("Address Bits: " + userParams['address_bits']);
     if (userParams['program'] === 'gcd_default') {
         gui.messageWindow.println("Program: ./" + binaries.gcd.filename);
+    } else if (userParams['program'] === 'factorial_default') {
+        gui.messageWindow.println("Program: ./" + binaries.factorial.filename);
     } else {
         gui.messageWindow.println("Program: " + userParams['program']);
     }
@@ -36,19 +38,24 @@ function addProgramToZip(userParams, zip, saveArgs) {
     if (userParams['program'] === 'gcd_default') {
         zip.file(binaries.gcd.filename, binaries.gcd.content);
         finalizeZip(userParams, zip, saveArgs);
+    } else if (userParams['program'] === 'factorial_default') {
+        zip.file(binaries.gcd.filename, binaries.factorial.content);
+        finalizeZip(userParams, zip, saveArgs);
     } else {
         var fileReader = new FileReader();
         fileReader.onload = function (e) {
             zip.file(userParams['program'].slice(2), fileReader.result);
             finalizeZip(userParams, zip, saveArgs);
         };
-        var file = document.getElementById("program").files[0];
+        var file = $('#program').val();
         fileReader.readAsText(file);
     }
 }
 
 function addBlockDiagramToProject(pngBlob) {
-    saveProject(SaveStageEnum.STAGE_2, {png: pngBlob});
+    saveProject(SaveStageEnum.STAGE_2, {
+        png: pngBlob
+    });
 }
 
 // kinda hacky but args represents objects we need to add to the final zip
@@ -56,8 +63,7 @@ function addBlockDiagramToProject(pngBlob) {
 // to our needed objects on the stack until we finally zip the project
 // SaveStageEnum helps us keep track of where we are in the save process
 function saveProject(stage, args) {
-    var dispStr;
-    if ($('#choose_radio').is(':checked') && !$('#program').val()) {
+    if ($('#custom_radio').is(':checked') && !$('#program').val()) {
         gui.messageWindow.println("Error: You must select a program file");
         return;
     }
@@ -66,7 +72,7 @@ function saveProject(stage, args) {
         diagram.getBlockDiagramPngBlob(addBlockDiagramToProject);
     } else if (stage === SaveStageEnum.STAGE_2) {
         // assert args !== {}
-        var userParams = gui.getUserParams();
+        var userParams = getUserParameters();
         // this launch an async request to fetch files from the remote server
         verilog.remote.getConfiguredProject(userParams, addProgramToZip, args);
     }
@@ -74,14 +80,76 @@ function saveProject(stage, args) {
 
 function loadUserParameters(configJson) {
     $('#project_name').val(configJson['project_name']);
-    $('#data_width').val(configJson['data_width']);
-    $('num_indexesL1').val(configJson['#num_indexesL1']);
-    $('#associativityL1').val(configJson['associativityL1']);
+    $('#data_bit_width').val(configJson['data_width']);
+    $('#address_bit_width').val(configJson['address_bits']);
+    $('num_indexes_11').val(configJson['#num_indexesL1']);
+    $('#associativity_sel_l1').val(configJson['associativityL1']);
     $('#line_size').val(configJson['line_size']);
-    $('#index_bits').val(configJson['index_bits']);
     $('#offset_bits').val(configJson['offset_bits']);
-    $('#address_bits').val(configJson['address_bits']);
-    $('#core-sel').val(configJson['core_type']);
+    if (configJson['core_type'] === 'Single Cycle') {
+        $('#cycle_type_sel').val(configJson['core_type']);
+        $('#cycle_type_sel').selectpicker('refresh');
+    } else {
+        $('#cycle_type_sel').val('Multi Cycle');
+        $('#cycle_type_sel').selectpicker('refresh');
+        if (configJson['core_type'] === '5 Stage Stalled Pipeline') {
+            $('#num_stages_sel').val('5 Stage');
+            $('#pipeline_logic_sel_1').val('Stalled Pipeline');
+            $('#pipeline_logic_sel_1').selectpicker('refresh');
+            $('#num_stages_sel').selectpicker('refresh');
+        } else if (configJson['core_type'] === '5 Stage Bypassed Pipeline') {
+            $('#num_stages_sel').val('5 Stage');
+            $('#pipeline_logic_sel_1').val('Bypassed Pipeline');
+            $('#pipeline_logic_sel_1').selectpicker('refresh');
+            $('#num_stages_sel').selectpicker('refresh');
+        } else if (configJson['core_type'] === '7 Stage Bypassed Pipeline') {
+            $('#num_stages_sel').val('7 Stage');
+            $('#pipeline_logic_sel_2').val('Bypassed Pipeline');
+        }
+        $('#cycle_type_sel').trigger('change');
+        $('#num_stages_sel').trigger('change');
+    }
+}
+
+
+function getUserParameters() {
+    // Get all of the user input parameters
+    var dict = {}
+    dict['project_name'] = $('#project_name').val();
+    var cycleType = $('#cycle_type_sel').find(':selected').text();
+    if (cycleType === 'Single Cycle') {
+        dict['core_type'] = cycleType;
+    } else {
+        var numStages = $('#num_stages_sel').find(':selected').val();
+        if (numStages === '5 Stage') {
+            var pipelineLogic = $('#pipeline_logic_sel_1').find(':selected').val();
+        } else {
+            var pipelineLogic = $('#pipeline_logic_sel_2').find(':selected').val();
+        }
+        dict['core_type'] = `${numStages} ${pipelineLogic}`;
+    }
+    // Hard code this parameter. It is not used in these cores.
+    dict['core'] = 0;
+    dict['data_width'] = $('#data_bit_width').val();
+    // Cache are unused in the current cores
+    dict['num_indexesL1'] = $('#num_indexes_l1').val();
+    dict['associativityL1'] = $('#associativity_sel_l1').val();
+    dict['line_size'] = $('#line_size').val();
+    dict['index_bitsL1'] = Math.log2(dict['num_indexesL1']);
+    dict['offset_bitsL1'] = Math.log2(dict['line_size']);
+    dict['address_bits'] = $('#address_bit_width').val();
+    dict['default_program_chosen'] = true;
+    if ($('#factorial_radio').is(':checked')) {
+        dict['program'] = './factorial.vmh';
+        dict['default_prog_name'] = 'factorial_default';
+    } else if ($('#gcd_radio').is(':checked')) {
+        dict['program'] = './gcd.vmh';
+        dict['default_prog_name'] = 'gcd_default';
+    } else if ($('#custom_radio').is(':checked')) {
+        dict['program'] = './' + $('#program').val();
+        dict['default_program_chosen'] = false;
+    } // TODO: handle else case
+    return dict;
 }
 
 function sanitizeProjectName() {
@@ -100,15 +168,15 @@ function sanitizeProjectName() {
 window.onload = function () {
     // initialize diagram
     gui.init();
-    $('#download-project-button').on('click', function(event) {
+    $('#download_project_button').on('click', function (event) {
         saveProject(SaveStageEnum.STAGE_1, {});
     });
-    $('#download-diagram-button').on('click', function(event) {
+    $('#download_diagram_button').on('click', function (event) {
         diagram.saveBlockDiagramAsPng();
     });
-    $('#config').on('change', function(event) {
+    $('#config').on('change', function (event) {
         var reader = new FileReader();
-        reader.onload = function(event) {
+        reader.onload = function (event) {
             console.log(event.target.result);
             var configJson = JSON.parse(event.target.result);
             console.log(configJson);
@@ -116,22 +184,25 @@ window.onload = function () {
         };
         reader.readAsText(event.target.files[0]);
     });
-    $('#download-config-button').on('click', function(event) {
-        var userParams = gui.getUserParams();
+    $('#download_config_button').on('click', function (event) {
+        var userParams = getUserParameters();
         var data = JSON.stringify(userParams);
         var blob = new Blob([data], {
             type: 'application/json;charset=utf-8'
         });
-        saveAs(blob, 'briscv_config.ebv');
+        var configName = $('#config_name').val();
+        if (!configName.endsWith('.ebv'))
+            configName += '.ebv';
+        saveAs(blob, configName);
     });
     $('#default_radio').prop('checked', true);
-    $('#default_radio').on('change', function(event) {
+    $('#default_radio').on('change', function (event) {
         $('#program-form').css('display', 'none');
     });
-    $('#choose_radio').on('change', function(event) {
+    $('#choose_radio').on('change', function (event) {
         $('#program-form').css('display', 'block');
     });
-    $('#project_name').on('input', function(event) {
+    $('#project_name').on('input', function (event) {
         sanitizeProjectName();
     });
 };
