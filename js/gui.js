@@ -6,7 +6,7 @@ var currentDiagramId = '';
 
 var messageWindow = {
     displayStr: '',
-    
+
     MAX_NUM_LINES: 100,
 
     print: function (str) {
@@ -120,10 +120,10 @@ function updateIQueueSvg(inputId, svgIdList) {
 function updateBlockDiagram(selector) {
     if (selector === diagram.BlockDiagramEnum.SINGLE_CYCLE)
         diagram.showSingleCycleDiagram();
-    else if (selector === diagram.BlockDiagramEnum.FIVE_STAGE_PIPELINE_STALL 
-             || selector === diagram.BlockDiagramEnum.FIVE_STAGE_PIPELINE_BYPASS)
+    else if (selector === diagram.BlockDiagramEnum.FIVE_STAGE_PIPELINE_STALL ||
+        selector === diagram.BlockDiagramEnum.FIVE_STAGE_PIPELINE_BYPASS)
         diagram.show5StagePipelineDiagram();
-    else if (selector === diagram.BlockDiagramEnum.SEVEN_STAGE_PIPELINE_BYPASS) 
+    else if (selector === diagram.BlockDiagramEnum.SEVEN_STAGE_PIPELINE_BYPASS)
         diagram.show7StagePipelineDiagram();
     else
         console.log(`"${selector}" diagram not supported yet...`);
@@ -139,11 +139,20 @@ function switchGLSettingsTabTo(tabId, glLayout) {
 
 function init() {
     var layoutConfig = {
+        settings: {
+            showPopoutIcon: false,
+            showMaximiseIcon: false,
+            showCloseIcon: false
+        },
+        dimensions: {
+            minItemWidth: 300
+        },
         content: [{
             type: 'row',
             content: [{
                 type: 'component',
                 componentName: 'Getting Started',
+                isClosable: false,
                 width: 25
             }, {
                 type: 'column',
@@ -154,29 +163,35 @@ function init() {
                     height: 80,
                     content: [{
                         type: 'component',
+                        isClosable: false,
                         componentName: 'Project Settings',
                         id: 'project_settings'
                 }, {
                         type: 'component',
+                        isClosable: false,
                         componentName: 'Core Settings',
                         id: 'core_settings'
-                    
+
                 }, {
                         type: 'component',
+                        isClosable: false,
                         componentName: 'Memory Settings',
                         id: 'memory_settings'
                 }, {
                         type: 'component',
+                        isClosable: false,
                         componentName: 'Downloads',
                         id: 'downloads'
                 }]
                 }, {
                     type: 'component',
+                    isClosable: false,
                     componentName: 'Console',
                     height: 20
                 }]
             }, {
                 type: 'component',
+                isClosable: false,
                 componentName: 'Canvas',
                 width: 40
             }]
@@ -206,7 +221,7 @@ function init() {
     });
     layout.init();
     $('.selectpicker').selectpicker();
-    diagram.initCanvas(function(objName) {
+    diagram.initCanvas(function (objName) {
         if (objName === 'Memory Subsystem') {
             switchGLSettingsTabTo('memory_settings', layout);
         } else if (objName === 'Processor Interface') {
@@ -214,7 +229,7 @@ function init() {
         }
     });
     diagram.showSingleCycleDiagram();
-    $('#cycle_type_sel').on('change', function(event) {
+    $('#cycle_type_sel').on('change', function (event) {
         if (event.target.value === 'Single Cycle') {
             currentDiagramId = diagram.BlockDiagramEnum.SINGLE_CYCLE;
             updateBlockDiagram(currentDiagramId);
@@ -229,7 +244,7 @@ function init() {
             $('#pipeline_group_1').slideDown();
         }
     });
-    $('#num_stages_sel').on('change', function(event) {
+    $('#num_stages_sel').on('change', function (event) {
         if (event.target.value === '5 Stage') {
             $('#pipeline_group_2').hide();
             $('#pipeline_group_1').show();
@@ -246,7 +261,7 @@ function init() {
     $('#pipeline_group_1').hide();
     $('#pipeline_group_2').hide();
     var settingsStack = layout.root.getItemsById('settings_stack')[0];
-    settingsStack.on('activeContentItemChanged', function(component) {
+    settingsStack.on('activeContentItemChanged', function (component) {
         if (component.config.id === 'memory_settings') {
             diagram.showMemorySubsystemDiagram();
         } else {
@@ -254,13 +269,13 @@ function init() {
         }
     });
     currentDiagramId = diagram.BlockDiagramEnum.SINGLE_CYCLE;
-    $(window).resize(function() {
+    $(window).resize(function () {
         diagram.updateDiagramDimensions();
     });
     $('#program_choose').hide();
-    $('input[name="default_program"]').on('change', function() {
+    $('input[name="default_program"]').on('change', function () {
         var radioId = $(this)[0].id;
-        if (radioId === 'custom_radio') 
+        if (radioId === 'custom_radio')
             $('#program_choose').slideDown();
         else {
             if ($('#program_choose').attr('display') !== 'none')
