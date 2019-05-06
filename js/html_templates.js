@@ -70,7 +70,7 @@ const memorySettingsTemplate = {
   <form>
     <div class="form-group">
       <label for="num_cores">Number of Cache Levels</label>
-      <input type="number" class="form-control input-normal" id="num_cache_levels" min=1 max=2 value=1 style="width: 30%;"><br>
+      <input type="number" class="form-control input-normal" id="num_cache_levels" min=1 max=2 value=2 style="width: 30%;"><br>
     <div class="form-group">
       <label for="inclusion_sel">Cache Inclusion Policy</label><br>
       <select class="selectpicker" id="inclusion_sel">
