@@ -73,7 +73,7 @@ const memorySettingsTemplate = {
       <div class="col">
          <div class="form-group">
             <label for="num_cache_levels">Number of Cache Levels</label>
-            <input type="number" class="form-control input-normal" id="num_cache_levels" min=1 max=2 value=2 style="width: 30%;"><br>
+            <input type="number" class="form-control input-normal" id="num_cache_levels" min=1 max=2 value=1 style="width: 30%;"><br>
             <div class="form-group">
                <label for="inclusion_sel">Cache Inclusion Policy</label><br>
                <select class="selectpicker" id="inclusion_sel">
@@ -88,7 +88,7 @@ const memorySettingsTemplate = {
          </div>
       </div>
    </div>
-   <hr>
+<hr id="l1_hr">
    <div id="l1_cache_config_container" class="col-container">
       <div class="col col-title">
          <h5>L1 Cache Configuration</h5>
@@ -106,7 +106,7 @@ const memorySettingsTemplate = {
          </div>
       </div>
    </div>
-   <hr>
+   <hr id="l2_hr">
    <div id="l2_cache_config_container" class="col-container">
       <div class="col col-title">
          <h5>L2 Cache Configuration</h5>
@@ -124,7 +124,7 @@ const memorySettingsTemplate = {
          </div>
       </div>
    </div>
-   <hr>
+   <hr id="mem_hr">
    <div id="main_memory_config_container" class="col-container">
       <div class="col col-title">
          <h5>Main Memory Configuration</h5>

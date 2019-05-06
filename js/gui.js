@@ -284,8 +284,18 @@ function init() {
                 $('#program_choose').slideUp();
         }
     });
+    $('#l2_hr').hide();
+    $('#l2_cache_config_container').hide();
     $('#num_cache_levels').on('change', function() {
         diagram.showMemorySubsystemDiagram(parseInt($('#num_cache_levels').val()));
+        var numCacheLevels = parseInt($('#num_cache_levels').val());
+        if (numCacheLevels === 1) {
+            $('#l2_cache_config_container').slideUp();
+            $('#l2_hr').slideUp();
+        } else if (numCacheLevels === 2) {
+            $('#l2_cache_config_container').slideDown();
+            $('#l2_hr').slideDown();
+        }
     });
     
 }
