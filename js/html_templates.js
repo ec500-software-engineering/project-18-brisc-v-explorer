@@ -64,56 +64,78 @@ const gettingStartedTemplate = {
 const memorySettingsTemplate = {
     html: `
 <div class="container gl_container" id="memory_settings">
-  <h3>Memory Subsystem Configuration</h3>
-  <hr>
-  <h4>Cache Configuration</h4><br>
-  <form>
-    <div class="form-group">
-      <label for="num_cores">Number of Cache Levels</label>
-      <input type="number" class="form-control input-normal" id="num_cache_levels" min=1 max=2 value=2 style="width: 30%;"><br>
-    <div class="form-group">
-      <label for="inclusion_sel">Cache Inclusion Policy</label><br>
-      <select class="selectpicker" id="inclusion_sel">
-      	<option>Inclusive</option>
-        <option>Exclusive</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="num_words">Line Size</label>
-      <input type="number" class="form-control input-normal" id="line_size" min=1 value=8 style="width: 30%;">
-    </div>
-    <hr>
-    <h4>L1 Cache Configuration</h4><br >
-    <div class="form-group">
-      <label for="associativity_sel_l1">Associativity</label><br>
-      <select class="selectpicker" id="associativity_sel_l1">
-      	<option value=2>2-way set associative</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="num_indexes_l1">Number of Indexes</label>
-      <input type="number" class="form-control input-normal" id="num_indexes_l1" min=1 value=64 style="width: 30%;">
-    </div>
-    <hr>
-    <h4>L2 Cache Configuration</h4><br >
-    <div class="form-group">
-      <label for="associativity_sel_l2">Associativity</label><br>
-      <select class="selectpicker" id="associativity_sel_l2">
-      	<option>2-way set associative</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="num_indexes_l2">Number of Indexes</label>
-      <input type="number" class="form-control input-normal" id="num_indexes_l2" min=1 value=64 style="width: 30%;">
-    </div>
-    <hr>
-    <h4>Main Memory Configuration</h4>
-    </div>
-    <div class="form-group">
-      <label for="num_words">Capacity (in 4 byte words)</label>
-      <input type="number" class="form-control input-normal" id="num_words" min=4096  value=4096 style="width: 30%;">
-    </div>
-  </form>
+   <h3>Memory Subsystem Configuration</h3>
+   <hr>
+   <div id="general_cache_config_container" class="col-container">
+      <div class="col col-title">
+         <h5>General Cache Configuration</h5>
+      </div>
+      <div class="col">
+         <div class="form-group">
+            <label for="num_cache_levels">Number of Cache Levels</label>
+            <input type="number" class="form-control input-normal" id="num_cache_levels" min=1 max=2 value=2 style="width: 30%;"><br>
+            <div class="form-group">
+               <label for="inclusion_sel">Cache Inclusion Policy</label><br>
+               <select class="selectpicker" id="inclusion_sel">
+                  <option>Inclusive</option>
+                  <option>Exclusive</option>
+               </select>
+            </div>
+            <div class="form-group">
+               <label for="num_words">Line Size</label>
+               <input type="number" class="form-control input-normal" id="line_size" min=1 value=8 style="width: 30%;">
+            </div>
+         </div>
+      </div>
+   </div>
+   <hr>
+   <div id="l1_cache_config_container" class="col-container">
+      <div class="col col-title">
+         <h5>L1 Cache Configuration</h5>
+      </div>
+      <div class="col">
+         <div class="form-group">
+            <label for="associativity_sel_l1">Associativity</label><br>
+            <select class="selectpicker" id="associativity_sel_l1">
+               <option value=2>2-way set associative</option>
+            </select>
+         </div>
+         <div class="form-group">
+            <label for="num_indexes_l1">Number of Indexes</label>
+            <input type="number" class="form-control input-normal" id="num_indexes_l1" min=1 value=64 style="width: 30%;">
+         </div>
+      </div>
+   </div>
+   <hr>
+   <div id="l2_cache_config_container" class="col-container">
+      <div class="col col-title">
+         <h5>L2 Cache Configuration</h5>
+      </div>
+      <div class="col">
+         <div class="form-group">
+            <label for="associativity_sel_l2">Associativity</label><br>
+            <select class="selectpicker" id="associativity_sel_l2">
+               <option>2-way set associative</option>
+            </select>
+         </div>
+         <div class="form-group">
+            <label for="num_indexes_l2">Number of Indexes</label>
+            <input type="number" class="form-control input-normal" id="num_indexes_l2" min=1 value=64 style="width: 30%;">
+         </div>
+      </div>
+   </div>
+   <hr>
+   <div id="main_memory_config_container" class="col-container">
+      <div class="col col-title">
+         <h5>Main Memory Configuration</h5>
+      </div>
+      <div class="col">
+         <div class="form-group">
+            <label for="num_words">Capacity (in 4 byte words)</label>
+            <input type="number" class="form-control input-normal" id="num_words" min=4096  value=4096 style="width: 40%;">
+         </div>
+      </div>
+   </div>
 </div>
 `
 };
