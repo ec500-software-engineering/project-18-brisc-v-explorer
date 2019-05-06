@@ -8,7 +8,7 @@ const coreSettingsTemplate = {
       <input type="number" class="form-control input-normal" id="num_cores" min=1 max=1 value=1 style="width: 30%;">
     </div>
     <div class="form-group">
-      <label for="cycle_type_sel">Cycle Type</label><br>
+      <label for="cycle_type_sel">Core Type</label><br>
       <select class="selectpicker" id="cycle_type_sel">
       	<option value="Single Cycle">Single Cycle</option>
         <option value="Multi Cycle">Multi Cycle</option>
