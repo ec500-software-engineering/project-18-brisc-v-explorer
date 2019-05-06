@@ -3,6 +3,7 @@ diagram = require('./block_diagram.js');
 htmlTemplates = require('./html_templates.js');
 
 var currentDiagramId = '';
+var memoryDiagramIsDisplayed = false;
 
 var messageWindow = {
     displayStr: '',
@@ -283,6 +284,10 @@ function init() {
                 $('#program_choose').slideUp();
         }
     });
+    $('#num_cache_levels').on('change', function() {
+        diagram.showMemorySubsystemDiagram(parseInt($('#num_cache_levels').val()));
+    });
+    
 }
 exports.init = init;
 exports.updateBlockDiagram = updateBlockDiagram;

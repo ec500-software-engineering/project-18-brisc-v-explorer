@@ -187,7 +187,7 @@ function initMemorySubsystemL1Diagram(canvas) {
         }
     });
     mainMemoryInterfaceBlock.resize(320, 30);
-    mainMemoryInterfaceBlock.translate(-40, 70);
+    mainMemoryInterfaceBlock.translate(-40, 90);
     graphObjsL1.push(mainMemoryInterfaceBlock);
     
     var mainMemoryBlock = mainMemoryInterfaceBlock.clone();
@@ -278,6 +278,7 @@ function initMemorySubsystemL1Diagram(canvas) {
 }
 
 function initMemorySubsystemDiagram(canvas) {
+    initMemorySubsystemL1Diagram(canvas);
     initMemorySubsystemL2Diagram(canvas);
 }
 
