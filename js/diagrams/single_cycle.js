@@ -218,8 +218,8 @@ function initSingleCycleDiagram(canvas) {
 
 function showSingleCycleDiagram(canvas) {
     canvas.graph.clear();
-    canvas.graphScale.x = 1;
-    canvas.graphScale.y = 1;
+    canvas.graphScale.x = 1.5;
+    canvas.graphScale.y = 1.5;
     canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
     for (var i = 0; i < graphObjs.length; i++) {
         graphObjs[i].addTo(canvas.graph);
