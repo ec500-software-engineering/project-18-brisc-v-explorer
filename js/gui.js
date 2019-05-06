@@ -263,7 +263,7 @@ function init() {
     var settingsStack = layout.root.getItemsById('settings_stack')[0];
     settingsStack.on('activeContentItemChanged', function (component) {
         if (component.config.id === 'memory_settings') {
-            diagram.showMemorySubsystemDiagram();
+            diagram.showMemorySubsystemDiagram(parseInt($('#num_cache_levels').val()));
         } else {
             updateBlockDiagram(currentDiagramId);
         }

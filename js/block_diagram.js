@@ -215,8 +215,8 @@ function showSingleCycleDiagram() {
     diagramSingleCycle.show(canvas);
 }
 
-function showMemorySubsystemDiagram() {
-    diagramMemorySubsystem.show(canvas);
+function showMemorySubsystemDiagram(cacheLevels) {
+    diagramMemorySubsystem.show(canvas, cacheLevels);
 }
 
 

@@ -1,245 +1,299 @@
 blockDiagramUtils = require('../block_diagram.js');
 
-var graphObjs = [];
+var graphObjsL1 = [];
+var graphObjsL2 = [];
 
-function initMemorySubsystemDiagram(canvas) {
-    graphObjs = [];
-    var l1InsCacheBlock = new joint.shapes.standard.Rectangle();
-    l1InsCacheBlock.attr({
-        body: {
-            rx: 6,
-            ry: 6,
-            fill: '#0086b3'
-        },
+function initMemorySubsystemL2Diagram(canvas) {
+    var procInterfaceBlock = new joint.shapes.standard.Rectangle();
+    procInterfaceBlock.attr({
         label: {
-            fill: 'white',
-            text: 'L1 Instruction\nCache\n16kB'
-        }
-    });
-    l1InsCacheBlock.position(50, 100);
-    l1InsCacheBlock.resize(100, 60);
-    graphObjs.push(l1InsCacheBlock);
-    l1InsCacheBlock.on('change:position', function () {
-        console.log('L1 instruction cache position: ' + l1InsCacheBlock.position());
-    });
-
-    var l1DataCacheBlock = new joint.shapes.standard.Rectangle();
-    l1DataCacheBlock.attr({
-        body: {
-            rx: 6,
-            ry: 6,
-            fill: '#0086b3'
-        },
-        label: {
-            fill: 'white',
-            text: 'L1 Data\nCache\n16kB'
-        }
-    });
-    l1DataCacheBlock.position(canvas.paper.options.width - 150, 100);
-    l1DataCacheBlock.resize(100, 60);
-    graphObjs.push(l1DataCacheBlock);
-    l1DataCacheBlock.on('change:position', function () {
-        console.log('L1 Data cache position: ' + l1InsCacheBlock.position());
-    });
-
-    /*var sharedBusBlock = l1InsCacheBlock.clone();
-    sharedBusBlock.attr('label/text', 'Shared Bus');
-    var busWidth = (l1DataCacheBlock.position().x + l1DataCacheBlock.attributes.size.width) - l1InsCacheBlock.position().x;
-    sharedBusBlock.resize(busWidth, 20);
-    sharedBusBlock.translate(0, 100);
-    sharedBusBlock.attr('body/fill', '#cc6600');
-    sharedBusBlock.addTo(canvas.graph);*/
-
-    var l2CombinedCacheBlock = new joint.shapes.standard.Rectangle();
-    l2CombinedCacheBlock.attr({
-        body: {
-            rx: 6,
-            ry: 6,
-            fill: '#00a3cc'
-        },
-        label: {
-            fill: 'white',
-            text: 'L2 Combined Cache\n16kB'
-        }
-    });
-    l2CombinedCacheBlock.resize(150, 60);
-    var l1l2MidPoint = l1DataCacheBlock.position().x - (l1InsCacheBlock.position().x + l1InsCacheBlock.attributes.size.width);
-    l1l2MidPoint /= 2;
-    var l2PositionX = l1l2MidPoint + (l2CombinedCacheBlock.attributes.size.width / 2);
-    var l2PositionY = l1DataCacheBlock.position().y + l1DataCacheBlock.attributes.size.height + 50;
-    l2CombinedCacheBlock.position(l2PositionX, l2PositionY);
-    l2CombinedCacheBlock.on('change:position', function () {
-        console.log('L1 Data cache position: ' + l2CombinedCacheBlock.position());
-    });
-    graphObjs.push(l2CombinedCacheBlock);
-
-    var mainMemoryInterfaceBlock = l2CombinedCacheBlock.clone();
-    mainMemoryInterfaceBlock.attr('label/text', 'Main Memory Interface');
-    var busWidth = (l1DataCacheBlock.position().x + l1DataCacheBlock.attributes.size.width) - l1InsCacheBlock.position().x;
-    mainMemoryInterfaceBlock.resize(busWidth, 20);
-    mainMemoryInterfaceBlock.position(l1InsCacheBlock.position().x, l2CombinedCacheBlock.position().y + l2CombinedCacheBlock.attributes.size.height + 40);
-    mainMemoryInterfaceBlock.attr('body/fill', '#009999');
-    graphObjs.push(mainMemoryInterfaceBlock);
-
-    var mainMemoryBlock = mainMemoryInterfaceBlock.clone();
-    mainMemoryBlock.resize(200, 60);
-    var memPositionX = l2PositionX;
-    memPositionX -= (mainMemoryBlock.attributes.size.width / 8);
-    var memPositionY = mainMemoryInterfaceBlock.position().y + 60;
-    mainMemoryBlock.attr('label/text', 'Main Memory\n32kB');
-    mainMemoryBlock.position(memPositionX, memPositionY);
-    mainMemoryBlock.attr('body/fill', '#2eb8b8');
-    graphObjs.push(mainMemoryBlock);
-
-    // handle links
-    // l1 i$ to shared bus
-    var l1InsCacheToL2CacheLink = new joint.shapes.standard.Link();
-    l1InsCacheToL2CacheLink.attr({
-        line: {
-            width: 3,
-        }
-    });
-    l1InsCacheToL2CacheLink.source(l1InsCacheBlock);
-    l1InsCacheToL2CacheLink.target(l2CombinedCacheBlock, {
-        anchor: {
-            name: 'center',
-            args: {
-                dx: -15
-            }
-        }
-    });
-    l1InsCacheToL2CacheLink.attr({
-        line: {
-            stroke: l1DataCacheBlock.attr('body/fill'),
-            strokeWidth: 3,
-            sourceMarker: {
-                type: 'path',
-                d: l1InsCacheToL2CacheLink.attr('line/targetMarker/d')
-            }
-        }
-    });
-    l1InsCacheToL2CacheLink.router('manhattan', {
-        startDirections: ['bottom'],
-        endDirections: ['top']
-    });
-    l1InsCacheToL2CacheLink.connector('rounded');
-    graphObjs.push(l1InsCacheToL2CacheLink);
-    // l1 i$ to shared bus
-    var l1DataCacheToL2CacheLink = new joint.shapes.standard.Link();
-    l1DataCacheToL2CacheLink.source(l1DataCacheBlock);
-    l1DataCacheToL2CacheLink.target(l2CombinedCacheBlock, {
-        anchor: {
-            name: 'center',
-            args: {
-                dx: 15
-            }
-        }
-    });
-    l1DataCacheToL2CacheLink.attr({
-        line: {
-            stroke: l1DataCacheBlock.attr('body/fill'),
-            strokeWidth: 3,
-            sourceMarker: {
-                type: 'path',
-                d: l1DataCacheToL2CacheLink.attr('line/targetMarker/d')
-            }
-        }
-    });
-    l1DataCacheToL2CacheLink.router('manhattan', {
-        startDirections: ['bottom'],
-        endDirections: ['top']
-    });
-    l1DataCacheToL2CacheLink.connector('rounded');
-    graphObjs.push(l1DataCacheToL2CacheLink);
-    // L2 to main memory interface
-    var l2ToMainMemInterfaceLink = l1DataCacheToL2CacheLink.clone();
-    l2ToMainMemInterfaceLink.attr({
-        line: {
-            stroke: l2CombinedCacheBlock.attr('body/fill'),
-            strokeWidth: 3
-        }
-    });
-    l2ToMainMemInterfaceLink.source(l2CombinedCacheBlock);
-    l2ToMainMemInterfaceLink.target(mainMemoryInterfaceBlock);
-    graphObjs.push(l2ToMainMemInterfaceLink);
-    // L2 to main memory interface
-    var memInterfaceToMainMemory = l2ToMainMemInterfaceLink.clone();
-    memInterfaceToMainMemory.attr({
-       line: {
-           stroke: mainMemoryInterfaceBlock.attr('body/fill'),
-           strokeWidth: 3
-       } 
-    });
-    memInterfaceToMainMemory.source(mainMemoryInterfaceBlock);
-    memInterfaceToMainMemory.target(mainMemoryBlock);
-    graphObjs.push(memInterfaceToMainMemory);
-    
-    var coreCloudInterface = new joint.shapes.standard.Rectangle();
-    var cloudWidth = (l1DataCacheBlock.position().x + l1DataCacheBlock.attributes.size.width) - l1InsCacheBlock.position().x;
-    coreCloudInterface.resize(cloudWidth, 60);
-    coreCloudInterface.attr({
-        body: {
-            rx: 6,
-            ry: 6,
-            fill: '#006666'
-        },
-        label: {
-            fill: 'white',
             text: 'Processor Interface'
         }
     });
-    coreCloudInterface.position(l1InsCacheBlock.position().x, 5);
-    graphObjs.push(coreCloudInterface);
+    procInterfaceBlock.resize(240, 30);
+    procInterfaceBlock.position(80, 60);
+    graphObjsL2.push(procInterfaceBlock);
     
-    var procIfMidPoint = coreCloudInterface.position().x + (coreCloudInterface.attributes.size.width / 2);
-    var l1InsCacheMidpoint = l1InsCacheBlock.position().x + (l1InsCacheBlock.attributes.size.width / 2);
-    var l1CacheBlockSrcAnchorDelta = procIfMidPoint - l1InsCacheMidpoint;
-    var procIfToL1InsCacheLink = l1InsCacheToL2CacheLink.clone();
-    procIfToL1InsCacheLink.source(coreCloudInterface, {
-        anchor: {
-            name: 'center',
-            args: {
-                dx: -l1CacheBlockSrcAnchorDelta
-            }
+    var l1InsCacheBlock = procInterfaceBlock.clone();
+    l1InsCacheBlock.attr({
+        body: {
+            rx: 7.5,
+            ry: 7.5
+        },
+        label: {
+            text: 'L1 Instruction\nCache\n16kB'
         }
     });
-    procIfToL1InsCacheLink.target(l1InsCacheBlock);
-    procIfToL1InsCacheLink.attr({
+    l1InsCacheBlock.resize(90, 50);
+    l1InsCacheBlock.translate(20, 70);
+    graphObjsL2.push(l1InsCacheBlock);
+    
+    var l1DataCacheBlock = l1InsCacheBlock.clone();
+    l1DataCacheBlock.attr('label/text', 'L1 Data\nCache\n16kB');
+    l1DataCacheBlock.translate(120, 0);
+    graphObjsL2.push(l1DataCacheBlock);
+    
+    var l2CombinedCacheBlock = l1InsCacheBlock.clone();
+    l2CombinedCacheBlock.attr('label/text', 'L2 Combined Cache\n16kB');
+    l2CombinedCacheBlock.resize(240, 40);
+    l2CombinedCacheBlock.translate(-20, 90);
+    graphObjsL2.push(l2CombinedCacheBlock);
+    
+    var mainMemoryInterfaceBlock = l2CombinedCacheBlock.clone();
+    mainMemoryInterfaceBlock.attr({
+        body: {
+            rx: 0,
+            ry: 0
+        },
+        label: {
+            text: 'Main Memory Interface'
+        }
+    });
+    mainMemoryInterfaceBlock.resize(320, 30);
+    mainMemoryInterfaceBlock.translate(-40, 70);
+    graphObjsL2.push(mainMemoryInterfaceBlock);
+    
+    var mainMemoryBlock = mainMemoryInterfaceBlock.clone();
+    mainMemoryBlock.attr({
+        body: {
+            rx: 7.5,
+            ry: 7.5
+        },
+        label: {
+            text: 'Main Memory\n32kB'
+        }
+    });
+    mainMemoryBlock.translate(0, 70);
+    mainMemoryBlock.resize(320, 60);
+    graphObjsL2.push(mainMemoryBlock);
+    
+    // adding links
+    // anchor calculations
+    var procInterfaceCenter = procInterfaceBlock.position().x + (procInterfaceBlock.attributes.size.width / 2);
+    var l1InsCacheCenter = l1InsCacheBlock.position().x + (l1InsCacheBlock.attributes.size.width / 2);
+    var l1DataCacheCenter = l1DataCacheBlock.position().x + (l1DataCacheBlock.attributes.size.width / 2);
+    var l2CacheCenter = l2CombinedCacheBlock.position().x + (l2CombinedCacheBlock.attributes.size.width / 2);
+    var procInterfaceToL1InsCacheDx = procInterfaceCenter - l1InsCacheCenter;
+    var procInterfaceToL1DataCacheDx = l1DataCacheCenter - procInterfaceCenter;
+    var l1InsCacheToL2CacheDx = l2CacheCenter - l1InsCacheCenter;
+    var l1DataCacheToL2CacheDx = l1DataCacheCenter - l2CacheCenter;
+    var procInterfaceToL1InsCacheLink = new joint.shapes.standard.Link();
+    procInterfaceToL1InsCacheLink.target(l1InsCacheBlock);
+    procInterfaceToL1InsCacheLink.attr({
         line: {
-            stroke: coreCloudInterface.attr('body/fill')
-        }
-    });
-    procIfToL1InsCacheLink.router('manhattan', {
-        startDirections: ['bottom'],
-        endDirections: ['top']
-    });
-    graphObjs.push(procIfToL1InsCacheLink);
-    
-    var l1DataCacheMidpoint = l1DataCacheBlock.position().x + (l1DataCacheBlock.attributes.size.width / 2);
-    var procIfToL1DataCacheLink = procIfToL1InsCacheLink.clone();
-    procIfToL1DataCacheLink.source(coreCloudInterface, {
-        anchor: {
-            name: 'center',
-            args: {
-                dx: l1CacheBlockSrcAnchorDelta
+            strokeWidth: 2,
+            sourceMarker: {
+                type: 'path',
+                d: procInterfaceToL1InsCacheLink.attr('line/targetMarker/d')
             }
         }
     });
-    procIfToL1DataCacheLink.router('manhattan', {
-        startDirections: ['bottom'],
-        endDirections: ['top']
+    procInterfaceToL1InsCacheLink.source(procInterfaceBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: -procInterfaceToL1InsCacheDx
+            }
+        }
     });
-    procIfToL1DataCacheLink.target(l1DataCacheBlock);
-    graphObjs.push(procIfToL1DataCacheLink);
+    graphObjsL2.push(procInterfaceToL1InsCacheLink);
+    
+    var procInterfaceToL1DataCache = procInterfaceToL1InsCacheLink.clone();
+    procInterfaceToL1DataCache.source(procInterfaceBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: procInterfaceToL1DataCacheDx
+            }
+        }
+    });
+    procInterfaceToL1DataCache.target(l1DataCacheBlock);
+    graphObjsL2.push(procInterfaceToL1DataCache);
+    
+    var l1InsCacheToL2CombinedCacheLink = procInterfaceToL1InsCacheLink.clone();
+    l1InsCacheToL2CombinedCacheLink.source(l1InsCacheBlock);
+    l1InsCacheToL2CombinedCacheLink.target(l2CombinedCacheBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: -l1InsCacheToL2CacheDx
+            }
+        }
+    });
+    graphObjsL2.push(l1InsCacheToL2CombinedCacheLink);
+    
+    var l1DataCacheToL2CombinedCacheLink = l1InsCacheToL2CombinedCacheLink.clone();
+    l1DataCacheToL2CombinedCacheLink.source(l1DataCacheBlock);
+    l1DataCacheToL2CombinedCacheLink.target(l2CombinedCacheBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: l1DataCacheToL2CacheDx
+            }
+        }
+    });
+    graphObjsL2.push(l1DataCacheToL2CombinedCacheLink);
+    
+    var l2CombinedCacheBlockToMainMemInterfaceLink = l1InsCacheToL2CombinedCacheLink.clone();
+    l2CombinedCacheBlockToMainMemInterfaceLink.source(l2CombinedCacheBlock);
+    l2CombinedCacheBlockToMainMemInterfaceLink.target(mainMemoryInterfaceBlock);
+    graphObjsL2.push(l2CombinedCacheBlockToMainMemInterfaceLink);
+    
+    var mainMemInterfactToMainMemoryLink = l2CombinedCacheBlockToMainMemInterfaceLink.clone();
+    mainMemInterfactToMainMemoryLink.source(mainMemoryInterfaceBlock);
+    mainMemInterfactToMainMemoryLink.target(mainMemoryBlock);
+    graphObjsL2.push(mainMemInterfactToMainMemoryLink);
 }
 
-function showMemorySubsystemDiagram(canvas) {
+function initMemorySubsystemL1Diagram(canvas) {
+    var procInterfaceBlock = new joint.shapes.standard.Rectangle();
+    procInterfaceBlock.attr({
+        label: {
+            text: 'Processor Interface'
+        }
+    });
+    procInterfaceBlock.resize(240, 30);
+    procInterfaceBlock.position(80, 60);
+    graphObjsL1.push(procInterfaceBlock);
+    
+    var l1InsCacheBlock = procInterfaceBlock.clone();
+    l1InsCacheBlock.attr({
+        body: {
+            rx: 7.5,
+            ry: 7.5
+        },
+        label: {
+            text: 'L1 Instruction\nCache\n16kB'
+        }
+    });
+    l1InsCacheBlock.resize(90, 50);
+    l1InsCacheBlock.translate(20, 70);
+    graphObjsL1.push(l1InsCacheBlock);
+    
+    var l1DataCacheBlock = l1InsCacheBlock.clone();
+    l1DataCacheBlock.attr('label/text', 'L1 Data\nCache\n16kB');
+    l1DataCacheBlock.translate(120, 0);
+    graphObjsL1.push(l1DataCacheBlock);
+    
+    
+    var mainMemoryInterfaceBlock = l1InsCacheBlock.clone();
+    mainMemoryInterfaceBlock.attr({
+        body: {
+            rx: 0,
+            ry: 0
+        },
+        label: {
+            text: 'Main Memory Interface'
+        }
+    });
+    mainMemoryInterfaceBlock.resize(320, 30);
+    mainMemoryInterfaceBlock.translate(-40, 70);
+    graphObjsL1.push(mainMemoryInterfaceBlock);
+    
+    var mainMemoryBlock = mainMemoryInterfaceBlock.clone();
+    mainMemoryBlock.attr({
+        body: {
+            rx: 7.5,
+            ry: 7.5
+        },
+        label: {
+            text: 'Main Memory\n32kB'
+        }
+    });
+    mainMemoryBlock.translate(0, 70);
+    mainMemoryBlock.resize(320, 60);
+    graphObjsL1.push(mainMemoryBlock);
+    
+    // adding links
+    // anchor calculations
+    var procInterfaceCenter = procInterfaceBlock.position().x + (procInterfaceBlock.attributes.size.width / 2);
+    var l1InsCacheCenter = l1InsCacheBlock.position().x + (l1InsCacheBlock.attributes.size.width / 2);
+    var l1DataCacheCenter = l1DataCacheBlock.position().x + (l1DataCacheBlock.attributes.size.width / 2);
+    var mainMemInterfaceCenter = mainMemoryInterfaceBlock.position().x + (mainMemoryInterfaceBlock.attributes.size.width / 2);
+    var procInterfaceToL1InsCacheDx = procInterfaceCenter - l1InsCacheCenter;
+    var procInterfaceToL1DataCacheDx = l1DataCacheCenter - procInterfaceCenter;
+    var l1InsCacheToMainMemInterfaceDx = mainMemInterfaceCenter - l1InsCacheCenter;
+    var l1DataCacheToMainMemInterfaceDx = l1DataCacheCenter - mainMemInterfaceCenter;
+    var procInterfaceToL1InsCacheLink = new joint.shapes.standard.Link();
+    procInterfaceToL1InsCacheLink.target(l1InsCacheBlock);
+    procInterfaceToL1InsCacheLink.attr({
+        line: {
+            strokeWidth: 2,
+            sourceMarker: {
+                type: 'path',
+                d: procInterfaceToL1InsCacheLink.attr('line/targetMarker/d')
+            }
+        }
+    });
+    procInterfaceToL1InsCacheLink.source(procInterfaceBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: -procInterfaceToL1InsCacheDx
+            }
+        }
+    });
+    graphObjsL1.push(procInterfaceToL1InsCacheLink);
+    
+    var procInterfaceToL1DataCache = procInterfaceToL1InsCacheLink.clone();
+    procInterfaceToL1DataCache.source(procInterfaceBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: procInterfaceToL1DataCacheDx
+            }
+        }
+    });
+    procInterfaceToL1DataCache.target(l1DataCacheBlock);
+    graphObjsL1.push(procInterfaceToL1DataCache);
+    
+    var l1InsCacheToMainMemInterfaceLink = procInterfaceToL1InsCacheLink.clone();
+    l1InsCacheToMainMemInterfaceLink.source(l1InsCacheBlock);
+    l1InsCacheToMainMemInterfaceLink.target(mainMemoryInterfaceBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: -l1InsCacheToMainMemInterfaceDx
+            }
+        }
+    });
+    graphObjsL1.push(l1InsCacheToMainMemInterfaceLink);
+    
+    var l1DataCacheToMainMemInterfaceLink = l1InsCacheToMainMemInterfaceLink.clone();
+    l1DataCacheToMainMemInterfaceLink.source(l1DataCacheBlock);
+    l1DataCacheToMainMemInterfaceLink.target(mainMemoryInterfaceBlock, {
+        anchor: {
+            name: 'center',
+            args: {
+                dx: l1DataCacheToMainMemInterfaceDx
+            }
+        }
+    });
+    graphObjsL1.push(l1DataCacheToMainMemInterfaceLink);
+    
+    var mainMemInterfactToMainMemoryLink = l1InsCacheToMainMemInterfaceLink.clone();
+    mainMemInterfactToMainMemoryLink.source(mainMemoryInterfaceBlock);
+    mainMemInterfactToMainMemoryLink.target(mainMemoryBlock);
+    graphObjsL1.push(mainMemInterfactToMainMemoryLink);
+}
+
+function initMemorySubsystemDiagram(canvas) {
+    initMemorySubsystemL2Diagram(canvas);
+}
+
+function showMemorySubsystemDiagram(canvas, cacheLevels) {
     canvas.graph.clear();
-    canvas.graphScale.x = 1;
-    canvas.graphScale.y = 1;
+    canvas.graphScale.x = 1.5;
+    canvas.graphScale.y = 1.5;
     canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
-    for (var i = 0; i < graphObjs.length; i++) {
-        graphObjs[i].addTo(canvas.graph);
+    if (cacheLevels === 1) {
+        for (var i = 0; i < graphObjsL1.length; i++) {
+            graphObjsL1[i].addTo(canvas.graph);
+        }
+    } else if (cacheLevels === 2) {
+        for (var i = 0; i < graphObjsL2.length; i++) {
+            graphObjsL2[i].addTo(canvas.graph);
+        }
     }
 }
 
