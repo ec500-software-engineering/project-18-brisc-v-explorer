@@ -220,6 +220,13 @@ function init() {
     layout.registerComponent('Project Settings', function (container, componentState) {
         container.getElement().html(htmlTemplates.projectSettings.html);
     });
+    layout.on('componentCreated', function(component) {
+        component.container.on('resize', function() {
+            if (component.componentName === 'Canvas') {
+                diagram.updateDiagramDimensions();
+            }
+        });
+    });
     layout.init();
     $('.selectpicker').selectpicker();
     diagram.init(function (objName) {
