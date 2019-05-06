@@ -1,10 +1,9 @@
 blockDiagramUtils = require('../block_diagram.js');
 
+var graphObjs = [];
+
 function initSingleCycleDiagram(canvas) {
-    canvas.graph.clear();
-    canvas.graphScale.x = 1;
-    canvas.graphScale.y = 1;
-    canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
+    graphObjs = [];
     var fetchBlock = new joint.shapes.standard.Rectangle();
     fetchBlock.position(20, 106);
     fetchBlock.resize(70, 80);
@@ -19,7 +18,7 @@ function initSingleCycleDiagram(canvas) {
             text: 'Fetch\nUnit'
         }
     });
-    fetchBlock.addTo(canvas.graph);
+    graphObjs.push(fetchBlock);
     console.log(fetchBlock);
     console.log(fetchBlock.attributes.size.width);
     fetchBlock.on('change:position', function() {
@@ -31,7 +30,7 @@ function initSingleCycleDiagram(canvas) {
     decodeBlock.translate(fetchBlock.attributes.size.width + 20, 0);
     decodeBlock.attr('label/text', 'Decode\nUnit');
     decodeBlock.attr('body/fill', '#77b1bd');
-    decodeBlock.addTo(canvas.graph);
+    graphObjs.push(decodeBlock);
     decodeBlock.on('change:position', function() {
         console.log('DecodeBlock position: ' + decodeBlock.position());
     });
@@ -41,8 +40,8 @@ function initSingleCycleDiagram(canvas) {
         decodeBlock.position().x + (decodeBlock.attributes.size.width - 10), 
         decodeBlock.position().y, 35, 80);
     regTemplate.regfile.attr('label/text', 'Reg\nFile');
-    regTemplate.regfile.addTo(canvas.graph);
-    regTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(regTemplate.regfile);
+    graphObjs.push(regTemplate.clockSymbol);
     
     // execute block
     var executeBlock = regTemplate.regfile.clone();
@@ -51,7 +50,7 @@ function initSingleCycleDiagram(canvas) {
     executeBlock.attr('label/text', 'Execute\nUnit');
     executeBlock.attr('label/fill', 'white');
     executeBlock.attr('body/fill', '#597cab');
-    executeBlock.addTo(canvas.graph);
+    graphObjs.push(executeBlock);
     executeBlock.on('change:position', function() {
         console.log('ExectuteBlock position: ' + executeBlock.position());
     });
@@ -60,7 +59,7 @@ function initSingleCycleDiagram(canvas) {
     memoryUnitBlock.translate(executeBlock.attributes.size.width + 20, 0);
     memoryUnitBlock.attr('label/text', 'Memory\nUnit');
     memoryUnitBlock.attr('body/fill', '#5762ab');
-    memoryUnitBlock.addTo(canvas.graph);
+    graphObjs.push(memoryUnitBlock);
     memoryUnitBlock.on('change:position', function() {
         console.log('MemoryUnitBlock position: ' + memoryUnitBlock.position());
     });
@@ -69,7 +68,7 @@ function initSingleCycleDiagram(canvas) {
     writeBackBlock.translate(memoryUnitBlock.attributes.size.width + 20, 0);
     writeBackBlock.attr('label/text', 'Writeback\nUnit');
     writeBackBlock.attr('body/fill', '#4f4d85');
-    writeBackBlock.addTo(canvas.graph);
+    graphObjs.push(writeBackBlock);
     writeBackBlock.on('change:position', function() {
         console.log('WriteBackBlock position: ' + writeBackBlock.position());
     });
@@ -81,7 +80,7 @@ function initSingleCycleDiagram(canvas) {
     controlUnitBlock.attr('label/text', 'Control\nUnit');
     controlUnitBlock.attr('body/fill', '#77b1bd');
     controlUnitBlock.attr('label/fill', 'white');
-    controlUnitBlock.addTo(canvas.graph);
+    graphObjs.push(controlUnitBlock);
     controlUnitBlock.on('change:position', function() {
         console.log('ControlUnitBlock position: ' + controlUnitBlock.position());
     });
@@ -100,7 +99,7 @@ function initSingleCycleDiagram(canvas) {
             }
         }
     });
-    fetchToDecodeLink.addTo(canvas.graph);
+    graphObjs.push(fetchToDecodeLink);
     
     var regfileToExecuteLink = fetchToDecodeLink.clone();
     regfileToExecuteLink.source(regTemplate.regfile);
@@ -108,21 +107,21 @@ function initSingleCycleDiagram(canvas) {
     regfileToExecuteLink.attr('line/stroke', decodeBlock.attr('body/fill'));
     regfileToExecuteLink.attr('line/targetMarker/fill', decodeBlock.attr('body/fill'));
     regfileToExecuteLink.toBack();
-    regfileToExecuteLink.addTo(canvas.graph);
+    graphObjs.push(regfileToExecuteLink);
     
     var executeToMemoryLink = regfileToExecuteLink.clone();
     executeToMemoryLink.source(executeBlock);
     executeToMemoryLink.target(memoryUnitBlock);
     executeToMemoryLink.attr('line/stroke', executeBlock.attr('body/fill'));
     executeToMemoryLink.attr('line/targetMarker/fill', executeBlock.attr('body/fill'));
-    executeToMemoryLink.addTo(canvas.graph);
+    graphObjs.push(executeToMemoryLink);
     
     var memoryToWriteBackLink = executeToMemoryLink.clone();
     memoryToWriteBackLink.source(memoryUnitBlock);
     memoryToWriteBackLink.target(writeBackBlock);
     memoryToWriteBackLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
     memoryToWriteBackLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
-    memoryToWriteBackLink.addTo(canvas.graph);
+    graphObjs.push(memoryToWriteBackLink);
     
     var writeBackToDecodeLink = memoryToWriteBackLink.clone();
     writeBackToDecodeLink.source(writeBackBlock);
@@ -133,7 +132,7 @@ function initSingleCycleDiagram(canvas) {
     });
     writeBackToDecodeLink.attr('line/stroke', writeBackBlock.attr('body/fill'));
     writeBackToDecodeLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
-    writeBackToDecodeLink.addTo(canvas.graph);
+    graphObjs.push(writeBackToDecodeLink);
     
     // control unit links
     var controlToFetchLink = fetchToDecodeLink.clone();
@@ -143,7 +142,7 @@ function initSingleCycleDiagram(canvas) {
     controlToFetchLink.connector('rounded', {
         radius: 5
     });
-    controlToFetchLink.addTo(canvas.graph);
+    graphObjs.push(controlToFetchLink);
     var controlToDecodeLink = fetchToDecodeLink.clone();
     controlToDecodeLink.source(controlUnitBlock);
     controlToDecodeLink.target(decodeBlock);
@@ -158,17 +157,16 @@ function initSingleCycleDiagram(canvas) {
             }
         }
     });
-    console.log(controlToDecodeLink);
-    controlToDecodeLink.addTo(canvas.graph);
+    graphObjs.push(controlToDecodeLink);
     var controlToExectuteLink = controlToFetchLink.clone();
     controlToExectuteLink.target(executeBlock);
-    controlToExectuteLink.addTo(canvas.graph);
+    graphObjs.push(controlToExectuteLink);
     var controlToMemoryLink = controlToExectuteLink.clone();
     controlToMemoryLink.target(memoryUnitBlock);
-    controlToMemoryLink.addTo(canvas.graph);
-    var controlToWriteBack = controlToMemoryLink.clone();
-    controlToWriteBack.target(writeBackBlock);
-    controlToWriteBack.addTo(canvas.graph);
+    graphObjs.push(controlToMemoryLink);
+    var controlToWriteBackLink = controlToMemoryLink.clone();
+    controlToWriteBackLink.target(writeBackBlock);
+    graphObjs.push(controlToWriteBackLink);
     
     // memory subsystem interface
     var memorySubsystemInterfaceBlock = fetchBlock.clone();
@@ -178,7 +176,7 @@ function initSingleCycleDiagram(canvas) {
         (writeBackBlock.attributes.size.width) - fetchBlock.position().x;
     memorySubsystemInterfaceBlock.resize(memIfWidth, 60);
     memorySubsystemInterfaceBlock.attr('body/fill', '#006666');
-    memorySubsystemInterfaceBlock.addTo(canvas.graph);
+    graphObjs.push(memorySubsystemInterfaceBlock);
     memorySubsystemInterfaceBlock.on('change:position', function() {
         console.log('InsMemoryBlock position: ' + memorySubsystemInterfaceBlock.position());
     });
@@ -203,7 +201,7 @@ function initSingleCycleDiagram(canvas) {
         startDirections: ['bottom'],
         endDirections: ['top']
     });
-    fetchToMemSubsystemLink.addTo(canvas.graph);
+    graphObjs.push(fetchToMemSubsystemLink);
     
     
     var memUnitToMemSubsystemLink = fetchToMemSubsystemLink.clone();
@@ -215,7 +213,18 @@ function initSingleCycleDiagram(canvas) {
     memUnitToMemSubsystemLink.connector('rounded', {
         radius: 5
     });
-    memUnitToMemSubsystemLink.addTo(canvas.graph);
+    graphObjs.push(memUnitToMemSubsystemLink);
 }
 
-exports.show = initSingleCycleDiagram;
+function showSingleCycleDiagram(canvas) {
+    canvas.graph.clear();
+    canvas.graphScale.x = 1;
+    canvas.graphScale.y = 1;
+    canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
+    for (var i = 0; i < graphObjs.length; i++) {
+        graphObjs[i].addTo(canvas.graph);
+    }
+}
+
+exports.show = showSingleCycleDiagram;
+exports.init = initSingleCycleDiagram;

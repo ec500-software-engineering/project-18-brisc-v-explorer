@@ -1,10 +1,10 @@
+
 blockDiagramUtils = require('../block_diagram.js');
 
+var graphObjs = [];
+
 function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
-    canvas.graph.clear();
-    canvas.graphScale.x = 1;
-    canvas.graphScale.y = 1;
-    canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
+    graphObjs = [];
     var fetchBlock = new joint.shapes.standard.Rectangle();
     fetchBlock.position(16, 130);
     fetchBlock.resize(80, 100);
@@ -19,7 +19,7 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
             text: 'Fetch\nUnit'
         }
     });
-    fetchBlock.addTo(canvas.graph);
+    graphObjs.push(fetchBlock);
     console.log(fetchBlock);
     console.log(fetchBlock.attributes.size.width);
     fetchBlock.on('change:position', function() {
@@ -30,14 +30,14 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
         fetchBlock.position().x + (fetchBlock.attributes.size.width - 20), 
         fetchBlock.position().y, 25, fetchBlock.attributes.size.height);
     fetchRegFileBlockTemplate.regfile.attr('label/text', '');
-    fetchRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    fetchRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(fetchRegFileBlockTemplate.regfile);
+    graphObjs.push(fetchRegFileBlockTemplate.clockSymbol);
     // decode block
     var decodeBlock = fetchBlock.clone();
     decodeBlock.translate(fetchBlock.attributes.size.width + 28, 0);
     decodeBlock.attr('label/text', 'Decode\nUnit');
     decodeBlock.attr('body/fill', '#77b1bd');
-    decodeBlock.addTo(canvas.graph);
+    graphObjs.push(decodeBlock);
     decodeBlock.on('change:position', function() {
         console.log('DecodeBlock position: ' + decodeBlock.position());
     });
@@ -46,8 +46,8 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
         decodeBlock.position().x + (decodeBlock.attributes.size.width - 14), 
         decodeBlock.position().y, 35, fetchBlock.attributes.size.height);
     decodeRegFileBlockTemplate.regfile.attr('label/text', 'Reg\nFile');
-    decodeRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    decodeRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(decodeRegFileBlockTemplate.regfile);
+    graphObjs.push(decodeRegFileBlockTemplate.clockSymbol);
     
     // execute block
     var executeBlock = decodeRegFileBlockTemplate.regfile.clone();
@@ -56,7 +56,7 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
     executeBlock.attr('label/text', 'Execute\nUnit');
     executeBlock.attr('label/fill', 'white');
     executeBlock.attr('body/fill', '#597cab');
-    executeBlock.addTo(canvas.graph);
+    graphObjs.push(executeBlock);
     executeBlock.on('change:position', function() {
         console.log('ExectuteBlock position: ' + executeBlock.position());
     });
@@ -65,14 +65,14 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
         executeBlock.position().x + (executeBlock.attributes.size.width - 14), 
         executeBlock.position().y, 25, fetchBlock.attributes.size.height);
     executeRegFileBlockTemplate.regfile.attr('label/text', '');
-    executeRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    executeRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(executeRegFileBlockTemplate.regfile);
+    graphObjs.push(executeRegFileBlockTemplate.clockSymbol);
     // memory unit
     var memoryUnitBlock = executeBlock.clone();
     memoryUnitBlock.translate(executeBlock.attributes.size.width + 55, 0);
     memoryUnitBlock.attr('label/text', 'Memory\nUnit');
     memoryUnitBlock.attr('body/fill', '#5762ab');
-    memoryUnitBlock.addTo(canvas.graph);
+    graphObjs.push(memoryUnitBlock);
     memoryUnitBlock.on('change:position', function() {
         console.log('MemoryUnitBlock position: ' + memoryUnitBlock.position());
     });
@@ -81,14 +81,14 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
         memoryUnitBlock.position().x + (memoryUnitBlock.attributes.size.width - 13), 
         memoryUnitBlock.position().y, 25, fetchBlock.attributes.size.height);
     memoryRegFileBlockTemplate.regfile.attr('label/text', '');
-    memoryRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    memoryRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(memoryRegFileBlockTemplate.regfile);
+    graphObjs.push(memoryRegFileBlockTemplate.clockSymbol);
     // write back
     var writeBackBlock = memoryUnitBlock.clone();
     writeBackBlock.translate(memoryUnitBlock.attributes.size.width + 35, 0);
     writeBackBlock.attr('label/text', 'Writeback\nUnit');
     writeBackBlock.attr('body/fill', '#4f4d85');
-    writeBackBlock.addTo(canvas.graph);
+    graphObjs.push(writeBackBlock);
     writeBackBlock.on('change:position', function() {
         console.log('WriteBackBlock position: ' + writeBackBlock.position());
     });
@@ -97,8 +97,8 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
         writeBackBlock.position().x + (writeBackBlock.attributes.size.width - 8), 
         writeBackBlock.position().y, 25, fetchBlock.attributes.size.height);
     writeBackRegFileBlockTemplate.regfile.attr('label/text', '');
-    writeBackRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    writeBackRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(writeBackRegFileBlockTemplate.regfile);
+    graphObjs.push(writeBackRegFileBlockTemplate.clockSymbol);
     // control unit
     var controlUnitBlock = new joint.shapes.standard.Circle();
     controlUnitBlock.resize(70, 70);
@@ -107,7 +107,7 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
     controlUnitBlock.attr('label/text', 'Control\nUnit');
     controlUnitBlock.attr('body/fill', '#77b1bd');
     controlUnitBlock.attr('label/fill', 'white');
-    controlUnitBlock.addTo(canvas.graph);
+    graphObjs.push(controlUnitBlock);
     controlUnitBlock.on('change:position', function() {
         console.log('ControlUnitBlock position: ' + controlUnitBlock.position());
     });
@@ -116,8 +116,8 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
         decodeRegFileBlockTemplate.regfile.position().x + 20, 
         controlUnitBlock.position().y + 23, 25, 35);
     controlRegFileBlockTemplate.regfile.attr('label/text', '');
-    controlRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    controlRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(controlRegFileBlockTemplate.regfile);
+    graphObjs.push(controlRegFileBlockTemplate.clockSymbol);
     // Linking
     var fetchToDecodeLink = new joint.shapes.standard.Link();
     fetchToDecodeLink.source(fetchRegFileBlockTemplate.regfile);
@@ -139,44 +139,44 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
             }
         }
     });
-    fetchToDecodeLink.addTo(canvas.graph);
+    graphObjs.push(fetchToDecodeLink);
     
     var execToMemRegFileBlockTemplate = blockDiagramUtils.getRegfileTemplate(
         executeRegFileBlockTemplate.regfile.position().x, 
         controlUnitBlock.position().y + 23, 25, 
         controlRegFileBlockTemplate.regfile.attributes.size.height);
     execToMemRegFileBlockTemplate.regfile.attr('label/text', '');
-    execToMemRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    execToMemRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(execToMemRegFileBlockTemplate.regfile);
+    graphObjs.push(execToMemRegFileBlockTemplate.clockSymbol);
     // memory to exec register
     var memToWriteBackRegFileBlockTemplate = blockDiagramUtils.getRegfileTemplate(
         memoryRegFileBlockTemplate.regfile.position().x, 
         controlUnitBlock.position().y + 23, 25, 
         controlRegFileBlockTemplate.regfile.attributes.size.height);
     memToWriteBackRegFileBlockTemplate.regfile.attr('label/text', '');
-    memToWriteBackRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    memToWriteBackRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(memToWriteBackRegFileBlockTemplate.regfile);
+    graphObjs.push(memToWriteBackRegFileBlockTemplate.clockSymbol);
     var regfileToExecuteLink = fetchToDecodeLink.clone();
     regfileToExecuteLink.source(decodeRegFileBlockTemplate.regfile);
     regfileToExecuteLink.target(executeBlock);
     regfileToExecuteLink.attr('line/stroke', decodeBlock.attr('body/fill'));
     regfileToExecuteLink.attr('line/targetMarker/fill', decodeBlock.attr('body/fill'));
     regfileToExecuteLink.toBack();
-    regfileToExecuteLink.addTo(canvas.graph);
+    graphObjs.push(regfileToExecuteLink);
     
     var executeToMemoryLink = regfileToExecuteLink.clone();
     executeToMemoryLink.source(executeRegFileBlockTemplate.regfile);
     executeToMemoryLink.target(memoryUnitBlock);
     executeToMemoryLink.attr('line/stroke', executeBlock.attr('body/fill'));
     executeToMemoryLink.attr('line/targetMarker/fill', executeBlock.attr('body/fill'));
-    executeToMemoryLink.addTo(canvas.graph);
+    graphObjs.push(executeToMemoryLink);
     
     var memoryToWriteBackLink = executeToMemoryLink.clone();
     memoryToWriteBackLink.source(memoryRegFileBlockTemplate.regfile);
     memoryToWriteBackLink.target(writeBackBlock);
     memoryToWriteBackLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
     memoryToWriteBackLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
-    memoryToWriteBackLink.addTo(canvas.graph);
+    graphObjs.push(memoryToWriteBackLink);
     
     var writeBackToDecodeLink = memoryToWriteBackLink.clone();
     writeBackToDecodeLink.source(writeBackRegFileBlockTemplate.regfile);
@@ -194,7 +194,7 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
     });
     writeBackToDecodeLink.attr('line/stroke', writeBackBlock.attr('body/fill'));
     writeBackToDecodeLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
-    writeBackToDecodeLink.addTo(canvas.graph);
+    graphObjs.push(writeBackToDecodeLink);
     
     var controlToDecodeLink = fetchToDecodeLink.clone();
     controlToDecodeLink.source(controlUnitBlock);
@@ -210,13 +210,12 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
             }
         }
     });
-    console.log(controlToDecodeLink);
-    controlToDecodeLink.addTo(canvas.graph);
+    graphObjs.push(controlToDecodeLink);
     
     var controlToUpperDecodePipelineRegLink = fetchToDecodeLink.clone();
     controlToUpperDecodePipelineRegLink.source(controlUnitBlock);
     controlToUpperDecodePipelineRegLink.target(controlRegFileBlockTemplate.regfile);
-    controlToUpperDecodePipelineRegLink.addTo(canvas.graph);
+    graphObjs.push(controlToUpperDecodePipelineRegLink);
     
     var controlToExectuteLink = fetchToDecodeLink.clone();
     controlToExectuteLink.source(controlRegFileBlockTemplate.regfile);
@@ -227,11 +226,11 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
     controlToExectuteLink.connector('rounded', {
         radius: 5
     });
-    controlToExectuteLink.addTo(canvas.graph);
+    graphObjs.push(controlToExectuteLink);
     
     var controlToExecPipelineRegLink = controlToExectuteLink.clone();
     controlToExecPipelineRegLink.target(execToMemRegFileBlockTemplate.regfile);
-    controlToExecPipelineRegLink.addTo(canvas.graph);
+    graphObjs.push(controlToExecPipelineRegLink);
     
     var executeToFetchBypassLink = executeToMemoryLink.clone();
     executeToFetchBypassLink.source(executeRegFileBlockTemplate.regfile);
@@ -254,7 +253,7 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
     executeToFetchBypassLink.connector('rounded', {
         radius: 5
     });
-    executeToFetchBypassLink.addTo(canvas.graph);
+    graphObjs.push(executeToFetchBypassLink);
     
     var execPipelineRegToMemLink = controlToExectuteLink.clone();
     execPipelineRegToMemLink.source(execToMemRegFileBlockTemplate.regfile);
@@ -265,7 +264,7 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
         startDirections: ['right'],
         endDirections: ['top'] 
     });
-    execPipelineRegToMemLink.addTo(canvas.graph);
+    graphObjs.push(execPipelineRegToMemLink);
     
     var execPipelineRegToFetchLink = execPipelineRegToMemLink.clone();
     execPipelineRegToFetchLink.target(fetchBlock);
@@ -273,12 +272,12 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
         startDirections: ['right'],
         padding: 12
     });
-    execPipelineRegToFetchLink.addTo(canvas.graph);
+    graphObjs.push(execPipelineRegToFetchLink);
     
     var execPipelineRegToMemPipelineRegLink = execPipelineRegToFetchLink.clone();
     execPipelineRegToMemPipelineRegLink.source(execToMemRegFileBlockTemplate.regfile);
     execPipelineRegToMemPipelineRegLink.target(memToWriteBackRegFileBlockTemplate.regfile);
-    execPipelineRegToMemPipelineRegLink.addTo(canvas.graph);
+    graphObjs.push(execPipelineRegToMemPipelineRegLink);
     
     var memPipelineRegToWriteBackLink = execPipelineRegToMemPipelineRegLink.clone();
     memPipelineRegToWriteBackLink.source(memToWriteBackRegFileBlockTemplate.regfile);
@@ -288,7 +287,7 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
     });
     memPipelineRegToWriteBackLink.attr('line/stroke', writeBackBlock.attr('body/fill'));
     memPipelineRegToWriteBackLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
-    memPipelineRegToWriteBackLink.addTo(canvas.graph);
+    graphObjs.push(memPipelineRegToWriteBackLink);
     
     // memory subsystem link
     var memorySubsystemInterfaceBlock = fetchBlock.clone();
@@ -298,7 +297,7 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
         (writeBackBlock.attributes.size.width) - fetchBlock.position().x;
     memorySubsystemInterfaceBlock.resize(memIfWidth, 60);
     memorySubsystemInterfaceBlock.attr('body/fill', '#006666');
-    memorySubsystemInterfaceBlock.addTo(canvas.graph);
+    graphObjs.push(memorySubsystemInterfaceBlock);
     memorySubsystemInterfaceBlock.on('change:position', function() {
         console.log('InsMemoryBlock position: ' + memorySubsystemInterfaceBlock.position());
     });
@@ -330,7 +329,7 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
         startDirections: ['bottom'],
         endDirections: ['top']
     });
-    fetchToMemSubsystemLink.addTo(canvas.graph);
+    graphObjs.push(fetchToMemSubsystemLink);
     
     
     var memUnitToMemSubsystemLink = fetchToMemSubsystemLink.clone();
@@ -342,7 +341,19 @@ function init5StagePipelineRegedOrBypassedPipelineDiagram(canvas) {
     memUnitToMemSubsystemLink.connector('rounded', {
         radius: 5
     });
-    memUnitToMemSubsystemLink.addTo(canvas.graph);
+    graphObjs.push(memUnitToMemSubsystemLink);
 }
 
-exports.show = init5StagePipelineRegedOrBypassedPipelineDiagram;
+
+function show5StageDiagram(canvas) {
+    canvas.graph.clear();
+    canvas.graphScale.x = 1;
+    canvas.graphScale.y = 1;
+    canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
+    for (var i = 0; i < graphObjs.length; i++) {
+        graphObjs[i].addTo(canvas.graph);
+    }
+}
+
+exports.show = show5StageDiagram;
+exports.init = init5StagePipelineRegedOrBypassedPipelineDiagram;

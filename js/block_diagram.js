@@ -25,7 +25,7 @@ const BlockDiagramEnum = {
     SEVEN_STAGE_PIPELINE_BYPASS: 3
 };
 
-function initCanvas(clickCallback) {
+function init(clickCallback) {
     graph = new joint.dia.Graph;
     
     paper = new joint.dia.Paper({
@@ -93,7 +93,10 @@ function initCanvas(clickCallback) {
         onUpdatedCTM: function () {},
         eventsListenerElement: null
     });
-    
+    diagramSingleCycle.init(canvas);
+    diagram5Stage.init(canvas);
+    diagram7Stage.init(canvas);
+    diagramMemorySubsystem.init(canvas);
 }
 
 function updateDiagramDimensions(newWidth, newHeight) {
@@ -216,7 +219,8 @@ function showMemorySubsystemDiagram() {
     diagramMemorySubsystem.show(canvas);
 }
 
-exports.initCanvas = initCanvas;
+
+exports.init = init;
 exports.getRegfileTemplate = getRegfileTemplate;
 exports.saveBlockDiagramAsPng = saveBlockDiagramAsPng;
 exports.getBlockDiagramPngBlob = getBlockDiagramPngBlob;

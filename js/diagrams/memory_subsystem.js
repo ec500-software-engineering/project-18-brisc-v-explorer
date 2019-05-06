@@ -1,11 +1,9 @@
 blockDiagramUtils = require('../block_diagram.js');
 
+var graphObjs = [];
+
 function initMemorySubsystemDiagram(canvas) {
-    canvas.graph.clear();
-    canvas.graphScale.x = 1;
-    canvas.graphScale.y = 1;
-    canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
-    
+    graphObjs = [];
     var l1InsCacheBlock = new joint.shapes.standard.Rectangle();
     l1InsCacheBlock.attr({
         body: {
@@ -20,11 +18,10 @@ function initMemorySubsystemDiagram(canvas) {
     });
     l1InsCacheBlock.position(50, 100);
     l1InsCacheBlock.resize(100, 60);
-    l1InsCacheBlock.addTo(canvas.graph);
+    graphObjs.push(l1InsCacheBlock);
     l1InsCacheBlock.on('change:position', function () {
         console.log('L1 instruction cache position: ' + l1InsCacheBlock.position());
     });
-    l1InsCacheBlock.addTo(canvas.graph);
 
     var l1DataCacheBlock = new joint.shapes.standard.Rectangle();
     l1DataCacheBlock.attr({
@@ -40,11 +37,10 @@ function initMemorySubsystemDiagram(canvas) {
     });
     l1DataCacheBlock.position(canvas.paper.options.width - 150, 100);
     l1DataCacheBlock.resize(100, 60);
-    l1DataCacheBlock.addTo(canvas.graph);
+    graphObjs.push(l1DataCacheBlock);
     l1DataCacheBlock.on('change:position', function () {
         console.log('L1 Data cache position: ' + l1InsCacheBlock.position());
     });
-    l1InsCacheBlock.addTo(canvas.graph);
 
     /*var sharedBusBlock = l1InsCacheBlock.clone();
     sharedBusBlock.attr('label/text', 'Shared Bus');
@@ -75,7 +71,7 @@ function initMemorySubsystemDiagram(canvas) {
     l2CombinedCacheBlock.on('change:position', function () {
         console.log('L1 Data cache position: ' + l2CombinedCacheBlock.position());
     });
-    l2CombinedCacheBlock.addTo(canvas.graph);
+    graphObjs.push(l2CombinedCacheBlock);
 
     var mainMemoryInterfaceBlock = l2CombinedCacheBlock.clone();
     mainMemoryInterfaceBlock.attr('label/text', 'Main Memory Interface');
@@ -83,7 +79,7 @@ function initMemorySubsystemDiagram(canvas) {
     mainMemoryInterfaceBlock.resize(busWidth, 20);
     mainMemoryInterfaceBlock.position(l1InsCacheBlock.position().x, l2CombinedCacheBlock.position().y + l2CombinedCacheBlock.attributes.size.height + 40);
     mainMemoryInterfaceBlock.attr('body/fill', '#009999');
-    mainMemoryInterfaceBlock.addTo(canvas.graph);
+    graphObjs.push(mainMemoryInterfaceBlock);
 
     var mainMemoryBlock = mainMemoryInterfaceBlock.clone();
     mainMemoryBlock.resize(200, 60);
@@ -93,7 +89,7 @@ function initMemorySubsystemDiagram(canvas) {
     mainMemoryBlock.attr('label/text', 'Main Memory\n32kB');
     mainMemoryBlock.position(memPositionX, memPositionY);
     mainMemoryBlock.attr('body/fill', '#2eb8b8');
-    mainMemoryBlock.addTo(canvas.graph);
+    graphObjs.push(mainMemoryBlock);
 
     // handle links
     // l1 i$ to shared bus
@@ -102,7 +98,7 @@ function initMemorySubsystemDiagram(canvas) {
         line: {
             width: 3,
         }
-    })
+    });
     l1InsCacheToL2CacheLink.source(l1InsCacheBlock);
     l1InsCacheToL2CacheLink.target(l2CombinedCacheBlock, {
         anchor: {
@@ -127,7 +123,7 @@ function initMemorySubsystemDiagram(canvas) {
         endDirections: ['top']
     });
     l1InsCacheToL2CacheLink.connector('rounded');
-    l1InsCacheToL2CacheLink.addTo(canvas.graph);
+    graphObjs.push(l1InsCacheToL2CacheLink);
     // l1 i$ to shared bus
     var l1DataCacheToL2CacheLink = new joint.shapes.standard.Link();
     l1DataCacheToL2CacheLink.source(l1DataCacheBlock);
@@ -154,7 +150,7 @@ function initMemorySubsystemDiagram(canvas) {
         endDirections: ['top']
     });
     l1DataCacheToL2CacheLink.connector('rounded');
-    l1DataCacheToL2CacheLink.addTo(canvas.graph);
+    graphObjs.push(l1DataCacheToL2CacheLink);
     // L2 to main memory interface
     var l2ToMainMemInterfaceLink = l1DataCacheToL2CacheLink.clone();
     l2ToMainMemInterfaceLink.attr({
@@ -165,7 +161,7 @@ function initMemorySubsystemDiagram(canvas) {
     });
     l2ToMainMemInterfaceLink.source(l2CombinedCacheBlock);
     l2ToMainMemInterfaceLink.target(mainMemoryInterfaceBlock);
-    l2ToMainMemInterfaceLink.addTo(canvas.graph);
+    graphObjs.push(l2ToMainMemInterfaceLink);
     // L2 to main memory interface
     var memInterfaceToMainMemory = l2ToMainMemInterfaceLink.clone();
     memInterfaceToMainMemory.attr({
@@ -176,7 +172,7 @@ function initMemorySubsystemDiagram(canvas) {
     });
     memInterfaceToMainMemory.source(mainMemoryInterfaceBlock);
     memInterfaceToMainMemory.target(mainMemoryBlock);
-    memInterfaceToMainMemory.addTo(canvas.graph);
+    graphObjs.push(memInterfaceToMainMemory);
     
     var coreCloudInterface = new joint.shapes.standard.Rectangle();
     var cloudWidth = (l1DataCacheBlock.position().x + l1DataCacheBlock.attributes.size.width) - l1InsCacheBlock.position().x;
@@ -193,7 +189,7 @@ function initMemorySubsystemDiagram(canvas) {
         }
     });
     coreCloudInterface.position(l1InsCacheBlock.position().x, 5);
-    coreCloudInterface.addTo(canvas.graph);
+    graphObjs.push(coreCloudInterface);
     
     var procIfMidPoint = coreCloudInterface.position().x + (coreCloudInterface.attributes.size.width / 2);
     var l1InsCacheMidpoint = l1InsCacheBlock.position().x + (l1InsCacheBlock.attributes.size.width / 2);
@@ -217,7 +213,7 @@ function initMemorySubsystemDiagram(canvas) {
         startDirections: ['bottom'],
         endDirections: ['top']
     });
-    procIfToL1InsCacheLink.addTo(canvas.graph);
+    graphObjs.push(procIfToL1InsCacheLink);
     
     var l1DataCacheMidpoint = l1DataCacheBlock.position().x + (l1DataCacheBlock.attributes.size.width / 2);
     var procIfToL1DataCacheLink = procIfToL1InsCacheLink.clone();
@@ -234,7 +230,18 @@ function initMemorySubsystemDiagram(canvas) {
         endDirections: ['top']
     });
     procIfToL1DataCacheLink.target(l1DataCacheBlock);
-    procIfToL1DataCacheLink.addTo(canvas.graph);
+    graphObjs.push(procIfToL1DataCacheLink);
 }
 
-exports.show = initMemorySubsystemDiagram;
+function showMemorySubsystemDiagram(canvas) {
+    canvas.graph.clear();
+    canvas.graphScale.x = 1;
+    canvas.graphScale.y = 1;
+    canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
+    for (var i = 0; i < graphObjs.length; i++) {
+        graphObjs[i].addTo(canvas.graph);
+    }
+}
+
+exports.show = showMemorySubsystemDiagram;
+exports.init = initMemorySubsystemDiagram;

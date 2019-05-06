@@ -221,7 +221,7 @@ function init() {
     });
     layout.init();
     $('.selectpicker').selectpicker();
-    diagram.initCanvas(function (objName) {
+    diagram.init(function (objName) {
         if (objName === 'Memory Subsystem') {
             switchGLSettingsTabTo('memory_settings', layout);
         } else if (objName === 'Processor Interface') {

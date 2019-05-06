@@ -1,10 +1,9 @@
 blockDiagramUtils = require('../block_diagram.js');
 
+var graphObjs = [];
+
 function init7StageBypassedPiplineDiagram(canvas) {
-    canvas.graph.clear();
-    canvas.graphScale.x = 1;
-    canvas.graphScale.y = 1;
-    canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
+    graphObjs = [];
     var fetchBlock = new joint.shapes.standard.Rectangle();
     fetchBlock.position(16, 130);
     fetchBlock.resize(80, 100);
@@ -19,8 +18,7 @@ function init7StageBypassedPiplineDiagram(canvas) {
             text: 'Fetch\nUnit'
         }
     });
-    fetchBlock.addTo(canvas.graph);
-    console.log(fetchBlock);
+    graphObjs.push(fetchBlock);
     console.log(fetchBlock.attributes.size.width);
     fetchBlock.on('change:position', function() {
         console.log('FetchBlock position: ' + fetchBlock.position());
@@ -30,15 +28,15 @@ function init7StageBypassedPiplineDiagram(canvas) {
         fetchBlock.position().x + (fetchBlock.attributes.size.width - 20), 
         fetchBlock.position().y, 25, fetchBlock.attributes.size.height);
     fetchRegFileBlockTemplate.regfile.attr('label/text', '');
-    fetchRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    fetchRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(fetchRegFileBlockTemplate.regfile);
+    graphObjs.push(fetchRegFileBlockTemplate.clockSymbol);
     // decode block
     var decodeBlock = fetchBlock.clone();
     decodeBlock.resize(80, 100);
     decodeBlock.translate(fetchBlock.attributes.size.width + 28, 0);
     decodeBlock.attr('label/text', 'Decode\nUnit');
     decodeBlock.attr('body/fill', '#77b1bd');
-    decodeBlock.addTo(canvas.graph);
+    graphObjs.push(decodeBlock);
     decodeBlock.on('change:position', function() {
         console.log('DecodeBlock position: ' + decodeBlock.position());
     });
@@ -47,8 +45,8 @@ function init7StageBypassedPiplineDiagram(canvas) {
         decodeBlock.position().x + (decodeBlock.attributes.size.width - 14), 
         decodeBlock.position().y, 35, fetchBlock.attributes.size.height);
     decodeRegFileBlockTemplate.regfile.attr('label/text', 'Reg\nFile');
-    decodeRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    decodeRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(decodeRegFileBlockTemplate.regfile);
+    graphObjs.push(decodeRegFileBlockTemplate.clockSymbol);
     
     // execute block
     var executeBlock = decodeRegFileBlockTemplate.regfile.clone();
@@ -57,7 +55,7 @@ function init7StageBypassedPiplineDiagram(canvas) {
     executeBlock.attr('label/text', 'Execute\nUnit');
     executeBlock.attr('label/fill', 'white');
     executeBlock.attr('body/fill', '#597cab');
-    executeBlock.addTo(canvas.graph);
+    graphObjs.push(executeBlock);
     executeBlock.on('change:position', function() {
         console.log('ExectuteBlock position: ' + executeBlock.position());
     });
@@ -66,14 +64,14 @@ function init7StageBypassedPiplineDiagram(canvas) {
         executeBlock.position().x + (executeBlock.attributes.size.width - 14), 
         executeBlock.position().y, 25, fetchBlock.attributes.size.height);
     executeRegFileBlockTemplate.regfile.attr('label/text', '');
-    executeRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    executeRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(executeRegFileBlockTemplate.regfile);
+    graphObjs.push(executeRegFileBlockTemplate.clockSymbol);
     // memory unit
     var memoryUnitBlock = executeBlock.clone();
     memoryUnitBlock.translate(executeBlock.attributes.size.width + 55, 0);
     memoryUnitBlock.attr('label/text', 'Memory\nUnit');
     memoryUnitBlock.attr('body/fill', '#5762ab');
-    memoryUnitBlock.addTo(canvas.graph);
+    graphObjs.push(memoryUnitBlock);
     memoryUnitBlock.on('change:position', function() {
         console.log('MemoryUnitBlock position: ' + memoryUnitBlock.position());
     });
@@ -82,15 +80,15 @@ function init7StageBypassedPiplineDiagram(canvas) {
         memoryUnitBlock.position().x + (memoryUnitBlock.attributes.size.width - 13), 
         memoryUnitBlock.position().y, 25, fetchBlock.attributes.size.height);
     memoryRegFileBlockTemplate.regfile.attr('label/text', '');
-    memoryRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    memoryRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(memoryRegFileBlockTemplate.regfile);
+    graphObjs.push(memoryRegFileBlockTemplate.clockSymbol);
     // write back
     var writeBackBlock = memoryUnitBlock.clone();
     writeBackBlock.resize(80, 100);
     writeBackBlock.translate(memoryUnitBlock.attributes.size.width + 35, 0);
     writeBackBlock.attr('label/text', 'Writeback\nUnit');
     writeBackBlock.attr('body/fill', '#4f4d85');
-    writeBackBlock.addTo(canvas.graph);
+    graphObjs.push(writeBackBlock);
     writeBackBlock.on('change:position', function() {
         console.log('WriteBackBlock position: ' + writeBackBlock.position());
     });
@@ -99,8 +97,8 @@ function init7StageBypassedPiplineDiagram(canvas) {
         writeBackBlock.position().x + (writeBackBlock.attributes.size.width - 8), 
         writeBackBlock.position().y, 25, fetchBlock.attributes.size.height);
     writeBackRegFileBlockTemplate.regfile.attr('label/text', '');
-    writeBackRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    writeBackRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(writeBackRegFileBlockTemplate.regfile);
+    graphObjs.push(writeBackRegFileBlockTemplate.clockSymbol);
     // control unit
     var controlUnitBlock = new joint.shapes.standard.Circle();
     controlUnitBlock.resize(70, 70);
@@ -109,7 +107,7 @@ function init7StageBypassedPiplineDiagram(canvas) {
     controlUnitBlock.attr('label/text', 'Control\nUnit');
     controlUnitBlock.attr('body/fill', '#77b1bd');
     controlUnitBlock.attr('label/fill', 'white');
-    controlUnitBlock.addTo(canvas.graph);
+    graphObjs.push(controlUnitBlock);
     controlUnitBlock.on('change:position', function() {
         console.log('ControlUnitBlock position: ' + controlUnitBlock.position());
     });
@@ -118,8 +116,8 @@ function init7StageBypassedPiplineDiagram(canvas) {
         decodeRegFileBlockTemplate.regfile.position().x + 20, 
         controlUnitBlock.position().y + 23, 25, 35);
     controlRegFileBlockTemplate.regfile.attr('label/text', '');
-    controlRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    controlRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(controlRegFileBlockTemplate.regfile);
+    graphObjs.push(controlRegFileBlockTemplate.clockSymbol);
     // Linking
     var fetchToDecodeLink = new joint.shapes.standard.Link();
     fetchToDecodeLink.source(fetchRegFileBlockTemplate.regfile);
@@ -134,33 +132,32 @@ function init7StageBypassedPiplineDiagram(canvas) {
             }
         }
     });
-    fetchToDecodeLink.addTo(canvas.graph);
+    graphObjs.push(fetchToDecodeLink);
     
-    // stall registers?
     //exec to memory
     var execToMemRegFileBlockTemplate = blockDiagramUtils.getRegfileTemplate(
         executeRegFileBlockTemplate.regfile.position().x, 
         controlUnitBlock.position().y + 23, 25, 
         controlRegFileBlockTemplate.regfile.attributes.size.height);
     execToMemRegFileBlockTemplate.regfile.attr('label/text', '');
-    execToMemRegFileBlockTemplate.regfile.addTo(canvas.graph);
-    execToMemRegFileBlockTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(execToMemRegFileBlockTemplate.regfile);
+    graphObjs.push(execToMemRegFileBlockTemplate.clockSymbol);
     // memory to exec register
     var memStage2ndPipelineRegfileTemplate = blockDiagramUtils.getRegfileTemplate(
         memoryRegFileBlockTemplate.regfile.position().x, 
         controlUnitBlock.position().y + 23, 25, 
         controlRegFileBlockTemplate.regfile.attributes.size.height);
     memStage2ndPipelineRegfileTemplate.regfile.attr('label/text', '');
-    memStage2ndPipelineRegfileTemplate.regfile.addTo(canvas.graph);
-    memStage2ndPipelineRegfileTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(memStage2ndPipelineRegfileTemplate.regfile);
+    graphObjs.push(memStage2ndPipelineRegfileTemplate.clockSymbol);
     
     var memStage1stPipelineRegfileTemplate = blockDiagramUtils.getRegfileTemplate(
         memoryRegFileBlockTemplate.regfile.position().x - 60, 
         controlUnitBlock.position().y + 23, 25, 
         controlRegFileBlockTemplate.regfile.attributes.size.height);
     memStage1stPipelineRegfileTemplate.regfile.attr('label/text', '');
-    memStage1stPipelineRegfileTemplate.regfile.addTo(canvas.graph);
-    memStage1stPipelineRegfileTemplate.clockSymbol.addTo(canvas.graph);
+    graphObjs.push(memStage1stPipelineRegfileTemplate.regfile);
+    graphObjs.push(memStage1stPipelineRegfileTemplate.clockSymbol);
     
     var regfileToExecuteLink = fetchToDecodeLink.clone();
     regfileToExecuteLink.source(decodeRegFileBlockTemplate.regfile);
@@ -168,21 +165,21 @@ function init7StageBypassedPiplineDiagram(canvas) {
     regfileToExecuteLink.attr('line/stroke', decodeBlock.attr('body/fill'));
     regfileToExecuteLink.attr('line/targetMarker/fill', decodeBlock.attr('body/fill'));
     regfileToExecuteLink.toBack();
-    regfileToExecuteLink.addTo(canvas.graph);
+    graphObjs.push(regfileToExecuteLink);
     
     var executeToMemoryLink = regfileToExecuteLink.clone();
     executeToMemoryLink.source(executeRegFileBlockTemplate.regfile);
     executeToMemoryLink.target(memoryUnitBlock);
     executeToMemoryLink.attr('line/stroke', executeBlock.attr('body/fill'));
     executeToMemoryLink.attr('line/targetMarker/fill', executeBlock.attr('body/fill'));
-    executeToMemoryLink.addTo(canvas.graph);
+    graphObjs.push(executeToMemoryLink);
     
     var memoryToWriteBackLink = executeToMemoryLink.clone();
     memoryToWriteBackLink.source(memoryRegFileBlockTemplate.regfile);
     memoryToWriteBackLink.target(writeBackBlock);
     memoryToWriteBackLink.attr('line/stroke', memoryUnitBlock.attr('body/fill'));
     memoryToWriteBackLink.attr('line/targetMarker/fill', memoryUnitBlock.attr('body/fill'));
-    memoryToWriteBackLink.addTo(canvas.graph);
+    graphObjs.push(memoryToWriteBackLink);
     
     var writeBackToDecodeLink = memoryToWriteBackLink.clone();
     writeBackToDecodeLink.source(writeBackRegFileBlockTemplate.regfile);
@@ -200,7 +197,7 @@ function init7StageBypassedPiplineDiagram(canvas) {
     });
     writeBackToDecodeLink.attr('line/stroke', writeBackBlock.attr('body/fill'));
     writeBackToDecodeLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
-    writeBackToDecodeLink.addTo(canvas.graph);
+    graphObjs.push(writeBackToDecodeLink);
     
     var controlToDecodeLink = fetchToDecodeLink.clone();
     controlToDecodeLink.source(controlUnitBlock);
@@ -224,12 +221,12 @@ function init7StageBypassedPiplineDiagram(canvas) {
         }
     });
     console.log(controlToDecodeLink);
-    controlToDecodeLink.addTo(canvas.graph);
+    graphObjs.push(controlToDecodeLink);
     
     var controlToUpperDecodePipelineRegLink = fetchToDecodeLink.clone();
     controlToUpperDecodePipelineRegLink.source(controlUnitBlock);
     controlToUpperDecodePipelineRegLink.target(controlRegFileBlockTemplate.regfile);
-    controlToUpperDecodePipelineRegLink.addTo(canvas.graph);
+    graphObjs.push(controlToUpperDecodePipelineRegLink);
     
     var controlToExectuteLink = fetchToDecodeLink.clone();
     controlToExectuteLink.source(controlRegFileBlockTemplate.regfile);
@@ -240,11 +237,11 @@ function init7StageBypassedPiplineDiagram(canvas) {
     controlToExectuteLink.connector('rounded', {
         radius: 5
     });
-    controlToExectuteLink.addTo(canvas.graph);
+    graphObjs.push(controlToExectuteLink);
     
-    var controlToExecStallLink = controlToExectuteLink.clone();
-    controlToExecStallLink.target(execToMemRegFileBlockTemplate.regfile);
-    controlToExecStallLink.addTo(canvas.graph);
+    var controlToExecPipelineRegLink = controlToExectuteLink.clone();
+    controlToExecPipelineRegLink.target(execToMemRegFileBlockTemplate.regfile);
+    graphObjs.push(controlToExecPipelineRegLink);
     
     var executeToFetchBypassLink = executeToMemoryLink.clone();
     executeToFetchBypassLink.source(executeRegFileBlockTemplate.regfile);
@@ -267,7 +264,7 @@ function init7StageBypassedPiplineDiagram(canvas) {
     executeToFetchBypassLink.connector('rounded', {
         radius: 5
     });
-    executeToFetchBypassLink.addTo(canvas.graph);
+    graphObjs.push(executeToFetchBypassLink);
     
     var execPipelineToMemLink = controlToExectuteLink.clone();
     execPipelineToMemLink.source(execToMemRegFileBlockTemplate.regfile);
@@ -278,7 +275,7 @@ function init7StageBypassedPiplineDiagram(canvas) {
         startDirections: ['right'],
         endDirections: ['top'] 
     });
-    execPipelineToMemLink.addTo(canvas.graph);
+    graphObjs.push(execPipelineToMemLink);
     
     var execPipelineToFetchLink = execPipelineToMemLink.clone();
     execPipelineToFetchLink.target(fetchBlock);
@@ -286,17 +283,17 @@ function init7StageBypassedPiplineDiagram(canvas) {
         startDirections: ['right'],
         padding: 12
     });
-    execPipelineToFetchLink.addTo(canvas.graph);
+    graphObjs.push(execPipelineToFetchLink);
     
     var execPipelineTo1stMemPipelineLink = execPipelineToFetchLink.clone();
     execPipelineTo1stMemPipelineLink.source(execToMemRegFileBlockTemplate.regfile);
     execPipelineTo1stMemPipelineLink.target(memStage1stPipelineRegfileTemplate.regfile);
-    execPipelineTo1stMemPipelineLink.addTo(canvas.graph);
+    graphObjs.push(execPipelineTo1stMemPipelineLink);
     
     var memPipeline1stRegToMemPipeline2ndRegLink = execPipelineToFetchLink.clone();
     memPipeline1stRegToMemPipeline2ndRegLink.source(memStage1stPipelineRegfileTemplate.regfile);
     memPipeline1stRegToMemPipeline2ndRegLink.target(memStage2ndPipelineRegfileTemplate.regfile);
-    memPipeline1stRegToMemPipeline2ndRegLink.addTo(canvas.graph);
+    graphObjs.push(memPipeline1stRegToMemPipeline2ndRegLink);
     
     var memPipeline2ndRegToWriteBackLink = execPipelineTo1stMemPipelineLink.clone();
     memPipeline2ndRegToWriteBackLink.source(memStage2ndPipelineRegfileTemplate.regfile);
@@ -306,7 +303,7 @@ function init7StageBypassedPiplineDiagram(canvas) {
     });
     memPipeline2ndRegToWriteBackLink.attr('line/stroke', writeBackBlock.attr('body/fill'));
     memPipeline2ndRegToWriteBackLink.attr('line/targetMarker/fill', writeBackBlock.attr('body/fill'));
-    memPipeline2ndRegToWriteBackLink.addTo(canvas.graph);
+    graphObjs.push(memPipeline2ndRegToWriteBackLink);
     
     // left justifying text for blocks
     //fetchBlock.attr('text/ref-x', -48);
@@ -320,7 +317,7 @@ function init7StageBypassedPiplineDiagram(canvas) {
         (writeBackBlock.attributes.size.width) - fetchBlock.position().x;
     memorySubsystemInterfaceBlock.resize(memIfWidth, 60);
     memorySubsystemInterfaceBlock.attr('body/fill', '#006666');
-    memorySubsystemInterfaceBlock.addTo(canvas.graph);
+    graphObjs.push(memorySubsystemInterfaceBlock);
     memorySubsystemInterfaceBlock.on('change:position', function() {
         console.log('InsMemoryBlock position: ' + memorySubsystemInterfaceBlock.position());
     });
@@ -352,7 +349,7 @@ function init7StageBypassedPiplineDiagram(canvas) {
         startDirections: ['bottom'],
         endDirections: ['top']
     });
-    fetchToMemSubsystemLink.addTo(canvas.graph);
+    graphObjs.push(fetchToMemSubsystemLink);
     
     
     var memUnitToMemSubsystemLink = fetchToMemSubsystemLink.clone();
@@ -364,8 +361,20 @@ function init7StageBypassedPiplineDiagram(canvas) {
     memUnitToMemSubsystemLink.connector('rounded', {
         radius: 5
     });
-    memUnitToMemSubsystemLink.addTo(canvas.graph);
+    graphObjs.push(memUnitToMemSubsystemLink);
     
 }
 
-exports.show = init7StageBypassedPiplineDiagram;
+
+function show7StageDiagram(canvas) {
+    canvas.graph.clear();
+    canvas.graphScale.x = 1;
+    canvas.graphScale.y = 1;
+    canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
+    for (var i = 0; i < graphObjs.length; i++) {
+        graphObjs[i].addTo(canvas.graph);
+    }
+}
+
+exports.show = show7StageDiagram;
+exports.init = init7StageBypassedPiplineDiagram;
