@@ -270,8 +270,8 @@ function init() {
     });
     currentDiagramId = diagram.BlockDiagramEnum.SINGLE_CYCLE;
     $(window).resize(function () {
-        diagram.updateDiagramDimensions();
         layout.updateSize($('#gl_wrapper').width(), $('#gl_wrapper').height());
+        diagram.updateDiagramDimensions();
     });
     $('#program_choose').hide();
     $('input[name="default_program"]').on('change', function () {
