@@ -15,9 +15,14 @@ WORKSPACE_ROOT_DIR = '/tmp/verilog'
 
 @app.route('/verilog_fetch', methods=['GET', 'POST'])
 def handle_verilog_fetch():
-    core_params = {'core': flask.request.args.get('core'), 'data_width': flask.request.args.get('data_width'),
-            'index_bits': flask.request.args.get('index_bits'), 'offset_bits': flask.request.args.get('offset_bits'),
-            'address_bits': flask.request.args.get('address_bits'), 'program': flask.request.args.get('program')}
+    core_params = {
+        'core': flask.request.args.get('core'),
+        'data_width': flask.request.args.get('data_width'),
+        'index_bits': flask.request.args.get('index_bitsL1'),
+        'offset_bits': flask.request.args.get('offset_bitsL1'),
+        'address_bits': flask.request.args.get('address_bits'),
+        'program': flask.request.args.get('program')
+    }
     initialize_top_module_file(core_params)
     resp = get_zip_files_response(WORKSPACE_ROOT_DIR)
     resp.headers['Access-Control-Allow-Origin'] = '*'
