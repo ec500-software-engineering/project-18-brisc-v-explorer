@@ -2,18 +2,22 @@ function getStrCopy(str) {
     return (' ' + str).slice(1);
 }
 
-function getIdAsInt(inputId) {
-    var textValue = document.getElementById(inputId).value;
-    var textNumber = parseInt(textValue, 10);
-    return textNumber;
+function getHumanReadableSizeStr(numStr) {
+    var sizeStr = "Invalid";
+    if (numStr < 0) {
+        sizeStr = "Invalid";
+    } else if (numStr < 10) {
+        sizeStr = (2 ** numStr).toString() + 'B';
+    } else if (numStr < 20) {
+        sizeStr = Math.floor((2 ** numStr) / 2 ** 10).toString() + 'kB';
+    } else if (numStr < 30) {
+        sizeStr = Math.floor((2 ** numStr) / 2 ** 20).toString() + 'MB';
+    } else if (numStr < 33) {
+        sizeStr = Math.floor((2 ** numStr) / 2 ** 30).toString() + 'GB';
+    }
+    return sizeStr;
 }
 
-
-function getMemorySizeFromInput() {
-    var addressBits = getIdAsInt('address_bits');
-    var dataWidth = getIdAsInt('data_width');
-    return addressBits + Math.log2(dataWidth) - 3;
-}
 
 exports.getStrCopy = getStrCopy;
-exports.getMemorySizeFromInput = getMemorySizeFromInput;
+exports.getHumanReadableSizeStr = getHumanReadableSizeStr;

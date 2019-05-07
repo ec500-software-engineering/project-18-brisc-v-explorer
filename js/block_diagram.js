@@ -219,8 +219,7 @@ function showMemorySubsystemDiagram(cacheLevels) {
     diagramMemorySubsystem.show(canvas, cacheLevels);
 }
 
-function updateMemoryCapacityInDiagram(cacheLevels, memId, numBytes) {
-    var newSizeStr = '13kB';
+function updateMemoryCapacityInDiagram(cacheLevels, memId, newSizeStr) {
     diagramMemorySubsystem.updateMemTitle(cacheLevels, memId, newSizeStr);
 }
 
