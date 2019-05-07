@@ -3,9 +3,9 @@ function getStrCopy(str) {
 }
 
 function getHumanReadableSizeStr(numStr) {
-    var sizeStr = "Invalid";
+    var sizeStr = 'Invalid';
     if (numStr < 0) {
-        sizeStr = "Invalid";
+        sizeStr = 'Invalid';
     } else if (numStr < 10) {
         sizeStr = (2 ** numStr).toString() + 'B';
     } else if (numStr < 20) {
