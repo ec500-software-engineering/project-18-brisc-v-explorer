@@ -83,7 +83,7 @@ def setup():
             'https://github.com/rashmi2383/BRISCV_Verilog.git',
             VERILOG_REPO_DIR, branch='master'
         )
-    except git.GitCommandError as ex:
+    except git.GitCommandError:
         traceback.print_exc()
 
 
