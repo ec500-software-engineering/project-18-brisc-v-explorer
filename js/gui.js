@@ -147,10 +147,17 @@ function init() {
     layout.registerComponent('Project Settings', function (container, componentState) {
         container.getElement().html(htmlTemplates.projectSettings.html);
     });
-    layout.on('componentCreated', function(component) {
-        component.container.on('resize', function() {
+    layout.on('componentCreated', function (component) {
+        component.container.on('resize', function () {
             if (component.componentName === 'Canvas') {
                 diagram.updateDiagramDimensions();
+            }
+        });
+        component.container.on('show', function () {
+            if (component.config.id === 'memory_settings') {
+                diagram.showMemorySubsystemDiagram(parseInt($('#num_cache_levels').val()));
+            } else {
+                updateBlockDiagram(currentDiagramId);
             }
         });
     });
@@ -195,14 +202,6 @@ function init() {
     $('#stage_group').hide();
     $('#pipeline_group_1').hide();
     $('#pipeline_group_2').hide();
-    var settingsStack = layout.root.getItemsById('settings_stack')[0];
-    settingsStack.on('activeContentItemChanged', function (component) {
-        if (component.config.id === 'memory_settings') {
-            diagram.showMemorySubsystemDiagram(parseInt($('#num_cache_levels').val()));
-        } else {
-            updateBlockDiagram(currentDiagramId);
-        }
-    });
     currentDiagramId = diagram.BlockDiagramEnum.SINGLE_CYCLE;
     $(window).resize(function () {
         layout.updateSize($('#gl_wrapper').width(), $('#gl_wrapper').height());
