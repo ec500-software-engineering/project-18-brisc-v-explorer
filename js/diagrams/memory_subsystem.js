@@ -22,7 +22,11 @@ class MemoryBlock {
 function initMemorySubsystemL2Diagram(canvas) {
     var procInterfaceBlock = new joint.shapes.standard.Rectangle();
     procInterfaceBlock.attr({
+        body: {
+            fill: '#006666'
+        },
         label: {
+            fill: 'white',
             text: 'Processor Interface'
         }
     });
@@ -34,9 +38,11 @@ function initMemorySubsystemL2Diagram(canvas) {
     l1InsCacheBlock.attr({
         body: {
             rx: 7.5,
-            ry: 7.5
+            ry: 7.5,
+            fill: '#76608A'
         },
         label: {
+            fill: 'white',
             text: 'L1 Instruction\nCache\n16kB'
         }
     });
@@ -56,6 +62,8 @@ function initMemorySubsystemL2Diagram(canvas) {
     
     var l2CombinedCacheBlock = l1InsCacheBlock.clone();
     l2CombinedCacheBlock.attr('label/text', 'L2 Combined Cache\n16kB');
+    l2CombinedCacheBlock.attr('body/fill', '#6D8764');
+    l2CombinedCacheBlock.attr('label/fill', 'white');
     l2CombinedCacheBlock.resize(240, 40);
     l2CombinedCacheBlock.translate(-20, 90);
     graphObjsL2.push(l2CombinedCacheBlock);
@@ -67,9 +75,11 @@ function initMemorySubsystemL2Diagram(canvas) {
     mainMemoryInterfaceBlock.attr({
         body: {
             rx: 0,
-            ry: 0
+            ry: 0,
+            fill: '#006666'
         },
         label: {
+            fill: 'white',
             text: 'Main Memory Interface'
         }
     });
@@ -81,9 +91,11 @@ function initMemorySubsystemL2Diagram(canvas) {
     mainMemoryBlock.attr({
         body: {
             rx: 7.5,
-            ry: 7.5
+            ry: 7.5,
+            fill: '#647687'
         },
         label: {
+            fill: 'white',
             text: 'Main Memory\n32kB'
         }
     });
@@ -108,9 +120,11 @@ function initMemorySubsystemL2Diagram(canvas) {
     procInterfaceToL1InsCacheLink.target(l1InsCacheBlock);
     procInterfaceToL1InsCacheLink.attr({
         line: {
+            stroke: procInterfaceBlock.attr('body/fill'),
             strokeWidth: 2,
             sourceMarker: {
                 type: 'path',
+                fill: procInterfaceBlock.attr('body/fill'),
                 d: procInterfaceToL1InsCacheLink.attr('line/targetMarker/d')
             }
         }
@@ -138,6 +152,8 @@ function initMemorySubsystemL2Diagram(canvas) {
     graphObjsL2.push(procInterfaceToL1DataCache);
     
     var l1InsCacheToL2CombinedCacheLink = procInterfaceToL1InsCacheLink.clone();
+    l1InsCacheToL2CombinedCacheLink.attr('line/stroke', l1InsCacheBlock.attr('body/fill'));
+    l1InsCacheToL2CombinedCacheLink.attr('line/sourceMarker/fill', l1InsCacheBlock.attr('body/fill'));
     l1InsCacheToL2CombinedCacheLink.source(l1InsCacheBlock);
     l1InsCacheToL2CombinedCacheLink.target(l2CombinedCacheBlock, {
         anchor: {
@@ -162,11 +178,15 @@ function initMemorySubsystemL2Diagram(canvas) {
     graphObjsL2.push(l1DataCacheToL2CombinedCacheLink);
     
     var l2CombinedCacheBlockToMainMemInterfaceLink = l1InsCacheToL2CombinedCacheLink.clone();
+    l2CombinedCacheBlockToMainMemInterfaceLink.attr('line/stroke', l2CombinedCacheBlock.attr('body/fill'));
+    l2CombinedCacheBlockToMainMemInterfaceLink.attr('line/sourceMarker/fill', l2CombinedCacheBlock.attr('body/fill'));
     l2CombinedCacheBlockToMainMemInterfaceLink.source(l2CombinedCacheBlock);
     l2CombinedCacheBlockToMainMemInterfaceLink.target(mainMemoryInterfaceBlock);
     graphObjsL2.push(l2CombinedCacheBlockToMainMemInterfaceLink);
     
     var mainMemInterfactToMainMemoryLink = l2CombinedCacheBlockToMainMemInterfaceLink.clone();
+    mainMemInterfactToMainMemoryLink.attr('line/stroke', mainMemoryInterfaceBlock.attr('body/fill'));
+    mainMemInterfactToMainMemoryLink.attr('line/sourceMarker/fill', mainMemoryInterfaceBlock.attr('body/fill'));
     mainMemInterfactToMainMemoryLink.source(mainMemoryInterfaceBlock);
     mainMemInterfactToMainMemoryLink.target(mainMemoryBlock);
     graphObjsL2.push(mainMemInterfactToMainMemoryLink);
@@ -175,7 +195,11 @@ function initMemorySubsystemL2Diagram(canvas) {
 function initMemorySubsystemL1Diagram(canvas) {
     var procInterfaceBlock = new joint.shapes.standard.Rectangle();
     procInterfaceBlock.attr({
+        body: {
+            fill: '#006666'
+        },
         label: {
+            fill: 'white',
             text: 'Processor Interface'
         }
     });
@@ -187,9 +211,11 @@ function initMemorySubsystemL1Diagram(canvas) {
     l1InsCacheBlock.attr({
         body: {
             rx: 7.5,
-            ry: 7.5
+            ry: 7.5,
+            fill: '#76608A'
         },
         label: {
+            fill: 'white',
             text: 'L1 Instruction\nCache\n16kB'
         }
     });
@@ -210,9 +236,11 @@ function initMemorySubsystemL1Diagram(canvas) {
     mainMemoryInterfaceBlock.attr({
         body: {
             rx: 0,
-            ry: 0
+            ry: 0,
+            fill: '#006666'
         },
         label: {
+            fill: 'white',
             text: 'Main Memory Interface'
         }
     });
@@ -224,9 +252,11 @@ function initMemorySubsystemL1Diagram(canvas) {
     mainMemoryBlock.attr({
         body: {
             rx: 7.5,
-            ry: 7.5
+            ry: 7.5,
+            fill: '#647687'
         },
         label: {
+            fill: 'white',
             text: 'Main Memory\n32kB'
         }
     });
@@ -251,9 +281,11 @@ function initMemorySubsystemL1Diagram(canvas) {
     procInterfaceToL1InsCacheLink.target(l1InsCacheBlock);
     procInterfaceToL1InsCacheLink.attr({
         line: {
+            stroke: procInterfaceBlock.attr('body/fill'),
             strokeWidth: 2,
             sourceMarker: {
                 type: 'path',
+                fill: procInterfaceBlock.attr('body/fill'),
                 d: procInterfaceToL1InsCacheLink.attr('line/targetMarker/d')
             }
         }
@@ -281,6 +313,8 @@ function initMemorySubsystemL1Diagram(canvas) {
     graphObjsL1.push(procInterfaceToL1DataCache);
     
     var l1InsCacheToMainMemInterfaceLink = procInterfaceToL1InsCacheLink.clone();
+    l1InsCacheToMainMemInterfaceLink.attr('line/stroke', l1InsCacheBlock.attr('body/fill'));
+    l1InsCacheToMainMemInterfaceLink.attr('line/sourceMarker/fill', l1InsCacheBlock.attr('body/fill'));
     l1InsCacheToMainMemInterfaceLink.source(l1InsCacheBlock);
     l1InsCacheToMainMemInterfaceLink.target(mainMemoryInterfaceBlock, {
         anchor: {
@@ -305,6 +339,8 @@ function initMemorySubsystemL1Diagram(canvas) {
     graphObjsL1.push(l1DataCacheToMainMemInterfaceLink);
     
     var mainMemInterfactToMainMemoryLink = l1InsCacheToMainMemInterfaceLink.clone();
+    mainMemInterfactToMainMemoryLink.attr('line/stroke', mainMemoryInterfaceBlock.attr('body/fill'));
+    mainMemInterfactToMainMemoryLink.attr('line/sourceMarker/fill', mainMemoryInterfaceBlock.attr('body/fill'));
     mainMemInterfactToMainMemoryLink.source(mainMemoryInterfaceBlock);
     mainMemInterfactToMainMemoryLink.target(mainMemoryBlock);
     graphObjsL1.push(mainMemInterfactToMainMemoryLink);
