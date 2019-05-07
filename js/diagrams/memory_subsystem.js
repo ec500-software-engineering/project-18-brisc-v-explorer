@@ -316,6 +316,8 @@ function initMemorySubsystemDiagram(canvas) {
 }
 
 function showMemorySubsystemDiagram(canvas, cacheLevels) {
+    if (cacheLevels !== 1 && cacheLevels !== 2)
+        return;
     canvas.graph.clear();
     canvas.graphScale.x = 1.5;
     canvas.graphScale.y = 1.5;
