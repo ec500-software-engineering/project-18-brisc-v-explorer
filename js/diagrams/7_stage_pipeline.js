@@ -368,8 +368,8 @@ function init7StageBypassedPiplineDiagram(canvas) {
 
 function show7StageDiagram(canvas) {
     canvas.graph.clear();
-    canvas.graphScale.x = 1.2;
-    canvas.graphScale.y = 1.2;
+    canvas.graphScale.x = 1.1;
+    canvas.graphScale.y = 1.1;
     canvas.paper.scale(canvas.graphScale.x, canvas.graphScale.y);
     for (var i = 0; i < graphObjs.length; i++) {
         graphObjs[i].addTo(canvas.graph);
