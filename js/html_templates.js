@@ -155,43 +155,36 @@ const downloadsTemplate = {
     html: `
 <div class="container gl_container title-spacer" id="downloads">
    <h2>Project Downloads</h2>
-   <br >
-   <section id="project-section">
-      <div class="download">
-         <button class="download-button fas fa-file-code" id="download_project_button">
-         Download Project
-         </button>
-         <p>
-            <small class="download-desc">Download the configured Verilog RTL source code to your local machine.</small>
-         </p>
-      </div>
-   </section>
    <hr>
-   <section id="diagram-section">
-      <div class="download">
-         <button class="download-button fas fa-images" id="download_diagram_button">
-         Download Diagram
-         </button>
-         <p>
-            <small class="download-desc">Download the block diagram of the configured project as a PNG image.</small>
-         </p>
+   <div class="download row">
+      <i class="fas fa-file-archive fa-4x row-item row-icon"></i>
+      <div class="row-item">
+         <small class="download-desc">Download the configured Verilog RTL source code to your local machine.</small><br><br>
+         <button class="download-button" id="download_project_button">Download Project</button>
       </div>
-   </section>
+   </div>
    <hr>
-   <section id="config-section">
-      <div class="form-group">
-         <label for="config_name">Configuration Name</label>
-         <input type="text" class="form-control input-normal" id="config_name" value="explorer.ebv" spellcheck="false" style="width: 60%;">
+   <div class="download row">
+      <i class="fas fa-images fa-4x row-item row-icon"></i>
+      <div class="row-item">
+         <small class="download-desc">Download the block diagram of the configured project as a PNG image.</small><br><br>
+         <button class="download-button" id="download_diagram_button">Download Diagram</button>
       </div>
-      <div class="download">
-         <button class="download-button fas fa-cogs" id="download_config_button">
-         Download Config
-         </button>
-         <p>
-            <small class="download-desc">Save the current project configuration to your local machine.</small>
-         </p>
+   </div>
+   <hr>
+   <div class="row">
+      <i class="fas fa-cog fa-4x row-item row-icon row-mid"></i>
+      <div class="row-item">
+         <div class="form-group">
+            <label for="config_name">Configuration Name</label>
+            <input type="text" class="form-control input-normal" id="config_name" value="explorer.ebv" spellcheck="false" style="width: 60%;">
+         </div>
+         <div class="download">
+            <small class="download-desc">Save the current project configuration to your local machine.</small><br><br>
+            <button class="download-button" id="download_config_button">Download Configuration</button>
+         </div>
       </div>
-   </section>
+   </div>
 </div>
 `
 };

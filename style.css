@@ -97,7 +97,13 @@ body {
 .gl-input {
     width: 30%;
 }
+.row-icon {
+    min-width: 90px;
+}
 
+.row-mid {
+    padding-top: 4%;
+}
 
 /*****************************************************************************/
 /* small gery text                                                           */
