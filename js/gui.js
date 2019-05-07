@@ -268,9 +268,6 @@ function init() {
         diagram.updateMemTitle(cacheLevels, 'main', newSizeStr);
     });
     $('#num_words').trigger('change');
-     var stack = layout.root.getItemsById('settings_stack')[0];
-    tabIdToStackObj['memory_settings'] = stack;
-    tabIdToStackObj['core_settings'] = stack;
     
 }
 exports.init = init;
