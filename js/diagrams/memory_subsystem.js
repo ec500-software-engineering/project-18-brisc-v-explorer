@@ -184,12 +184,12 @@ function initMemorySubsystemL2Diagram(canvas) {
     l2CombinedCacheBlockToMainMemInterfaceLink.target(mainMemoryInterfaceBlock);
     graphObjsL2.push(l2CombinedCacheBlockToMainMemInterfaceLink);
     
-    var mainMemInterfactToMainMemoryLink = l2CombinedCacheBlockToMainMemInterfaceLink.clone();
-    mainMemInterfactToMainMemoryLink.attr('line/stroke', mainMemoryInterfaceBlock.attr('body/fill'));
-    mainMemInterfactToMainMemoryLink.attr('line/sourceMarker/fill', mainMemoryInterfaceBlock.attr('body/fill'));
-    mainMemInterfactToMainMemoryLink.source(mainMemoryInterfaceBlock);
-    mainMemInterfactToMainMemoryLink.target(mainMemoryBlock);
-    graphObjsL2.push(mainMemInterfactToMainMemoryLink);
+    var mainMemInterfaceToMainMemLink = l2CombinedCacheBlockToMainMemInterfaceLink.clone();
+    mainMemInterfaceToMainMemLink.attr('line/stroke', mainMemoryInterfaceBlock.attr('body/fill'));
+    mainMemInterfaceToMainMemLink.attr('line/sourceMarker/fill', mainMemoryInterfaceBlock.attr('body/fill'));
+    mainMemInterfaceToMainMemLink.source(mainMemoryInterfaceBlock);
+    mainMemInterfaceToMainMemLink.target(mainMemoryBlock);
+    graphObjsL2.push(mainMemInterfaceToMainMemLink);
 }
 
 function initMemorySubsystemL1Diagram(canvas) {
@@ -338,12 +338,12 @@ function initMemorySubsystemL1Diagram(canvas) {
     });
     graphObjsL1.push(l1DataCacheToMainMemInterfaceLink);
     
-    var mainMemInterfactToMainMemoryLink = l1InsCacheToMainMemInterfaceLink.clone();
-    mainMemInterfactToMainMemoryLink.attr('line/stroke', mainMemoryInterfaceBlock.attr('body/fill'));
-    mainMemInterfactToMainMemoryLink.attr('line/sourceMarker/fill', mainMemoryInterfaceBlock.attr('body/fill'));
-    mainMemInterfactToMainMemoryLink.source(mainMemoryInterfaceBlock);
-    mainMemInterfactToMainMemoryLink.target(mainMemoryBlock);
-    graphObjsL1.push(mainMemInterfactToMainMemoryLink);
+    var mainMemInterfaceToMainMemLink = l1InsCacheToMainMemInterfaceLink.clone();
+    mainMemInterfaceToMainMemLink.attr('line/stroke', mainMemoryInterfaceBlock.attr('body/fill'));
+    mainMemInterfaceToMainMemLink.attr('line/sourceMarker/fill', mainMemoryInterfaceBlock.attr('body/fill'));
+    mainMemInterfaceToMainMemLink.source(mainMemoryInterfaceBlock);
+    mainMemInterfaceToMainMemLink.target(mainMemoryBlock);
+    graphObjsL1.push(mainMemInterfaceToMainMemLink);
 }
 
 function initMemorySubsystemDiagram(canvas) {
