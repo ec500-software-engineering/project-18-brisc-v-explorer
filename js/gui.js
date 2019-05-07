@@ -254,7 +254,8 @@ function init() {
     $('#address_bit_width').trigger('change');
     $('#num_words').on('change', function() {
         var newSize = getMainMemorySizeFromInput();
-        var newSizeStr = utils.getHumanReadableSizeStrFromBits(newSize);
+        var newSizeStr = utils.getHumanReadableSizeStrFromBytes(newSize);
+        console.log(newSizeStr);
         var cacheLevels = parseInt($('#num_cache_levels').val(), 10);
         diagram.updateMemTitle(cacheLevels, 'main', newSizeStr);
     });

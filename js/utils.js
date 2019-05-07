@@ -1,9 +1,14 @@
+const BytesSizeEnum = {
+    KILOBYTE: 1024,
+    MEGABYTE: 1024 * 1024,
+    GIGABYTE: 1024 * 1024 * 1024
+};
+
 function getStrCopy(str) {
     return (' ' + str).slice(1);
 }
 
 function getHumanReadableSizeStrFromBits(numBits) {
-    console.log(numBits);
     var sizeStr = 'Invalid';
     if (numBits < 0) {
         sizeStr = 'Invalid';
@@ -19,6 +24,25 @@ function getHumanReadableSizeStrFromBits(numBits) {
     return sizeStr;
 }
 
+function getHumanReadableSizeStrFromBytes(numBytes) {
+    var sizeStr = 'Invalid';
+    if (numBytes < 0)
+        sizeStr = 'Invalid';
+    else if (numBytes < BytesSizeEnum.KILOBYTE ) {
+        sizeStr = `${numBytes} B`;
+    } else if (numBytes < BytesSizeEnum.MEGABYTE) {
+        var sizeInKb = Math.floor(numBytes / BytesSizeEnum.KILOBYTE);
+        sizeStr = `${sizeInKb} kB`;
+    } else if (numBytes < BytesSizeEnum.GIGABYTE) {
+        var sizeInMb = Math.floor(numBytes / BytesSizeEnum.MEGABYTE);
+        sizeStr = `${sizeStr} MB`;
+    } else {
+        var sizeInGb = Math.floor(numBytes / BytesSizeEnum.GIGABYTE);
+        sizeStr = `${sizeStr} GB`;
+    }
+    return sizeStr;
+}
 
 exports.getStrCopy = getStrCopy;
 exports.getHumanReadableSizeStrFromBits = getHumanReadableSizeStrFromBits;
+exports.getHumanReadableSizeStrFromBytes = getHumanReadableSizeStrFromBytes;
