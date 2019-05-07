@@ -39,6 +39,11 @@ function getCacheMemorySizeFromInput() {
     return numAddrBits + Math.log2(numDataBits) - 3;
 }
 
+function getMainMemorySizeFromInput() {
+    var numWords = parseInt($('#num_words').val(), 10);
+    return numWords * 4;  // assume word size is 4 (rv32i)
+}
+
 
 function updateBlockDiagram(selector) {
     if (selector === diagram.BlockDiagramEnum.SINGLE_CYCLE)
@@ -227,10 +232,11 @@ function init() {
         }
         // so that higher levels get updated
         $('#address_bit_width').trigger('change');
+        $('#num_words').trigger('change');
     });
     $('#address_bit_width').on('change', function() {
         var newSize = getCacheMemorySizeFromInput();
-        var newSizeStr = utils.getHumanReadableSizeStr(newSize);
+        var newSizeStr = utils.getHumanReadableSizeStrFromBits(newSize);
         var cacheLevels = parseInt($('#num_cache_levels').val(), 10);
         for (var lvl = 1; lvl <= cacheLevels; lvl++) {
             diagram.updateMemTitle(cacheLevels, `l${lvl}`, newSizeStr);
@@ -238,7 +244,7 @@ function init() {
     });
     $('#data_bit_width').on('change', function() {
         var newSize = getCacheMemorySizeFromInput();
-        var newSizeStr = utils.getHumanReadableSizeStr(newSize);
+        var newSizeStr = utils.getHumanReadableSizeStrFromBits(newSize);
         var cacheLevels = parseInt($('#num_cache_levels').val(), 10);
         for (var lvl = 1; lvl <= cacheLevels; lvl++) {
             diagram.updateMemTitle(cacheLevels, `l${lvl}`, newSizeStr);
@@ -246,6 +252,13 @@ function init() {
     });
     // just so the diagram is updated ot load time
     $('#address_bit_width').trigger('change');
+    $('#num_words').on('change', function() {
+        var newSize = getMainMemorySizeFromInput();
+        var newSizeStr = utils.getHumanReadableSizeStrFromBits(newSize);
+        var cacheLevels = parseInt($('#num_cache_levels').val(), 10);
+        diagram.updateMemTitle(cacheLevels, 'main', newSizeStr);
+    });
+    $('#num_words').trigger('change');
     
 }
 exports.init = init;
