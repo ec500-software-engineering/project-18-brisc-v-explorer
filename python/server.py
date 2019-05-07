@@ -1,46 +1,38 @@
-import flask
-import json
-import zipstream
-import string
-import fileinput
 import os
 import sys
 import git
 import shutil
-import tempfile
+import flask
+import traceback
+import zipstream
+import fileinput
 
 app = flask.Flask(__name__)
 
-@app.route('/')
-def index():
-    return 'Hello world'
+VERILOG_REPO_DIR = '/tmp/verilog_repo'
+WORKSPACE_ROOT_DIR = '/tmp/verilog'
 
-@app.route('/verilog_fetch', methods=['GET','POST'])
-def dataParsing():
-    data = {}
-    data['core'] = flask.request.args.get('core')
-    data['data_width'] = flask.request.args.get('data_width')
-    data['index_bits'] = flask.request.args.get('index_bits')
-    data['offset_bits'] = flask.request.args.get('offset_bits')
-    data['address_bits'] = flask.request.args.get('address_bits')
-    data['program'] = flask.request.args.get('program')
-    #data = flask.request.get_json() 
-    wd = parameterSub(data)
-    resp = fileFetching(wd)
+
+@app.route('/verilog_fetch', methods=['GET', 'POST'])
+def handle_verilog_fetch():
+    core_params = {'core': flask.request.args.get('core'), 'data_width': flask.request.args.get('data_width'),
+            'index_bits': flask.request.args.get('index_bits'), 'offset_bits': flask.request.args.get('offset_bits'),
+            'address_bits': flask.request.args.get('address_bits'), 'program': flask.request.args.get('program')}
+    initialize_top_module_file(core_params)
+    resp = get_zip_files_response(WORKSPACE_ROOT_DIR)
     resp.headers['Access-Control-Allow-Origin'] = '*'
     resp.headers['Access-Control-Allow-Methods'] = 'GET, POST, PATCH, PUT, DELETE, OPTIONS'
     resp.headers['Access-Control-Allow-Headers'] = 'Origin, Content-Type, X-Auth-Token'
     return resp
 
-def fileFetching(wd):
+
+def get_zip_files_response(workspace_dir):
     def generator():
-        z = zipstream.ZipFile(mode='w') #, compression=ZIP_DEFLATED)
-        for folder,subfolders,files in os.walk(wd):
+        z = zipstream.ZipFile(mode='w')
+        for folder, sub_folder, files in os.walk(workspace_dir):
             for filename in files:
-                fp = os.path.join(folder,filename)
+                fp = os.path.join(folder, filename)
                 z.write(fp)
-        #z.write('/home/rashmi/project-18-brisc-v-explorer/index.html')
-        #z.write('/home/rashmi/project-18-brisc-v-explorer/read_repo.py')
         for chunk in z:
             yield chunk
 
@@ -48,53 +40,47 @@ def fileFetching(wd):
     resp.headers['Content-Disposition'] = 'attachment; filename={}'.format('files.zip')
     return resp
 
-#substitute parameters in the project template file with the received json file
-def parameterSub(data):
-    # get current directory path
-    cd = os.getcwd()
-    
-    # create workspace directory path and git repo path
-    gd = os.path.join(cd,'git_repo_dir')
-    wd = os.path.join(cd,'work_space')
-    
-    # check if the git repo directory already exists
-    if not os.path.exists(gd):
-        os.mkdir(gd)
 
-    # check if the git repo is already cloned, if not clone the project from repo
-    if os.listdir(gd) == 0:          
-        # clone into git repo dir
-        git.Repo.clone_from('https://github.com/rashmi2383/BRISCV_Verilog.git', gd, branch='master', depth=1)
+def initialize_top_module_file(core_params):
+    top_module_path = os.path.join(WORKSPACE_ROOT_DIR, 'project_template.v')
+    shutil.copy(
+        os.path.join(VERILOG_REPO_DIR, 'project_template.v'), top_module_path)
 
-    # check if the workspace directory already exists
-    if not os.path.exists(wd):
-        os.mkdir(wd)
-
-    if os.listdir(wd) == 0:
-        shutil.copy(os.path.join(gd,'project_template.v'),os.path.join(wd,'project_template.v'))   
-        
-    # create path of the pulled template file
-    fpath = os.path.join(wd,'project_template.v')
-    
-    for line in fileinput.input(fpath,inplace=True):
+    for line in fileinput.input(top_module_path, inplace=True):
         if line.startswith('  parameter CORE'):
-            print('  parameter CORE = %s' % str(data['core']))
+            print('  parameter CORE = %s' % str(core_params['core']))
         elif line.startswith('  parameter DATA_WIDTH'):
-            print('  parameter DATA_WIDTH = %s' %  data['data_width'])
+            print('  parameter DATA_WIDTH = %s' % core_params['data_width'])
         elif line.startswith('  parameter INDEX_BITS'):
-            print('  parameter INDEX_BITS = %s' % str(data['index_bits']))
+            print('  parameter INDEX_BITS = %s' % str(core_params['index_bits']))
         elif line.startswith('  parameter OFFSET_BITS'):
-            print('  parameter OFFSET_BITS = %s' % str(data['offset_bits']))
+            print('  parameter OFFSET_BITS = %s' % str(core_params['offset_bits']))
         elif line.startswith('  parameter ADDRESS_BITS'):
-            print('  parameter ADDRESS_BITS = %s' % data['address_bits'])
+            print('  parameter ADDRESS_BITS = %s' % core_params['address_bits'])
         elif line.startswith('  parameter PROGRAM'):
-            print('  parameter PROGRAM = \'%s\'' % str(data['program']))
+            print('  parameter PROGRAM = \'%s\'' % str(core_params['program']))
         else:
             sys.stdout.write(line)
-    return wd
+
+
+def setup():
+    if not os.path.exists(WORKSPACE_ROOT_DIR):
+        os.makedirs(WORKSPACE_ROOT_DIR, exist_ok=True)
+    if not os.path.exists(VERILOG_REPO_DIR):
+        os.makedirs(VERILOG_REPO_DIR, exist_ok=True)
+    try:
+        git.Repo.clone_from(
+            'https://github.com/rashmi2383/BRISCV_Verilog.git',
+            VERILOG_REPO_DIR, branch='master'
+        )
+    except git.GitCommandError as ex:
+        traceback.print_exc()
+
 
 def main():
-    app.run(debug=True, host='0.0.0.0')
+    setup()
+    app.run(debug=True, host='0.0.0.0', port=8000)
+
 
 if __name__ == '__main__':
     main()
