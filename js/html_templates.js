@@ -1,54 +1,54 @@
 const coreSettingsTemplate = {
     html: `
 <div class="container gl_container title-spacer" id="core_settings">
-<h3>Core Configuration</h3>
-<hr>
-<div id="general_memory_config_container" class="col-container">
-<div class="row">
-   <div class="form-group row-item">
-      <label for="num_cores">Number of Cores</label>
-      <input type="number" class="form-control input-normal" id="num_cores" min=1 max=1 value=1 style="width: 80px;">
+   <h3>Core Configuration</h3>
+   <hr>
+   <div class="row">
+      <div class="form-group row-item">
+         <label for="num_cores">Number of Cores</label>
+         <input type="number" class="form-control input-normal" id="num_cores" min=1 max=1 value=1 style="width: 80px;">
+      </div>
+      <div class="form-group row-item">
+         <label for="address_bit_width">Address Bit Width</label>
+         <input id="address_bit_width" type="number" class="form-control input-normal" min=12 max=32 value=12 style="width: 80px;">
+      </div>
+      <div class="form-group row-item">
+         <label for="data_bit_width">Data Bit Width</label>
+         <input id="data_bit_width" type="number" class="form-control input-normal" min=12 max=32 value=12 style="width: 80px;">
+      </div>
    </div>
-   <div class="form-group row-item">
-      <label for="address_bit_width">Address Bit Width</label>
-      <input id="address_bit_width" type="number" class="form-control input-normal" id="bit_width" min=12 max=32 value=12 style="width: 80px;">
+   <div class= "row">
+      <div class="form-group row-item">
+         <label for="cycle_type_sel">Core Type</label><br>
+         <select class="selectpicker" id="cycle_type_sel">
+            <option value="Single Cycle">Single Cycle</option>
+            <option value="Multi Cycle">Multi Cycle</option>
+         </select>
+      </div>
    </div>
-   <div class="form-group row-item">
-      <label for="data_bit_width">Data Bit Width</label>
-      <input id="data_bit_width" type="number" class="form-control input-normal" id="bit_width" min=12 max=32 value=12 style="width: 80px;">
-   </div>
-</div>
-<div class= "row">
-   <div class="form-group row-item">
-      <label for="cycle_type_sel">Core Type</label><br>
-      <select class="selectpicker" id="cycle_type_sel">
-         <option value="Single Cycle">Single Cycle</option>
-         <option value="Multi Cycle">Multi Cycle</option>
-      </select>
-   </div>
-</div>
-<div class="row">
-   <div class="form-group row-item" id="stage_group">
-      <label for="num_stages_sel">Number of Stages</label><br>
-      <select class="selectpicker" id="num_stages_sel">
-         <option value="5 Stage">5 Stage</option>
-         <option value="7 Stage">7 Stage</option>
-      </select>
-   </div>
-   <div class="form-group row-item" id="pipeline_group_1">
-      <label for="pipeline_logic_sel">Pipeline Logic</label>
-      <br>
-      <select class="selectpicker" id="pipeline_logic_sel_1">
-         <option value="Stalled Pipeline">Stall</option>
-         <option value="Bypassed Pipeline">Bypass</option>
-      </select>
-   </div>
-   <div class="form-group row-item" id="pipeline_group_2">
-      <label for="pipeline_logic_sel">Pipeline Logic</label>
-      <br>
-      <select class="selectpicker" id="pipeline_logic_sel_2">
-         <option value="Bypassed Pipeline">Bypass</option>
-      </select>
+   <div class="row">
+      <div class="form-group row-item" id="stage_group">
+         <label for="num_stages_sel">Number of Stages</label><br>
+         <select class="selectpicker" id="num_stages_sel">
+            <option value="5 Stage">5 Stage</option>
+            <option value="7 Stage">7 Stage</option>
+         </select>
+      </div>
+      <div class="form-group row-item" id="pipeline_group_1">
+         <label for="pipeline_logic_sel_2">Pipeline Logic</label>
+         <br>
+         <select class="selectpicker" id="pipeline_logic_sel_1">
+            <option value="Stalled Pipeline">Stall</option>
+            <option value="Bypassed Pipeline">Bypass</option>
+         </select>
+      </div>
+      <div class="form-group row-item" id="pipeline_group_2">
+         <label for="pipeline_logic_sel_2">Pipeline Logic</label>
+         <br>
+         <select class="selectpicker" id="pipeline_logic_sel_2">
+            <option value="Bypassed Pipeline">Bypass</option>
+         </select>
+      </div>
    </div>
 </div>
 `
@@ -71,80 +71,81 @@ const gettingStartedTemplate = {
 const memorySettingsTemplate = {
     html: `
 <div class="container gl_container title-spacer" id="memory_settings">
-<h3>Memory Subsystem Configuration</h3>
-<hr>
-<div id="general_cache_config_container">
-   <div class="sec-title">
-      <h5>General Cache Configuration</h5>
-   </div>
-   <div class="row">
-      <div class="form-group row-item">
-         <label for="num_cache_levels">Number of Cache Levels</label>
-         <input type="number" class="form-control input-normal gl-input" id="num_cache_levels" min=1 max=2 value=1>
+   <h3>Memory Subsystem Configuration</h3>
+   <hr>
+   <div id="general_cache_config_container">
+      <div class="sec-title">
+         <h5>General Cache Configuration</h5>
       </div>
-      <div class="form-group row-item">
-         <label for="num_words">Line Size</label>
-         <input type="number" class="form-control input-normal gl-input" id="line_size" min=1 value=8>
+      <div class="row">
+         <div class="form-group row-item">
+            <label for="num_cache_levels">Number of Cache Levels</label>
+            <input type="number" class="form-control input-normal gl-input" id="num_cache_levels" min=1 max=2 value=1>
+         </div>
+         <div class="form-group row-item">
+            <label for="num_words">Line Size</label>
+            <input type="number" class="form-control input-normal gl-input" id="line_size" min=1 value=8>
+         </div>
       </div>
-   </div>
-   <div class="row">
-      <div class="form-group row-item">
-         <label for="inclusion_sel">Cache Inclusion Policy</label>
-         <br>
-         <select class="selectpicker" id="inclusion_sel">
-            <option>Inclusive</option>
-            <option>Exclusive</option>
-         </select>
-      </div>
-   </div>
-</div>
-<hr id="l1_hr">
-<div id="l1_cache_config_container">
-   <div class="sec-title">
-      <h5>L1 Cache Configuration</h5>
-   </div>
-   <div class="row">
-      <div class="form-group row-item">
-         <label for="associativity_sel_l1">Associativity (L1)</label>
-         <br>
-         <select class="selectpicker" id="associativity_sel_l1">
-            <option value=2>2-way set associative</option>
-         </select>
-      </div>
-      <div class="form-group row-item">
-         <label for="num_indexes_l1">Number of Indexes (L1)</label>
-         <input type="number" class="form-control input-normal gl-input" id="num_indexes_l1" min=1 value=64>
+      <div class="row">
+         <div class="form-group row-item">
+            <label for="inclusion_sel">Cache Inclusion Policy</label>
+            <br>
+            <select class="selectpicker" id="inclusion_sel">
+               <option>Inclusive</option>
+               <option>Exclusive</option>
+            </select>
+         </div>
       </div>
    </div>
-</div>
-<hr id="l2_hr">
-<div id="l2_cache_config_container">
-   <div class="sec-title">
-      <h5>L2 Cache Configuration</h5>
-   </div>
-   <div class="row">
-      <div class="form-group row-item">
-         <label for="associativity_sel_l2">Associativity (L2)</label>
-         <br>
-         <select class="selectpicker" id="associativity_sel_l2">
-            <option>2-way set associative</option>
-         </select>
+   <hr id="l1_hr">
+   <div id="l1_cache_config_container">
+      <div class="sec-title">
+         <h5>L1 Cache Configuration</h5>
       </div>
-      <div class="form-group row-item">
-         <label for="num_indexes_l2">Number of Indexes (L2)</label>
-         <input type="number" class="form-control input-normal gl-input" id="num_indexes_l2" min=1 value=64>
+      <div class="row">
+         <div class="form-group row-item">
+            <label for="associativity_sel_l1">Associativity (L1)</label>
+            <br>
+            <select class="selectpicker" id="associativity_sel_l1">
+               <option value=2>2-way set associative</option>
+            </select>
+         </div>
+         <div class="form-group row-item">
+            <label for="num_indexes_l1">Number of Indexes (L1)</label>
+            <input type="number" class="form-control input-normal gl-input" id="num_indexes_l1" min=1 value=64>
+         </div>
       </div>
    </div>
-</div>
-<hr id="mem_hr">
-<div id="main_memory_config_container">
-   <div class="sec-title">
-      <h5>Main Memory Configuration</h5>
+   <hr id="l2_hr">
+   <div id="l2_cache_config_container">
+      <div class="sec-title">
+         <h5>L2 Cache Configuration</h5>
+      </div>
+      <div class="row">
+         <div class="form-group row-item">
+            <label for="associativity_sel_l2">Associativity (L2)</label>
+            <br>
+            <select class="selectpicker" id="associativity_sel_l2">
+               <option>2-way set associative</option>
+            </select>
+         </div>
+         <div class="form-group row-item">
+            <label for="num_indexes_l2">Number of Indexes (L2)</label>
+            <input type="number" class="form-control input-normal gl-input" id="num_indexes_l2" min=1 value=64>
+         </div>
+      </div>
    </div>
-   <div class="row">
-      <div class="form-group row-item">
-         <label for="num_words">Capacity (in 4 byte words)</label>
-         <input type="number" class="form-control input-normal gl-input" id="num_words" min=4096  value=4096>
+   <hr id="mem_hr">
+   <div id="main_memory_config_container">
+      <div class="sec-title">
+         <h5>Main Memory Configuration</h5>
+      </div>
+      <div class="row">
+         <div class="form-group row-item">
+            <label for="num_words">Capacity (in 4 byte words)</label>
+            <input type="number" class="form-control input-normal gl-input" id="num_words" min=4096  value=4096>
+         </div>
       </div>
    </div>
 </div>
