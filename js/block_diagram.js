@@ -219,6 +219,11 @@ function showMemorySubsystemDiagram(cacheLevels) {
     diagramMemorySubsystem.show(canvas, cacheLevels);
 }
 
+function updateMemoryCapacityInDiagram(cacheLevels, memId, numBytes) {
+    var newSizeStr = '13kB';
+    diagramMemorySubsystem.updateMemTitle(cacheLevels, memId, newSizeStr);
+}
+
 
 exports.init = init;
 exports.getRegfileTemplate = getRegfileTemplate;
@@ -230,3 +235,4 @@ exports.show7StagePipelineDiagram = show7StagePipelineDiagram;
 exports.showMemorySubsystemDiagram = showMemorySubsystemDiagram;
 exports.updateDiagramDimensions = updateDiagramDimensions;
 exports.BlockDiagramEnum = BlockDiagramEnum;
+exports.updateMemTitle = updateMemoryCapacityInDiagram;

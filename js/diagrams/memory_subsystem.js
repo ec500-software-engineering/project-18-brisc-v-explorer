@@ -3,6 +3,22 @@ blockDiagramUtils = require('../block_diagram.js');
 var graphObjsL1 = [];
 var graphObjsL2 = [];
 
+var memMapL1 = {};
+var memMapL2 = {};
+
+class MemoryBlock {
+    constructor(baseString, sizeStr, graphObj) {
+        this.baseString = baseString;
+        this.sizeStr = sizeStr;
+        this.graphObj = graphObj;
+    }
+    
+    updateTitle(sizeStr) {
+        this.sizeStr = sizeStr;
+        this.graphObj.attr('label/text', `${this.baseString}\n${this.sizeStr}`)
+    }
+}
+
 function initMemorySubsystemL2Diagram(canvas) {
     var procInterfaceBlock = new joint.shapes.standard.Rectangle();
     procInterfaceBlock.attr({
@@ -33,12 +49,20 @@ function initMemorySubsystemL2Diagram(canvas) {
     l1DataCacheBlock.translate(120, 0);
     graphObjsL2.push(l1DataCacheBlock);
     
+    memMapL2['l1'] = [
+        new MemoryBlock('L1 Instruction\nCache', '16kB', l1InsCacheBlock),
+        new MemoryBlock('L1 Data\nCache', '16kB', l1DataCacheBlock)
+    ];
+    
     var l2CombinedCacheBlock = l1InsCacheBlock.clone();
     l2CombinedCacheBlock.attr('label/text', 'L2 Combined Cache\n16kB');
     l2CombinedCacheBlock.resize(240, 40);
     l2CombinedCacheBlock.translate(-20, 90);
     graphObjsL2.push(l2CombinedCacheBlock);
     
+    memMapL2['l2'] = [
+        new MemoryBlock('L2 Combined Cache', '16kB', l2CombinedCacheBlock)
+    ];
     var mainMemoryInterfaceBlock = l2CombinedCacheBlock.clone();
     mainMemoryInterfaceBlock.attr({
         body: {
@@ -65,6 +89,9 @@ function initMemorySubsystemL2Diagram(canvas) {
     });
     mainMemoryBlock.translate(0, 70);
     mainMemoryBlock.resize(320, 60);
+    memMapL2['main'] = [
+        new MemoryBlock('Main Memory', '32kB', mainMemoryBlock)
+    ];
     graphObjsL2.push(mainMemoryBlock);
     
     // adding links
@@ -174,7 +201,10 @@ function initMemorySubsystemL1Diagram(canvas) {
     l1DataCacheBlock.attr('label/text', 'L1 Data\nCache\n16kB');
     l1DataCacheBlock.translate(120, 0);
     graphObjsL1.push(l1DataCacheBlock);
-    
+    memMapL1['l1'] = [
+        new MemoryBlock('L1 Instruction\nCache', '16kB', l1InsCacheBlock),
+        new MemoryBlock('L1 Data\nCache', '16kB', l1DataCacheBlock)
+    ];
     
     var mainMemoryInterfaceBlock = l1InsCacheBlock.clone();
     mainMemoryInterfaceBlock.attr({
@@ -202,6 +232,9 @@ function initMemorySubsystemL1Diagram(canvas) {
     });
     mainMemoryBlock.translate(0, 70);
     mainMemoryBlock.resize(320, 60);
+    memMapL1['main'] = [
+        new MemoryBlock('Main Memory', '32kB', mainMemoryBlock)
+    ];
     graphObjsL1.push(mainMemoryBlock);
     
     // adding links
@@ -298,5 +331,18 @@ function showMemorySubsystemDiagram(canvas, cacheLevels) {
     }
 }
 
+function updateMemoryBlockCapacityString(cacheLevels, memId, newSizeStr) {
+    if (cacheLevels === 1 && memId in memMapL1) {
+        for (var i = 0; i < memMapL1[memId].length; i++) {
+            memMapL1[memId][i].updateTitle(newSizeStr);
+        }
+    } else if (cacheLevels === 2 && memId in memMapL2) {
+        for (var i = 0; i < memMapL2[memId].length; i++) {
+            memMapL2[memId][i].updateTitle(newSizeStr);
+        }
+    }
+}
+
 exports.show = showMemorySubsystemDiagram;
 exports.init = initMemorySubsystemDiagram;
+exports.updateMemTitle = updateMemoryBlockCapacityString;
