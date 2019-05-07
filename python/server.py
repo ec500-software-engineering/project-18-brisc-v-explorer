@@ -31,8 +31,13 @@ def get_zip_files_response(workspace_dir):
         z = zipstream.ZipFile(mode='w')
         for folder, sub_folder, files in os.walk(workspace_dir):
             for filename in files:
-                fp = os.path.join(folder, filename)
-                z.write(fp)
+                og_path = os.path.join(folder, filename)
+                zip_path = og_path
+                if VERILOG_REPO_DIR in zip_path:
+                    zip_path = zip_path.replace(VERILOG_REPO_DIR, '')
+                elif WORKSPACE_ROOT_DIR in zip_path:
+                    zip_path = zip_path.replace(WORKSPACE_ROOT_DIR, '')
+                z.write(og_path, arcname=zip_path)
         for chunk in z:
             yield chunk
 
