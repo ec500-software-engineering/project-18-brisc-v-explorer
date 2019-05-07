@@ -5,6 +5,8 @@ htmlTemplates = require('./html_templates.js');
 var currentDiagramId = '';
 var memoryDiagramIsDisplayed = false;
 
+var tabIdToStackObj = {};
+
 var messageWindow = {
     displayStr: '',
 
@@ -58,10 +60,11 @@ function updateBlockDiagram(selector) {
 }
 
 function switchGLSettingsTabTo(tabId, glLayout) {
-    var stack = glLayout.root.getItemsById('settings_stack')[0];
-    var tabs = glLayout.root.getItemsById(tabId);
-    if (tabs !== undefined) {
-        stack.setActiveContentItem(tabs[0]);
+    if (tabId in tabIdToStackObj) {
+        var tabs = glLayout.root.getItemsById(tabId);
+        if (tabs !== undefined) {
+            tabIdToStackObj[tabId].setActiveContentItem(tabs[0]);
+        }
     }
 }
 
@@ -161,6 +164,12 @@ function init() {
             }
         });
     });
+    layout.on('tabCreated', function(tab) {
+        var component = tab.contentItem;
+        var componentId = component.config.id;
+        var parent = component.parent;
+        tabIdToStackObj[componentId] = parent;
+    });
     layout.init();
     $('.selectpicker').selectpicker();
     diagram.init(function (objName) {
@@ -259,6 +268,9 @@ function init() {
         diagram.updateMemTitle(cacheLevels, 'main', newSizeStr);
     });
     $('#num_words').trigger('change');
+     var stack = layout.root.getItemsById('settings_stack')[0];
+    tabIdToStackObj['memory_settings'] = stack;
+    tabIdToStackObj['core_settings'] = stack;
     
 }
 exports.init = init;
